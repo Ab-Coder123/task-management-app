@@ -1,9 +1,22 @@
 import { apiFetch } from './base';
-import { Task, RawTask, TaskStatus, TaskType, TaskPriority } from '../types';
+import { Task, RawTask, TaskStatus, TaskType, TaskPriority, User } from '../types';
+
+// Helper to extract Unix timestamp from MongoDB ObjectId
+function getTimestampFromObjectId(id: string): string | null {
+  if (!id || id.length !== 24) return null;
+  try {
+    const timestamp = parseInt(id.substring(0, 8), 16) * 1000;
+    if (!isNaN(timestamp) && timestamp > 0) {
+      return new Date(timestamp).toISOString();
+    }
+  } catch (e) {
+    console.error('Failed to parse ObjectId timestamp', e);
+  }
+  return null;
+}
 
 // ─── Normalisation helpers ───────────────────────────────────────────────────
 
-/** Backend type_task  →  frontend TaskType */
 function normaliseType(raw?: string): TaskType {
   if (!raw) return 'feature';
   const map: Record<string, TaskType> = {
@@ -19,7 +32,6 @@ function normaliseType(raw?: string): TaskType {
   return map[raw.toLowerCase()] ?? 'feature';
 }
 
-/** Backend priority  →  frontend TaskPriority */
 function normalisePriority(raw?: string): TaskPriority {
   if (!raw) return 'medium';
   const map: Record<string, TaskPriority> = {
@@ -31,7 +43,6 @@ function normalisePriority(raw?: string): TaskPriority {
   return map[raw.toLowerCase()] ?? 'medium';
 }
 
-/** Backend Status  →  frontend TaskStatus (handles capitalised values) */
 function normaliseStatus(raw?: string): TaskStatus {
   if (!raw) return 'pending';
   const map: Record<string, TaskStatus> = {
@@ -46,41 +57,111 @@ function normaliseStatus(raw?: string): TaskStatus {
   return map[raw.toLowerCase()] ?? 'pending';
 }
 
+// Helper to check if a date string is valid and parseable
+function isValidDateString(str?: string): boolean {
+  if (!str || str === 'null' || str === 'undefined' || str === 'Invalid Date' || str.trim() === '') return false;
+  const d = new Date(str);
+  return !isNaN(d.getTime()) && d.getFullYear() > 1990;
+}
+
 // ─── Main mapper  (RawTask → Task) ──────────────────────────────────────────
 
 function mapRawTask(raw: RawTask): Task {
+  let completedAt = isValidDateString(raw.completedAt) ? raw.completedAt : undefined;
+  let createdAt = isValidDateString(raw.createdAt) ? raw.createdAt! : '';
+
+  // Extract from MongoDB ObjectId if database did not return valid createdAt
+  if (!createdAt) {
+    const extracted = getTimestampFromObjectId(raw._id);
+    if (isValidDateString(extracted || undefined)) {
+      createdAt = extracted!;
+    } else if (isValidDateString(raw.Due_date)) {
+      createdAt = raw.Due_date;
+    } else {
+      createdAt = new Date().toISOString();
+    }
+  }
+
+  // Load completion date from LocalStorage fallback if not returned by server DB schema
+  if (!completedAt && typeof window !== 'undefined') {
+    try {
+      const localCompleted = JSON.parse(localStorage.getItem('task_completed_dates') || '{}');
+      if (isValidDateString(localCompleted[raw._id])) {
+        completedAt = localCompleted[raw._id];
+      }
+    } catch (e) {
+      console.error('Error loading local completion dates', e);
+    }
+  }
+
+  // If task status is completed but completedAt is still missing, auto-assign due date or createdAt
+  const status = normaliseStatus(raw.Status);
+  if (status === 'completed' && !completedAt) {
+    completedAt = isValidDateString(raw.Due_date) ? raw.Due_date : createdAt;
+  }
+
+  // Normalise assignedTo as an array (handling string, string array, or populated User array)
+  let assignedToArr: string[] | User[] = [];
+  if (Array.isArray(raw.assignedTo)) {
+    assignedToArr = raw.assignedTo;
+  } else if (raw.assignedTo && typeof raw.assignedTo === 'string') {
+    assignedToArr = [raw.assignedTo];
+  }
+
   return {
     _id: raw._id,
     title: raw.Name_task ?? '',
     description: raw.Description ?? '',
     type: normaliseType(raw.type_task),
     priority: normalisePriority(raw.priority),
-    status: normaliseStatus(raw.Status),
-    assignedTo: raw.assignedTo ?? '',
+    status,
+    assignedTo: assignedToArr,
     dueDate: raw.Due_date ?? '',
-    createdAt: raw.createdAt ?? '',
-    completedAt: raw.completedAt,
+    createdAt,
+    completedAt,
+    isPrivate: raw.isPrivate ?? false,
+    createdBy: raw.createdBy,
+    privateChecklist: raw.privateChecklist ?? [],
   };
 }
 
 // ─── Reverse mapper  (Task → backend payload) ────────────────────────────────
 
-/**
- * Converts a frontend Partial<Task> to the exact field names
- * the backend route reads from req.body:
- *   addtask:    title, description, status, Due_date, assignedTo, type_task
- *   updatetask: title, description, status, Due_date, assignedTo, type_task
- */
 function toBackendTask(data: Partial<Task>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
-  if (data.title !== undefined) out.title = data.title;
-  if (data.description !== undefined) out.description = data.description;
-  if (data.status !== undefined) out.status = data.status;
-  if (data.type !== undefined) out.type_task = data.type;
-  if (data.priority !== undefined) out.priority = data.priority;
-  if (data.assignedTo !== undefined) out.assignedTo = data.assignedTo;
-  if (data.dueDate !== undefined) out.Due_date = data.dueDate;
-  if (data.completedAt !== undefined) out.completedAt = data.completedAt;
+  if (data.title !== undefined) {
+    out.title = data.title;
+    out.Name_task = data.title;
+  }
+  if (data.description !== undefined) {
+    out.description = data.description;
+    out.Description = data.description;
+  }
+  if (data.status !== undefined) {
+    out.status = data.status;
+    out.Status = data.status;
+  }
+  if (data.type !== undefined) {
+    out.type_task = data.type;
+  }
+  if (data.priority !== undefined) {
+    out.priority = data.priority;
+  }
+  if (data.assignedTo !== undefined) {
+    // Keep it as an array (or list of IDs)
+    out.assignedTo = Array.isArray(data.assignedTo)
+      ? data.assignedTo.map(item => (typeof item === 'string' ? item : item._id))
+      : data.assignedTo;
+  }
+  if (data.dueDate !== undefined) {
+    out.Due_date = data.dueDate;
+  }
+  if (data.completedAt !== undefined) {
+    out.completedAt = data.completedAt;
+  }
+  if (data.isPrivate !== undefined) {
+    out.isPrivate = data.isPrivate;
+  }
   return out;
 }
 
@@ -93,34 +174,27 @@ export const tasksApi = {
   },
 
   addTask: async (taskData: Partial<Task>): Promise<Task> => {
-    // Backend returns plain text "new task added successfully" – not a JSON object.
-    // We post the data and synthesise a Task from what we sent so callers
-    // (e.g. notifications) can read .title without crashing.
-   try {
-    await apiFetch<string>('/api/tasks/addtask', {
+    const res = await apiFetch<{ message: string; task: RawTask }>('/api/tasks/addtask', {
       method: 'POST',
       bodyData: toBackendTask(taskData),
     });
-    // Return a best-effort Task shape from the submitted data
-    
-    return {
-      _id: '',
-      title: taskData.title ?? '',
-      description: taskData.description ?? '',
-      type: taskData.type ?? 'feature',
-      priority: taskData.priority ?? 'medium',
-      status: taskData.status ?? 'pending',
-      assignedTo: taskData.assignedTo ?? '',
-      dueDate: taskData.dueDate ?? '',
-      createdAt: new Date().toISOString(),
-    };
-    } catch (error) {
-      console.error('Failed to create task', error);
-      throw error;
-    }
+    return mapRawTask(res.task);
   },
 
   editTask: async (id: string, taskData: Partial<Task>): Promise<Task> => {
+    // If updating status to completed, save completedAt locally as a fallback
+    if (taskData.status === 'completed' || taskData.completedAt) {
+      if (typeof window !== 'undefined') {
+        try {
+          const localCompleted = JSON.parse(localStorage.getItem('task_completed_dates') || '{}');
+          localCompleted[id] = taskData.completedAt || new Date().toISOString();
+          localStorage.setItem('task_completed_dates', JSON.stringify(localCompleted));
+        } catch (e) {
+          console.error('Error saving local completion date', e);
+        }
+      }
+    }
+
     const raw = await apiFetch<RawTask>(`/api/tasks/updatetasks_id=${id}`, {
       method: 'PUT',
       bodyData: toBackendTask(taskData),
@@ -129,8 +203,43 @@ export const tasksApi = {
   },
 
   deleteTask: (id: string) => {
+    // Remove local completed date cache if task is deleted
+    if (typeof window !== 'undefined') {
+      try {
+        const localCompleted = JSON.parse(localStorage.getItem('task_completed_dates') || '{}');
+        if (localCompleted[id]) {
+          delete localCompleted[id];
+          localStorage.setItem('task_completed_dates', JSON.stringify(localCompleted));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
     return apiFetch<{ message: string }>(`/api/tasks/deletetasks_id=${id}`, {
       method: 'DELETE',
     });
+  },
+
+  // Private Checklist APIs (Phase 11)
+  addChecklistItem: async (taskId: string, text: string): Promise<Task> => {
+    const raw = await apiFetch<RawTask>(`/api/tasks/gettasks_id=${taskId}/checklist`, {
+      method: 'POST',
+      bodyData: { text },
+    });
+    return mapRawTask(raw);
+  },
+
+  toggleChecklistItem: async (taskId: string, itemId: string): Promise<Task> => {
+    const raw = await apiFetch<RawTask>(`/api/tasks/gettasks_id=${taskId}/checklist/${itemId}/toggle`, {
+      method: 'PUT',
+    });
+    return mapRawTask(raw);
+  },
+
+  deleteChecklistItem: async (taskId: string, itemId: string): Promise<Task> => {
+    const raw = await apiFetch<RawTask>(`/api/tasks/gettasks_id=${taskId}/checklist/${itemId}`, {
+      method: 'DELETE',
+    });
+    return mapRawTask(raw);
   },
 };

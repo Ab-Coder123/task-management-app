@@ -8,7 +8,7 @@ interface PageHeaderProps {
 
 export default function PageHeader({ title, description, action }: PageHeaderProps) {
   return (
-    <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 pb-6 border-b border-border/50 mb-6">
+    <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 pb-6 mb-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
           {title}

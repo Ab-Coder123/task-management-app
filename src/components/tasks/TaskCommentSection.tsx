@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useComments } from '@/lib/hooks/useComments';
 import { getAvatarFallback, formatDate } from '@/lib/utils';
-import { Send, Trash2, ShieldAlert } from 'lucide-react';
+import { Send, Trash2, ShieldAlert, BadgeCheck } from 'lucide-react';
 
 interface TaskCommentSectionProps {
   taskId: string;
@@ -46,8 +46,8 @@ export default function TaskCommentSection({
   };
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-bold text-foreground">Task Discussions</h3>
+    <div className="space-y-6 text-right" dir="rtl">
+      <h3 className="text-lg font-bold text-foreground">مناقشات المهمة</h3>
 
       {/* Add Comment Form */}
       <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
@@ -55,17 +55,17 @@ export default function TaskCommentSection({
           rows={3}
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
-          placeholder="Share your thoughts or update on this task..."
-          className="w-full px-4 py-3 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+          placeholder="اكتب تعليقك أو استفسارك حول المهمة هنا..."
+          className="w-full px-4 py-3 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-right"
         />
         <div className="flex justify-end">
           <button
             type="submit"
             disabled={submitting || !commentText.trim()}
-            className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/95 transition-all disabled:opacity-50 disabled:pointer-events-none shadow-lg shadow-primary/10"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl bg-primary text-primary-foreground hover:bg-primary/95 transition-all disabled:opacity-50 disabled:pointer-events-none shadow-lg shadow-primary/10"
           >
             <Send className="h-3.5 w-3.5" />
-            <span>{submitting ? 'Sending...' : 'Post Comment'}</span>
+            <span>{submitting ? 'جاري الإرسال...' : 'إضافة تعليق'}</span>
           </button>
         </div>
       </form>
@@ -73,35 +73,41 @@ export default function TaskCommentSection({
       {/* Comments Stream */}
       <div className="space-y-4">
         {isLoading ? (
-          <p className="text-xs text-muted-foreground">Loading discussions...</p>
+          <p className="text-xs text-muted-foreground">جاري تحميل النقاشات...</p>
         ) : comments.length === 0 ? (
           <div className="text-center py-6 border rounded-xl border-dashed border-border/40">
-            <p className="text-xs text-muted-foreground">No comments yet. Start the conversation!</p>
+            <p className="text-xs text-muted-foreground font-semibold">لا توجد تعليقات بعد. ابدأ النقاش الآن!</p>
           </div>
         ) : (
           <div className="divide-y divide-border/40">
             {comments.map((comment) => (
               <div key={comment._id} className="py-4 flex items-start justify-between group">
-                <div className="flex space-x-3">
-                  {/* Text avatar */}
-                  <div className="h-8 w-8 shrink-0 rounded-full bg-primary/15 border border-primary/20 text-xs font-bold text-primary flex items-center justify-center uppercase">
-                    {comment.user ? getAvatarFallback(comment.user.username) : '?'}
-                  </div>
+                <div className="flex gap-3 items-start">
+                  {/* Custom avatar or initials */}
+                  {comment.user?.avatar ? (
+                    <img
+                      src={comment.user.avatar}
+                      alt="Avatar"
+                      className="h-8 w-8 shrink-0 rounded-full object-cover shadow-200"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 shrink-0 rounded-full bg-primary/15 border border-primary/20 text-xs font-bold text-primary flex items-center justify-center uppercase">
+                      {comment.user ? getAvatarFallback(comment.user.username) : '?'}
+                    </div>
+                  )}
                   
                   {/* Comment context */}
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm font-semibold text-foreground">
-                        {comment.user?.username || 'Unknown User'}
+                  <div className="text-right">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-foreground flex items-center gap-1">
+                        {comment.user?.username || 'مستخدم غير معروف'}
+                        {comment.user?.role === 'admin' && (
+                          <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/20" />
+                        )}
                       </span>
                       <span className="text-[10px] text-muted-foreground">
                         {formatDate(comment.createdAt, 'PPp')}
                       </span>
-                      {comment.user?.role === 'admin' && (
-                        <span className="flex items-center text-[9px] font-bold text-violet-400 bg-violet-400/10 border border-violet-400/20 px-1.5 py-0.5 rounded">
-                          Admin
-                        </span>
-                      )}
                     </div>
                     <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
                       {comment.content}

@@ -23,24 +23,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Authenticated but Pending Verification
-  if (status === 'pending') {
-    if (!isWaitingPage) {
-      return NextResponse.redirect(new URL('/waiting-approval', request.url));
-    }
-    return NextResponse.next();
-  }
-
-  // 3. Authenticated and Approved
-  if (status === 'approved') {
-    // Prevent approved users from seeing the waiting page
-    if (isWaitingPage) {
-      if (role === 'admin') {
-        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
-      }
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-
+  // 2. Authenticated (Pending or Approved)
+  if (status === 'pending' || status === 'approved' || !status || status !== 'rejected') {
     // Auth pages redirection
     if (isAuthPage) {
       if (role === 'admin') {

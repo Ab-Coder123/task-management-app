@@ -1,41 +1,43 @@
 import { TaskPriority, TaskStatus, TaskType } from "../types";
 
 export const TASK_STATUSES: { value: TaskStatus; label: string }[] = [
-  { value: 'pending', label: 'Pending' },
-  { value: 'in_progress', label: 'In Progress' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'overdue', label: 'Overdue' },
+  { value: 'pending', label: 'معلقة' },
+  { value: 'in_progress', label: 'قيد التنفيذ' },
+  { value: 'completed', label: 'مكتملة' },
+  { value: 'overdue', label: 'متأخرة' },
 ];
 
 export const TASK_PRIORITIES: { value: TaskPriority; label: string }[] = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-  { value: 'critical', label: 'Critical' },
+  { value: 'low', label: 'منخفضة' },
+  { value: 'medium', label: 'متوسطة' },
+  { value: 'high', label: 'عالية' },
+  { value: 'critical', label: 'حرجة' },
 ];
 
 export const TASK_TYPES: { value: TaskType; label: string }[] = [
-  { value: 'feature', label: 'Feature' },
-  { value: 'bug', label: 'Bug' },
-  { value: 'improvement', label: 'Improvement' },
-  { value: 'documentation', label: 'Documentation' },
+  { value: 'feature', label: 'ميزة جديدة' },
+  { value: 'bug', label: 'إصلاح خطأ' },
+  { value: 'improvement', label: 'تحسين' },
+  { value: 'documentation', label: 'توثيق' },
 ];
 
 export const USER_STATUSES = [
-  { value: 'pending', label: 'Pending Verification' },
-  { value: 'approved', label: 'Approved' },
-  { value: 'rejected', label: 'Rejected' },
+  { value: 'pending', label: 'في انتظار التحقق' },
+  { value: 'approved', label: 'تمت الموافقة' },
+  { value: 'rejected', label: 'مرفوض' },
 ];
 
 export const ADMIN_NAV_ITEMS = [
-  { label: 'Dashboard', href: '/admin/dashboard', icon: 'LayoutDashboard' },
-  { label: 'Users Management', href: '/admin/users', icon: 'Users' },
-  { label: 'Tasks Management', href: '/admin/tasks', icon: 'CheckSquare' },
-  { label: 'Completed Tasks', href: '/admin/tasks/completed', icon: 'FolderCheck' },
-  { label: 'Comments Moderation', href: '/admin/comments', icon: 'MessageSquare' },
-  { label: 'Notifications', href: '/admin/notifications', icon: 'Bell' },
+  { label: 'لوحة التحكم', href: '/admin/dashboard', icon: 'LayoutDashboard' },
+  { label: 'إدارة المستخدمين', href: '/admin/users', icon: 'Users' },
+  { label: 'إدارة المهام', href: '/admin/tasks', icon: 'CheckSquare' },
+  { label: 'المهام المكتملة', href: '/admin/tasks/completed', icon: 'FolderCheck' },
+  { label: 'إدارة التعليقات', href: '/admin/comments', icon: 'MessageSquare' },
+  { label: 'الإشعارات', href: '/admin/notifications', icon: 'Bell' },
 ];
 
 export const USER_NAV_ITEMS = [
-  { label: 'My Dashboard', href: '/dashboard', icon: 'LayoutDashboard' },
+  { label: 'لوحة المهام الرئيسية', href: '/dashboard', icon: 'LayoutDashboard' },
+  { label: 'الإشعارات والتوجيهات', href: '/dashboard/notifications', icon: 'Bell' },
+  { label: 'مهامي الخاصة', href: '/dashboard/personal-tasks', icon: 'Lock' },
 ];

@@ -9,6 +9,7 @@ interface AuthState {
   isLoading: boolean;
   setAuth: (user: User, token: string) => void;
   updateUserStatus: (status: User['status']) => void;
+  updateUser: (updatedUser: Partial<User>) => void;
   logout: () => void;
   setLoading: (isLoading: boolean) => void;
 }
@@ -21,11 +22,13 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       setAuth: (user, token) => {
-        set({ user, token, isAuthenticated: true, isLoading: false });
+        if (!user) return;
+        const normalizedUser = { ...user, _id: user._id || (user as any).id };
+        set({ user: normalizedUser, token, isAuthenticated: true, isLoading: false });
         if (typeof window !== 'undefined') {
-          document.cookie = `auth-token=${token}; path=/; max-age=604800; SameSite=Lax`;
-          document.cookie = `user-role=${user.role}; path=/; max-age=604800; SameSite=Lax`;
-          document.cookie = `user-status=${user.status}; path=/; max-age=604800; SameSite=Lax`;
+          document.cookie = `auth-token=${token || ''}; path=/; max-age=604800; SameSite=Lax`;
+          document.cookie = `user-role=${user.role || 'user'}; path=/; max-age=604800; SameSite=Lax`;
+          document.cookie = `user-status=${user.status || 'pending'}; path=/; max-age=604800; SameSite=Lax`;
         }
       },
       updateUserStatus: (status) =>
@@ -37,6 +40,10 @@ export const useAuthStore = create<AuthState>()(
             user: state.user ? { ...state.user, status } : null,
           };
         }),
+      updateUser: (updatedUser) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...updatedUser, _id: updatedUser._id || (updatedUser as any).id || state.user._id } : null,
+        })),
       logout: () => {
         set({ user: null, token: null, isAuthenticated: false, isLoading: false });
         if (typeof window !== 'undefined') {
@@ -56,3 +63,8 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// Rehydrate store on the client side immediately to restore login session on refresh
+if (typeof window !== 'undefined') {
+  useAuthStore.persist.rehydrate();
+}

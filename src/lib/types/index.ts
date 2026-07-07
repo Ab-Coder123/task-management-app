@@ -17,18 +17,29 @@ export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'overdue';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 export type TaskType = 'bug' | 'feature' | 'improvement' | 'documentation';
 
+export interface ChecklistItem {
+  _id: string;
+  userId: string;
+  text: string;
+  completed: boolean;
+  createdAt: string;
+}
+
 // Raw shape returned directly from the backend/database
 export interface RawTask {
   _id: string;
   Name_task: string;       // maps to → title
   Description: string;     // maps to → description
-  type_task: string;       // maps to → type  (e.g. "Development")
-  priority?: string;       // may not exist in backend
-  Status: string;          // maps to → status (e.g. "Pending", "In_progress")
-  assignedTo: string;       // maps to → assignedTo (username or user ID)
+  type_task: string;       // maps to → type
+  priority?: string;       
+  Status: string;          // maps to → status
+  assignedTo: string | string[] | User[]; // maps to → assignedTo (can be array or populated User objects)
   Due_date: string;        // maps to → dueDate
   createdAt?: string;
   completedAt?: string;
+  isPrivate?: boolean;
+  createdBy?: string | User;
+  privateChecklist?: ChecklistItem[];
   __v?: number;
 }
 
@@ -39,17 +50,20 @@ export interface Task {
   type: TaskType;
   priority: TaskPriority;
   status: TaskStatus;
-  assignedTo: string; // User ID or username
+  assignedTo: string[] | User[]; // Array of User IDs or Populated User Objects
   dueDate: string;
   createdAt: string;
   completedAt?: string;
+  isPrivate?: boolean;
+  createdBy?: string | User;
+  privateChecklist?: ChecklistItem[];
 }
 
 // Comment Types
 export interface Comment {
   _id: string; // MongoDB standard ID
   taskId: string;
-  userId: string;
+  userId: string | User; // Populated User Object
   user?: User; // Joined user object
   task?: Task; // Joined task object
   content: string;
@@ -58,7 +72,7 @@ export interface Comment {
 }
 
 // Notification Types
-export type NotificationType = 'new_user' | 'task_completed' | 'new_comment';
+export type NotificationType = 'new_user' | 'task_completed' | 'new_comment' | 'task_created' | 'task_updated';
 
 export interface Notification {
   _id: string;
@@ -72,6 +86,7 @@ export interface Notification {
     commentId?: string;
     username?: string;
     taskTitle?: string;
+    assignedTo?: string[];
   };
 }
 

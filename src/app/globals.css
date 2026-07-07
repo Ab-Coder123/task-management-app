@@ -4,95 +4,107 @@
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Premium Light Mode Colors */
+    --background: 219 28% 97%;         /* #f3f5f9 soft premium light slate-gray */
+    --foreground: 222 47% 11%;         /* #0f172a dark slate */
 
-    --card: 222.2 84% 6.5%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;                 /* #ffffff pure white card */
+    --card-foreground: 222 47% 11%;    /* #0f172a */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 263.4 90% 64.3%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 221 83% 53%;            /* #2563eb vivid blue */
+    --primary-foreground: 0 0% 100%;   /* #ffffff */
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 215 16% 47%;          /* gray */
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 218 22% 94%;              /* gray-blue tint */
+    --muted-foreground: 215 16% 45%;   /* muted gray */
 
-    --accent: 263.4 90% 64.3%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 221 83% 53%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;          /* #ef4444 red */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 263.4 90% 64.3%;
+    --border: 220 14% 93%;             /* very soft light gray */
+    --input: 220 14% 93%;
+    --ring: 221 83% 53%;
 
     --radius: 0.75rem;
-
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
-      radial-gradient(at 98% 98%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
+      radial-gradient(ellipse at 20% 0%, rgba(37, 99, 235, 0.03) 0px, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(99, 102, 241, 0.02) 0px, transparent 50%);
     background-attachment: fixed;
   }
 }
 
-/* Custom premium scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: hsl(var(--background));
-}
-
+/* Premium scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--muted));
   border-radius: 9999px;
 }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
 
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.5);
-}
-
-/* Custom Glassmorphism utility */
+/* Premium Glassmorphism for Light Theme */
 .glass-panel {
-  background: rgba(30, 41, 59, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px -10px rgba(75, 85, 99, 0.1);
 }
 
 .glass-card {
-  background: rgba(30, 41, 59, 0.2);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(75, 85, 99, 0.06);
+  transition: all 0.25s ease;
 }
 
 .glass-card:hover {
-  background: rgba(30, 41, 59, 0.3);
-  border-color: rgba(139, 92, 246, 0.15);
-  box-shadow: 0 10px 30px -10px rgba(139, 92, 246, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 30px -10px rgba(75, 85, 99, 0.15);
+}
+
+/* ─── Pronounced Premium Shadow Utilities 100 to 600 (Darker/More Visible) ─── */
+.shadow-100 {
+  box-shadow: 0 2px 6px rgba(55, 65, 81, 0.08);
+}
+.shadow-200 {
+  box-shadow: 0 6px 15px rgba(55, 65, 81, 0.13); /* Clearly visible on bright displays */
+}
+.shadow-300 {
+  box-shadow: 0 10px 25px rgba(55, 65, 81, 0.18);
+}
+.shadow-400 {
+  box-shadow: 0 14px 32px rgba(55, 65, 81, 0.22);
+}
+.shadow-500 {
+  box-shadow: 0 20px 42px rgba(55, 65, 81, 0.27);
+}
+.shadow-600 {
+  box-shadow: 0 28px 55px rgba(55, 65, 81, 0.38); /* Pronounced shadow-lg shadow-gray-600 style */
+}
+
+/* 3D Perspective and Transformation Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
 }

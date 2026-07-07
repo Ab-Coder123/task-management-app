@@ -43,17 +43,17 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
 
   if (activities.length === 0) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-border/80 bg-card/20 p-6 text-center">
+      <div className="flex h-48 items-center justify-center rounded-2xl shadow-2xl  bg-card p-6 text-center">
         <p className="text-sm text-muted-foreground">No recent activities found.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm">
+    <div className="rounded-2xl shadow-lg shadow-gray-600 bg-card p-6 shadow-sm">
       <h3 className="text-base font-semibold text-foreground mb-6">Recent Activity</h3>
-      
-      <div className="relative pl-6 border-l border-border/80 space-y-6">
+
+      <div className="relative pl-6 shadow-lg shadow-gray-600 space-y-6">
         {activities.map((activity) => (
           <div key={activity.id} className="relative flex flex-col md:flex-row md:items-center md:justify-between space-y-1 md:space-y-0">
             {/* Timeline Dot Icon */}

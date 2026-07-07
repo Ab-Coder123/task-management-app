@@ -1,6 +1,10 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/login/page": "app/login/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/tasks/[id]/page": "app/tasks/[id]/page.js"
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/admin/tasks/page": "app/admin/tasks/page.js",
+  "/admin/notifications/page": "app/admin/notifications/page.js",
+  "/dashboard/notifications/page": "app/dashboard/notifications/page.js",
+  "/tasks/[id]/page": "app/tasks/[id]/page.js",
+  "/admin/tasks/[id]/edit/page": "app/admin/tasks/[id]/edit/page.js",
+  "/dashboard/page": "app/dashboard/page.js"
 }

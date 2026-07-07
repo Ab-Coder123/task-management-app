@@ -7,19 +7,29 @@ interface UserStatusBadgeProps {
 
 export default function UserStatusBadge({ status }: UserStatusBadgeProps) {
   const styles = {
-    pending: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-    approved: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-    rejected: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
+    pending: 'bg-amber-50 text-amber-700 border-amber-100',
+    approved: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+    rejected: 'bg-rose-50 text-rose-700 border-rose-100',
+  };
+
+  const dots = {
+    pending: '#f59e0b',
+    approved: '#10b981',
+    rejected: '#ef4444',
   };
 
   const labels = {
-    pending: 'Pending Approval',
-    approved: 'Approved',
-    rejected: 'Rejected',
+    pending: 'في انتظار الموافقة',
+    approved: 'نشط (تمت الموافقة)',
+    rejected: 'مرفوض',
   };
 
   return (
-    <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full border ${styles[status]}`}>
+    <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full border shadow-100 ${styles[status]}`}>
+      <span 
+        className="h-1.5 w-1.5 rounded-full animate-pulse" 
+        style={{ backgroundColor: dots[status] }} 
+      />
       {labels[status]}
     </span>
   );

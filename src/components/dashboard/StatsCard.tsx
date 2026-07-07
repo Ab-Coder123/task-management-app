@@ -32,25 +32,24 @@ export default function StatsCard({
   };
 
   return (
-    <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm transition-all duration-300 hover:border-border hover:shadow-md">
+    <div className="rounded-2xl shadow-lg shadow-gray-600 bg-card p-6 transition-all duration-300 ">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-muted-foreground">{title}</span>
-        <div className={`flex h-10 w-10 items-center justify-center rounded-xl border ${colorStyles[color]}`}>
+        <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-card ${colorStyles[color]}`}>
           {IconComponent && <IconComponent className="h-5 w-5" />}
         </div>
       </div>
-      
+
       <div className="mt-4">
         <h3 className="text-3xl font-bold tracking-tight text-foreground">{value}</h3>
-        
+
         {(description || trend) && (
           <div className="mt-2 flex items-center space-x-2">
             {trend && (
-              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                trend.isPositive 
-                  ? 'bg-emerald-500/10 text-emerald-500' 
-                  : 'bg-rose-500/10 text-rose-500'
-              }`}>
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${trend.isPositive
+                ? 'bg-emerald-500/10 text-emerald-500'
+                : 'bg-rose-500/10 text-rose-500'
+                }`}>
                 {trend.value}
               </span>
             )}

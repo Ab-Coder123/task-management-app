@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/lib/hooks/useAuth';
 import Link from 'next/link';
+import { LogIn, Mail, Lock } from 'lucide-react';
 
 export default function LoginForm() {
   const { login, isLoading } = useAuth();
@@ -15,23 +16,26 @@ export default function LoginForm() {
     setErrorMsg('');
 
     if (!email || !password) {
-      setErrorMsg('Please enter both email and password.');
+      setErrorMsg('يرجى إدخال البريد الإلكتروني وكلمة المرور.');
       return;
     }
 
     try {
       await login({ email, password });
     } catch (err: any) {
-      setErrorMsg(err.message || 'Incorrect email or password.');
+      setErrorMsg(err.message || 'البريد الإلكتروني أو كلمة المرور غير صحيحة.');
     }
   };
 
   return (
-    <div className="w-full max-w-md p-8 rounded-2xl glass-panel border border-border shadow-2xl animate-fade-in">
+    <div className="w-full max-w-md p-8 rounded-2xl glass-panel shadow-xl border border-border/40 animate-fade-in text-right">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold tracking-tight text-foreground">Welcome Back</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Sign in to your account to manage your tasks
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 text-primary shadow-sm">
+          <LogIn className="h-6 w-6" />
+        </div>
+        <h2 className="text-2xl font-bold tracking-tight text-foreground">مرحباً بك مجدداً</h2>
+        <p className="mt-2 text-xs text-muted-foreground">
+          سجل الدخول إلى حسابك لإدارة ومتابعة مهامك اليومية
         </p>
       </div>
 
@@ -44,48 +48,58 @@ export default function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-            Email Address
+            البريد الإلكتروني
           </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={isLoading}
-            className="w-full px-4 py-3 rounded-xl bg-card/50 border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-            placeholder="name@company.com"
-            required
-          />
+          <div className="relative">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+              className="w-full pl-4 pr-10 py-3 rounded-xl bg-card/70 border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
+              placeholder="name@company.com"
+              required
+            />
+            <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-muted-foreground/70">
+              <Mail className="h-4 w-4" />
+            </div>
+          </div>
         </div>
 
         <div>
           <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-            Password
+            كلمة المرور
           </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={isLoading}
-            className="w-full px-4 py-3 rounded-xl bg-card/50 border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-            placeholder="••••••••"
-            required
-          />
+          <div className="relative">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              className="w-full pl-4 pr-10 py-3 rounded-xl bg-card/70 border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
+              placeholder="••••••••"
+              required
+            />
+            <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-muted-foreground/70">
+              <Lock className="h-4 w-4" />
+            </div>
+          </div>
         </div>
 
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-3.5 px-4 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/95 hover:scale-[1.01] active:scale-[0.99] transition-all shadow-lg shadow-primary/25 disabled:opacity-50 disabled:pointer-events-none"
+          className="w-full py-3 px-4 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/95 active:scale-[0.99] transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:pointer-events-none mt-2"
         >
-          {isLoading ? 'Signing In...' : 'Sign In'}
+          {isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
         </button>
       </form>
 
       <div className="text-center mt-6">
         <p className="text-sm text-muted-foreground">
-          Don't have an account?{' '}
+          ليس لديك حساب؟{' '}
           <Link href="/register" className="font-semibold text-primary hover:underline">
-            Sign Up
+            إنشاء حساب جديد
           </Link>
         </p>
       </div>

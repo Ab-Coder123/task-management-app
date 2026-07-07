@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tasksApi } from '../api/tasks';
 import { Task } from '../types';
 import { notificationsApi } from '../api/notifications';
+import { playSuccessSound } from '../utils/sound';
 
 export function useTasks() {
   const queryClient = useQueryClient();
@@ -10,12 +11,13 @@ export function useTasks() {
     queryKey: ['tasks'],
     queryFn: tasksApi.getTasks,
   });
-  console.log('tasksQuery', tasksQuery);
 
   const createTaskMutation = useMutation({
     mutationFn: tasksApi.addTask,
     onSuccess: (newTask) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      // Play a success sound
+      playSuccessSound();
       // Notify Admin
       notificationsApi.addNotification({
         type: 'new_user', // standard notification category
@@ -30,6 +32,7 @@ export function useTasks() {
       tasksApi.editTask(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      playSuccessSound();
     },
   });
 
@@ -37,6 +40,7 @@ export function useTasks() {
     mutationFn: tasksApi.deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      playSuccessSound();
     },
   });
 
@@ -45,12 +49,39 @@ export function useTasks() {
       tasksApi.editTask(id, { status: 'completed', completedAt: new Date().toISOString() }),
     onSuccess: (completedTask, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      // Play a success sound
+      playSuccessSound();
       // Notify Admin on task completion
       notificationsApi.addNotification({
         type: 'task_completed',
         message: `User "${variables.username}" completed the task "${completedTask.title}".`,
         metadata: { taskId: completedTask._id, username: variables.username, taskTitle: completedTask.title }
       });
+    },
+  });
+
+  // Private Checklist Mutations (Phase 11)
+  const addChecklistItemMutation = useMutation({
+    mutationFn: ({ taskId, text }: { taskId: string; text: string }) =>
+      tasksApi.addChecklistItem(taskId, text),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+  });
+
+  const toggleChecklistItemMutation = useMutation({
+    mutationFn: ({ taskId, itemId }: { taskId: string; itemId: string }) =>
+      tasksApi.toggleChecklistItem(taskId, itemId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+  });
+
+  const deleteChecklistItemMutation = useMutation({
+    mutationFn: ({ taskId, itemId }: { taskId: string; itemId: string }) =>
+      tasksApi.deleteChecklistItem(taskId, itemId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
   });
 
@@ -67,5 +98,13 @@ export function useTasks() {
     isDeleting: deleteTaskMutation.isPending,
     completeTask: completeTaskMutation.mutateAsync,
     isCompleting: completeTaskMutation.isPending,
+    
+    // Checklist actions
+    addChecklistItem: addChecklistItemMutation.mutateAsync,
+    isAddingChecklist: addChecklistItemMutation.isPending,
+    toggleChecklistItem: toggleChecklistItemMutation.mutateAsync,
+    isTogglingChecklist: toggleChecklistItemMutation.isPending,
+    deleteChecklistItem: deleteChecklistItemMutation.mutateAsync,
+    isDeletingChecklist: deleteChecklistItemMutation.isPending,
   };
 }

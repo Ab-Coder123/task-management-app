@@ -24,7 +24,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-50 lg:hidden" dir="rtl">
           {/* Backdrop Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -34,28 +34,28 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             className="absolute inset-0 bg-background/80 backdrop-blur-sm"
           />
 
-          {/* Drawer Content */}
+          {/* Drawer Content - Slides from the RIGHT to match desktop sidebar layout */}
           <motion.div
-            initial={{ x: '-100%' }}
+            initial={{ x: '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
+            exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="absolute inset-y-0 left-0 w-72 border-r border-border/80 bg-card p-6 shadow-2xl flex flex-col justify-between"
+            className="absolute inset-y-0 right-0 w-72 border-l border-border/80 bg-card p-6 shadow-2xl flex flex-col justify-between text-right"
           >
             <div>
               {/* Header with Close Button */}
               <div className="flex items-center justify-between pb-6 border-b border-border/40 mb-6">
-                <Link href="/" onClick={onClose} className="flex items-center space-x-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-violet-500">
+                <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-violet-500 shadow-200">
                     <Icons.Trello className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                    TaskSaaS
+                  <span className="text-lg font-bold tracking-tight text-foreground">
+                    مدير المهام
                   </span>
                 </Link>
                 <button
                   onClick={onClose}
-                  className="rounded-lg p-2 text-muted-foreground hover:bg-muted/40"
+                  className="rounded-lg p-2 text-muted-foreground hover:bg-muted/40 transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -63,8 +63,8 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
               {/* Navigation Links */}
               <nav className="space-y-1.5">
-                <p className="px-3 mb-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                  Navigation Menu
+                <p className="px-3 mb-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                  قائمة التنقل
                 </p>
                 {navItems.map((item) => {
                   const IconComponent = Icons[item.icon as keyof typeof Icons] as React.ComponentType<any>;
@@ -75,10 +75,10 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                       key={item.href}
                       href={item.href}
                       onClick={onClose}
-                      className={`flex items-center space-x-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 border ${
+                      className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${
                         isActive
-                          ? 'bg-primary/10 border-primary/20 text-primary'
-                          : 'border-transparent text-muted-foreground hover:bg-muted/30 hover:text-foreground'
+                          ? 'bg-primary/10 text-primary shadow-100'
+                          : 'text-muted-foreground hover:bg-muted/30 hover:text-foreground'
                       }`}
                     >
                       {IconComponent && <IconComponent className="h-4.5 w-4.5" />}
@@ -96,10 +96,10 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   onClose();
                   logout();
                 }}
-                className="flex w-full items-center space-x-3 rounded-xl px-4 py-3 text-sm font-medium text-rose-500 hover:bg-rose-500/10 transition-all"
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-rose-600 hover:bg-rose-50 transition-all"
               >
                 <LogOut className="h-4.5 w-4.5" />
-                <span>Sign Out</span>
+                <span>تسجيل الخروج</span>
               </button>
             </div>
 

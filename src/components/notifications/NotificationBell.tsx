@@ -10,7 +10,7 @@ export default function NotificationBell({ role }: { role: 'admin' | 'user' }) {
 
   return (
     <Link
-      href={role === 'admin' ? '/admin/notifications' : '#'}
+      href={role === 'admin' ? '/admin/notifications' : '/dashboard/notifications'}
       className="relative rounded-full p-2 text-muted-foreground hover:bg-muted/40 hover:text-foreground transition-all"
     >
       <Bell className="h-5 w-5" />

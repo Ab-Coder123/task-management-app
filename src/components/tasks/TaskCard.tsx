@@ -49,16 +49,23 @@ export default function TaskCard({ task, onComplete, isAdmin = false }: TaskCard
           <span>Due: {formatDate(task.dueDate)}</span>
         </div>
 
-        {task.assignedTo && (
-          <div className="flex items-center space-x-1.5">
-            <div className="h-5 w-5 rounded-full bg-primary/10 border border-primary/20 text-[9px] font-bold text-primary flex items-center justify-center uppercase">
-              {task.assignedTo.substring(0, 2)}
+        {(() => {
+          const assignedList = Array.isArray(task.assignedTo) ? task.assignedTo : task.assignedTo ? [task.assignedTo] : [];
+          if (assignedList.length === 0) return null;
+          const first = assignedList[0];
+          const name = typeof first === 'string' ? first : first?.username || '';
+          if (!name) return null;
+          return (
+            <div className="flex items-center space-x-1.5">
+              <div className="h-5 w-5 rounded-full bg-primary/10 border border-primary/20 text-[9px] font-bold text-primary flex items-center justify-center uppercase">
+                {name.substring(0, 2)}
+              </div>
+              <span className="text-xs text-muted-foreground font-medium truncate max-w-[80px]">
+                {name}
+              </span>
             </div>
-            <span className="text-xs text-muted-foreground font-medium truncate max-w-[80px]">
-              {task.assignedTo}
-            </span>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* Hover action card buttons */}

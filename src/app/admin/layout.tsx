@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Sidebar from '@/components/layout/Sidebar';
 import Navbar from '@/components/layout/Navbar';
 import MobileSidebar from '@/components/layout/MobileSidebar';
+import BottomNav from '@/components/layout/BottomNav';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -20,7 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       />
 
       {/* Main Content Scaffold */}
-      <div className="lg:pl-64 flex flex-col min-h-screen">
+      <div className="lg:pr-64 flex flex-col min-h-screen pb-16 lg:pb-0">
         <Navbar
           role="admin"
           onMenuClick={() => setMobileSidebarOpen(true)}
@@ -29,6 +30,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {children}
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

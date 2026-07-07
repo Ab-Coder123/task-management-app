@@ -26,34 +26,39 @@ export default function TaskFilters({
   setTypeFilter,
 }: TaskFiltersProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-5 rounded-2xl border border-border/80 bg-card mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-5 rounded-2xl bg-card shadow-200 text-right dir-rtl mb-6">
       
       {/* Search Input */}
-      <div className="relative">
-        <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/75">
-          <Search className="h-4.5 w-4.5" />
-        </span>
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search task title..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-        />
+      <div className="relative flex flex-col justify-end">
+        <label className="block text-xs font-bold text-muted-foreground mb-1.5">
+          بحث
+        </label>
+        <div className="relative">
+          <span className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-muted-foreground/60">
+            <Search className="h-4 w-4" />
+          </span>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="ابحث عن عنوان المهمة..."
+            className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-card text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/25 text-right transition-all shadow-100 border-0"
+          />
+        </div>
       </div>
 
       {/* Filter Status */}
-      <div>
-        <label htmlFor="statusFilter" className="block text-sm font-medium text-foreground mb-1">
-          Status
+      <div className="flex flex-col justify-end">
+        <label htmlFor="statusFilter" className="block text-xs font-bold text-muted-foreground mb-1.5">
+          الحالة
         </label>
         <select
           id="statusFilter"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none"
+          className="w-full px-4 py-2.5 rounded-xl bg-card text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer shadow-100 border-0 text-right"
         >
-          <option value="">All Statuses</option>
+          <option value="">جميع الحالات</option>
           {TASK_STATUSES.map((s) => (
             <option key={s.value} value={s.value}>
               {s.label}
@@ -63,17 +68,17 @@ export default function TaskFilters({
       </div>
 
       {/* Filter Priority */}
-      <div>
-        <label htmlFor="priorityFilter" className="block text-sm font-medium text-foreground mb-1">
-          Priority
+      <div className="flex flex-col justify-end">
+        <label htmlFor="priorityFilter" className="block text-xs font-bold text-muted-foreground mb-1.5">
+          الأهمية
         </label>
         <select
           id="priorityFilter"
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none"
+          className="w-full px-4 py-2.5 rounded-xl bg-card text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer shadow-100 border-0 text-right"
         >
-          <option value="">All Priorities</option>
+          <option value="">جميع درجات الأهمية</option>
           {TASK_PRIORITIES.map((p) => (
             <option key={p.value} value={p.value}>
               {p.label}
@@ -83,17 +88,17 @@ export default function TaskFilters({
       </div>
 
       {/* Filter Type */}
-      <div>
-        <label htmlFor="typeFilter" className="block text-sm font-medium text-foreground mb-1">
-          Type
+      <div className="flex flex-col justify-end">
+        <label htmlFor="typeFilter" className="block text-xs font-bold text-muted-foreground mb-1.5">
+          نوع المهمة
         </label>
         <select
           id="typeFilter"
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none"
+          className="w-full px-4 py-2.5 rounded-xl bg-card text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer shadow-100 border-0 text-right"
         >
-          <option value="">All Types</option>
+          <option value="">جميع الأنواع</option>
           {TASK_TYPES.map((t) => (
             <option key={t.value} value={t.value}>
               {t.label}
