@@ -16,6 +16,7 @@ import {
   RotateCcw,
   CheckCircle2,
   BadgeCheck,
+  MessageSquare,
 } from 'lucide-react';
 import { useUsers } from '@/lib/hooks/useUsers';
 import { useTasks } from '@/lib/hooks/useTasks';
@@ -353,6 +354,22 @@ export default function AdminDashboardPage() {
               <h4 className="text-[15px] font-bold text-foreground/90 line-clamp-2 leading-snug">
                 {task.title}
               </h4>
+
+              {/* ── Comments Analytics ── */}
+              <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground border-t border-border/30 pt-2.5 mt-1">
+                <Link
+                  href={`/admin/comments?taskId=${task._id}`}
+                  className="flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer"
+                >
+                  <MessageSquare className="h-3.5 w-3.5 text-muted-foreground/65" />
+                  <span>{(task as any).commentCount || 0} تعليقات</span>
+                </Link>
+                {(task as any).latestCommentTime && (
+                  <span className="text-[10px] text-muted-foreground/75">
+                    آخر تعليق: {relativeTime((task as any).latestCommentTime)}
+                  </span>
+                )}
+              </div>
 
               {/* ── Footer ── */}
               <div

@@ -64,6 +64,9 @@ export interface Comment {
   _id: string; // MongoDB standard ID
   taskId: string;
   userId: string | User; // Populated User Object
+  authorId?: string;
+  authorName?: string;
+  authorRole?: string;
   user?: User; // Joined user object
   task?: Task; // Joined task object
   content: string;

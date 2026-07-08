@@ -176,7 +176,7 @@ export default function TaskTable({ tasks, onDelete, onComplete }: TaskTableProp
                           </div>
                         )}
                       </div>
-                      <span className="font-semibold text-foreground text-xs max-w-[150px] truncate line-clamp-1">
+                      <span className="font-semibold text-foreground text-xs max-w-[150px] truncate line-clamp-1 hidden md:inline-block">
                         {assignedUsers.map(u => u.username).join('، ')}
                       </span>
                     </div>

@@ -16,6 +16,7 @@ export function useComments(taskId?: string) {
       commentsApi.addComment(taskId, userId, content),
     onSuccess: (newComment, variables) => {
       queryClient.invalidateQueries({ queryKey: ['comments', variables.taskId] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
       // Notify Admin on new comment
       notificationsApi.addNotification({
         type: 'new_comment',
@@ -55,5 +56,41 @@ export function useComments(taskId?: string) {
     isUpdating: updateCommentMutation.isPending,
     deleteComment: deleteCommentMutation.mutateAsync,
     isDeleting: deleteCommentMutation.isPending,
+  };
+}
+
+export function useAdminComments() {
+  const queryClient = useQueryClient();
+  
+  const commentsQuery = useQuery({
+    queryKey: ['admin-comments'],
+    queryFn: commentsApi.getAdminComments,
+  });
+
+  const deleteCommentMutation = useMutation({
+    mutationFn: commentsApi.deleteComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-comments'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+  });
+
+  const updateCommentMutation = useMutation({
+    mutationFn: ({ id, content, isReviewed }: { id: string; content?: string; isReviewed?: boolean }) =>
+      commentsApi.updateComment(id, { content, isReviewed }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-comments'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+    },
+  });
+
+  return {
+    comments: commentsQuery.data || [],
+    isLoading: commentsQuery.isLoading,
+    deleteComment: deleteCommentMutation.mutateAsync,
+    isDeleting: deleteCommentMutation.isPending,
+    updateComment: updateCommentMutation.mutateAsync,
+    isUpdating: updateCommentMutation.isPending,
   };
 }

@@ -15,6 +15,12 @@ export const commentsApi = {
     });
   },
 
+  getAdminComments: () => {
+    return apiFetch<Comment[]>('/api/comments/admin/all', {
+      method: 'GET',
+    });
+  },
+
   updateComment: (id: string, updateData: { content?: string; isReviewed?: boolean }) => {
     return apiFetch<Comment>(`/api/comments/updatecomments_id=${id}`, {
       method: 'PUT',

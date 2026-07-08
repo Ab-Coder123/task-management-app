@@ -80,53 +80,59 @@ export default function TaskCommentSection({
           </div>
         ) : (
           <div className="divide-y divide-border/40">
-            {comments.map((comment) => (
-              <div key={comment._id} className="py-4 flex items-start justify-between group">
-                <div className="flex gap-3 items-start">
-                  {/* Custom avatar or initials */}
-                  {comment.user?.avatar ? (
-                    <img
-                      src={comment.user.avatar}
-                      alt="Avatar"
-                      className="h-8 w-8 shrink-0 rounded-full object-cover shadow-200"
-                    />
-                  ) : (
-                    <div className="h-8 w-8 shrink-0 rounded-full bg-primary/15 border border-primary/20 text-xs font-bold text-primary flex items-center justify-center uppercase">
-                      {comment.user ? getAvatarFallback(comment.user.username) : '?'}
-                    </div>
-                  )}
-                  
-                  {/* Comment context */}
-                  <div className="text-right">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-foreground flex items-center gap-1">
-                        {comment.user?.username || 'مستخدم غير معروف'}
-                        {comment.user?.role === 'admin' && (
-                          <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/20" />
-                        )}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground">
-                        {formatDate(comment.createdAt, 'PPp')}
-                      </span>
-                    </div>
-                    <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                      {comment.content}
-                    </p>
-                  </div>
-                </div>
+            {comments.map((comment) => {
+              const userObj = comment.userId && typeof comment.userId === 'object' ? comment.userId : null;
+              const name = comment.authorName || userObj?.username || 'مستخدم غير معروف';
+              const role = comment.authorRole || userObj?.role || 'user';
+              const avatar = userObj?.avatar;
 
-                {/* Actions: Admin deletion */}
-                {isAdmin && (
-                  <button
-                    onClick={() => deleteComment(comment._id)}
-                    className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-all duration-200"
-                    title="Delete Comment"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            ))}
+              return (
+                <div key={comment._id} className="py-4 flex items-start justify-between group text-right">
+                  <div className="flex gap-3 items-start">
+                    {/* Custom avatar or initials */}
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        alt="Avatar"
+                        className="h-8 w-8 shrink-0 rounded-full object-cover shadow-200"
+                      />
+                    ) : (
+                      <div className="h-8 w-8 shrink-0 rounded-full bg-primary/15 border border-primary/20 text-xs font-bold text-primary flex items-center justify-center uppercase">
+                        {getAvatarFallback(name)}
+                      </div>
+                    )}
+                    
+                    {/* Comment context */}
+                    <div className="text-right">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-foreground flex items-center gap-1">
+                          {name}
+                          {role === 'admin' && (
+                            <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/20" />
+                          )}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">
+                          {formatDate(comment.createdAt, 'PPp')}
+                        </span>
+                      </div>
+                      <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                        {comment.content}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Actions: Admin deletion */}
+                  {isAdmin && (
+                    <button
+                      onClick={() => deleteComment(comment._id)}
+                      className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-all duration-200"
+                      title="Delete Comment"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

@@ -52,17 +52,37 @@ export default function TaskCard({ task, onComplete, isAdmin = false }: TaskCard
         {(() => {
           const assignedList = Array.isArray(task.assignedTo) ? task.assignedTo : task.assignedTo ? [task.assignedTo] : [];
           if (assignedList.length === 0) return null;
-          const first = assignedList[0];
-          const name = typeof first === 'string' ? first : first?.username || '';
-          if (!name) return null;
           return (
-            <div className="flex items-center space-x-1.5">
-              <div className="h-5 w-5 rounded-full bg-primary/10 border border-primary/20 text-[9px] font-bold text-primary flex items-center justify-center uppercase">
-                {name.substring(0, 2)}
+            <div className="flex items-center gap-1">
+              <div className="flex items-center -space-x-1.5 space-x-reverse">
+                {assignedList.slice(0, 3).map((item, idx) => {
+                  const name = typeof item === 'string' ? item : item?.username || 'User';
+                  const avatar = typeof item === 'string' ? null : item?.avatar;
+                  return (
+                    <div key={idx} className="relative group/avatar shrink-0">
+                      {avatar ? (
+                        <img
+                          src={avatar}
+                          alt={name}
+                          className="h-5 w-5 rounded-full object-cover border border-card shadow-sm"
+                        />
+                      ) : (
+                        <div className="h-5 w-5 rounded-full bg-primary/10 border border-card text-primary text-[8px] font-bold flex items-center justify-center uppercase shadow-sm">
+                          {name.substring(0, 2)}
+                        </div>
+                      )}
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-0.5 rounded bg-black/85 text-white text-[9px] whitespace-nowrap opacity-0 group-hover/avatar:opacity-100 transition-opacity pointer-events-none z-[100] font-semibold">
+                        {name}
+                      </div>
+                    </div>
+                  );
+                })}
+                {assignedList.length > 3 && (
+                  <div className="h-5 w-5 rounded-full bg-muted border border-card flex items-center justify-center text-[8px] font-bold text-muted-foreground shrink-0 z-0">
+                    +{assignedList.length - 3}
+                  </div>
+                )}
               </div>
-              <span className="text-xs text-muted-foreground font-medium truncate max-w-[80px]">
-                {name}
-              </span>
             </div>
           );
         })()}

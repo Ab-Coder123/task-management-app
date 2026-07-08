@@ -16,6 +16,7 @@ export function useTasks() {
     mutationFn: tasksApi.addTask,
     onSuccess: (newTask) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
       // Play a success sound
       playSuccessSound();
       // Notify Admin
@@ -32,6 +33,7 @@ export function useTasks() {
       tasksApi.editTask(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
       playSuccessSound();
     },
   });
@@ -40,6 +42,7 @@ export function useTasks() {
     mutationFn: tasksApi.deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
       playSuccessSound();
     },
   });
@@ -49,6 +52,7 @@ export function useTasks() {
       tasksApi.editTask(id, { status: 'completed', completedAt: new Date().toISOString() }),
     onSuccess: (completedTask, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
       // Play a success sound
       playSuccessSound();
       // Notify Admin on task completion

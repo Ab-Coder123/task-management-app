@@ -7,7 +7,7 @@ import TaskCommentSection from '@/components/tasks/TaskCommentSection';
 import { useTasks } from '@/lib/hooks/useTasks';
 import { useUsers } from '@/lib/hooks/useUsers';
 import { useAuthStore } from '@/lib/store/authStore';
-import { getPriorityColor, getStatusColor, getTypeLabel, formatDate } from '@/lib/utils';
+import { getPriorityColor, getStatusColor, getTypeLabel, formatDate, getAvatarFallback } from '@/lib/utils';
 import { Calendar, User as UserIcon, Clock, CheckCircle2, ChevronRight, Tag, List, Check, X, FileText, Sparkles, MessageSquare } from 'lucide-react';
 import { User, TaskStatus } from '@/lib/types';
 import Link from 'next/link';
@@ -355,6 +355,31 @@ export default function TaskDetailsPage() {
                   {formatDate(task.dueDate)}
                 </span>
               </div>
+
+              {/* Created By Admin (Assigned by) */}
+              {task.createdBy && (
+                <div className="flex justify-between items-center text-xs font-bold border-b border-border/30 pb-3.5">
+                  <span className="text-muted-foreground flex items-center gap-2">
+                    <UserIcon className="h-4 w-4 text-primary/70" />
+                    <span>تم التعيين بواسطة</span>
+                  </span>
+                  <div className="flex items-center gap-1.5 bg-primary/5 px-2.5 py-1 rounded-xl border border-primary/20">
+                    {typeof task.createdBy === 'object' && (task.createdBy as any).avatar ? (
+                      <img 
+                        src={(task.createdBy as any).avatar} 
+                        className="h-5 w-5 rounded-full object-cover shrink-0" 
+                      />
+                    ) : (
+                      <div className="h-5 w-5 rounded-full bg-primary/10 text-[9px] font-bold text-primary flex items-center justify-center uppercase shrink-0">
+                        {getAvatarFallback(typeof task.createdBy === 'object' ? (task.createdBy as any).username : 'Admin')}
+                      </div>
+                    )}
+                    <span className="text-[11px] font-extrabold text-foreground">
+                      {typeof task.createdBy === 'object' ? (task.createdBy as any).username : 'Admin'}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Assignees list */}
               <div className="flex flex-col gap-3 pt-1">

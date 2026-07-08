@@ -370,6 +370,19 @@ export default function UserDashboardPage() {
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${getStatusBadgeColor(task.status)}`}>
                       • {getStatusArabicLabel(task.status)}
                     </span>
+                    {task.createdBy && typeof task.createdBy === 'object' && (
+                      <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full border border-border/40 shadow-sm">
+                        <span>المدير:</span>
+                        {(task.createdBy as any).avatar ? (
+                          <img src={(task.createdBy as any).avatar} className="h-4 w-4 rounded-full object-cover shrink-0" />
+                        ) : (
+                          <div className="h-4 w-4 rounded-full bg-primary/10 text-primary text-[8px] flex items-center justify-center font-extrabold uppercase shrink-0">
+                            {getAvatarFallback((task.createdBy as any).username).substring(0, 1)}
+                          </div>
+                        )}
+                        <span>{(task.createdBy as any).username}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Task Title Link */}
@@ -383,25 +396,44 @@ export default function UserDashboardPage() {
                 <div>
                   {/* Footer with Assignee & Relative Time */}
                   <div className="flex items-center justify-between pt-3.5 border-t border-border/30 mt-2">
-                    {/* Assignee */}
+                    {/* Assignee (Stacked Avatar Group) */}
                     <div className="flex items-center gap-2 justify-start">
-                      {primaryUser?.avatar ? (
-                        <img
-                          src={primaryUser.avatar}
-                          alt="Avatar"
-                          className="h-7 w-7 rounded-full object-cover shadow-200"
-                        />
-                      ) : (
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase">
-                          {getAvatarFallback(displayName)}
+                      {assignedUsers.length > 0 ? (
+                        <div className="flex items-center gap-1.5">
+                          <div className="flex items-center -space-x-1.5 space-x-reverse">
+                            {assignedUsers.slice(0, 3).map((u) => (
+                              <div key={u._id} className="relative group/avatar shrink-0">
+                                {u.avatar ? (
+                                  <img
+                                    src={u.avatar}
+                                    alt={u.username}
+                                    className="h-6 w-6 rounded-full object-cover border border-card shadow-100"
+                                  />
+                                ) : (
+                                  <div className="h-6 w-6 rounded-full bg-primary/10 border border-card text-primary text-[9px] font-bold flex items-center justify-center uppercase shadow-100">
+                                    {u.username.substring(0, 2)}
+                                  </div>
+                                )}
+                                {/* Tooltip */}
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-0.5 rounded bg-black/85 text-white text-[9px] whitespace-nowrap opacity-0 group-hover/avatar:opacity-100 transition-opacity pointer-events-none z-[100] font-semibold">
+                                  {u.username}
+                                </div>
+                              </div>
+                            ))}
+                            {assignedUsers.length > 3 && (
+                              <div className="h-6 w-6 rounded-full bg-muted border border-card flex items-center justify-center text-[9px] font-bold text-muted-foreground shrink-0 z-0">
+                                +{assignedUsers.length - 3}
+                              </div>
+                            )}
+                          </div>
+                          {/* Display username text (hidden on small mobile screens for responsive optimization) */}
+                          <span className="text-xs font-semibold text-muted-foreground truncate max-w-[100px] hidden xs:inline-block">
+                            {assignedUsers.map(u => u.username).join('، ')}
+                          </span>
                         </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground/60 font-semibold">غير معين</span>
                       )}
-                      <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-                        {displayName}
-                        {primaryUser?.role === 'admin' && (
-                          <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/20" />
-                        )}
-                      </span>
                     </div>
 
                     {/* Time Indicator */}

@@ -3,29 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import { useComments } from '@/lib/hooks/useComments';
-import { useTasks } from '@/lib/hooks/useTasks';
-import { useUsers } from '@/lib/hooks/useUsers';
+import { useAdminComments } from '@/lib/hooks/useComments';
 import { formatDate } from '@/lib/utils';
-import { Trash2, CheckCircle, MessageSquare } from 'lucide-react';
+import { Trash2, MessageSquare, Search, Calendar, Link2, BadgeCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getAvatarFallback } from '@/lib/utils';
 import { toast } from 'sonner';
-
-const AVATAR_COLORS = [
-  { bg: 'rgba(99, 102, 241, 0.1)',  border: 'rgba(99, 102, 241, 0.25)',  text: '#4f46e5' }, // indigo
-  { bg: 'rgba(236, 72, 153, 0.08)',  border: 'rgba(236, 72, 153, 0.2)', text: '#db2777' }, // pink
-  { bg: 'rgba(245, 158, 11, 0.08)',  border: 'rgba(245, 158, 11, 0.2)', text: '#d97706' }, // amber
-  { bg: 'rgba(16, 185, 129, 0.08)',  border: 'rgba(16, 185, 129, 0.2)', text: '#059669' }, // emerald
-  { bg: 'rgba(239, 68, 68, 0.08)',   border: 'rgba(239, 68, 68, 0.2)',  text: '#dc2626' }, // red
-  { bg: 'rgba(59, 130, 246, 0.08)',  border: 'rgba(59, 130, 246, 0.2)', text: '#2563eb' }, // blue
-];
-
-function avatarColor(name: string) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 const pageVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -49,29 +35,32 @@ const rowVariants = {
   }
 };
 
-export default function AdminCommentsPage() {
-  const { tasks, isLoading: tasksLoading } = useTasks();
-  const { users, isLoading: usersLoading } = useUsers();
-  const { deleteComment, updateComment } = useComments();
-  
+function AdminCommentsContent() {
+  const searchParams = useSearchParams();
+  const initialTaskId = searchParams.get('taskId') || '';
+
+  const { comments, isLoading, deleteComment } = useAdminComments();
   const [mounted, setMounted] = useState(false);
+  
+  // Search & Filter States
+  const [searchQuery, setSearchQuery] = useState('');
+  const [taskFilter, setTaskFilter] = useState(initialTaskId);
+  const [userFilter, setUserFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (tasksLoading || usersLoading || !mounted) {
+  useEffect(() => {
+    if (initialTaskId) {
+      setTaskFilter(initialTaskId);
+    }
+  }, [initialTaskId]);
+
+  if (isLoading || !mounted) {
     return <LoadingSpinner size="lg" className="h-[50vh]" />;
   }
-
-  // Aggregate comments from all tasks
-  const allComments = tasks.flatMap((task) => {
-    const commentsList = (task as any).comments || [];
-    return commentsList.map((comment: any) => ({
-      ...comment,
-      task,
-      user: users.find((u) => u._id === comment.userId),
-    }));
-  });
 
   const handleDelete = async (id: string) => {
     try {
@@ -83,15 +72,64 @@ export default function AdminCommentsPage() {
     }
   };
 
-  const handleMarkReviewed = async (id: string) => {
-    try {
-      await updateComment({ id, isReviewed: true });
-      toast.success('تمت مراجعة واعتماد التعليق بنجاح!');
-    } catch (err) {
-      console.error('Review update failed', err);
-      toast.error('فشلت عملية اعتماد مراجعة التعليق.');
+  // Extract unique tasks & users for filters
+  const uniqueTasks = Array.from(
+    new Map(
+      comments
+        .map((c: any) => c.taskId)
+        .filter(Boolean)
+        .map((t: any) => [t._id || t, t])
+    ).values()
+  );
+
+  const uniqueUsers = Array.from(
+    new Map(
+      comments
+        .map((c: any) => {
+          const userObj = c.userId && typeof c.userId === 'object' ? c.userId : null;
+          return {
+            _id: userObj?._id || c.authorId,
+            username: c.authorName || userObj?.username || 'مستخدم مجهول',
+            email: userObj?.email || ''
+          };
+        })
+        .filter((u: any) => u._id)
+        .map((u: any) => [u._id, u])
+    ).values()
+  );
+
+  // Filter Comments
+  const filteredComments = comments.filter((comment: any) => {
+    const taskObj = comment.taskId && typeof comment.taskId === 'object' ? comment.taskId : null;
+    const userObj = comment.userId && typeof comment.userId === 'object' ? comment.userId : null;
+
+    const taskTitle = taskObj?.Name_task || '';
+    const authorName = comment.authorName || userObj?.username || '';
+    const authorEmail = userObj?.email || '';
+    const taskId = taskObj?._id || '';
+    const authorId = userObj?._id || comment.authorId || '';
+
+    // Search Query (Task Title, User Name, User Email)
+    const matchesSearch = 
+      taskTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      authorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      authorEmail.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Task Filter
+    const matchesTask = !taskFilter || taskId === taskFilter;
+
+    // User Filter
+    const matchesUser = !userFilter || authorId === userFilter;
+
+    // Date Filter (YYYY-MM-DD comparison)
+    let matchesDate = true;
+    if (dateFilter) {
+      const commentDate = new Date(comment.createdAt).toISOString().split('T')[0];
+      matchesDate = commentDate === dateFilter;
     }
-  };
+
+    return matchesSearch && matchesTask && matchesUser && matchesDate;
+  });
 
   const formatArabicDateTime = (dateStr?: string) => {
     if (!dateStr || dateStr === 'null' || dateStr === 'undefined' || dateStr.trim() === '') return 'تاريخ غير محدد';
@@ -120,24 +158,95 @@ export default function AdminCommentsPage() {
     >
       <PageHeader
         title="إدارة ورقابة التعليقات"
-        description="استعرض نقاشات المهام وقنوات التواصل بين أعضاء الفريق، راجع السجلات، وتحكم في صلاحيات ظهور التعليقات."
+        description="استعرض نقاشات المهام وقنوات التواصل للمشاريع المشتركة التي قمت بإنشائها، وقم بالتحكم وإدارة التعليقات."
       />
 
-      {allComments.length === 0 ? (
-        <div className="text-center py-16 bg-card rounded-2xl shadow-200">
+      {/* ── Search & Filters Panel ── */}
+      <div className="bg-card border border-border/60 rounded-3xl p-5 md:p-6 shadow-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Search */}
+        <div className="relative w-full">
+          <label className="block text-[11px] font-bold text-muted-foreground mb-1.5 mr-1">البحث بالنص</label>
+          <div className="relative">
+            <input
+              type="text" 
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="ابحث بعنوان المهمة، العضو، الإيميل..."
+              className="w-full pl-3 pr-9 py-2.5 rounded-2xl text-xs bg-muted/20 text-foreground placeholder-muted-foreground/50 border border-border/80 focus:outline-none focus:ring-2 focus:ring-primary/25 text-right transition-all"
+            />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <Search className="h-3.5 w-3.5 text-muted-foreground/50" />
+            </div>
+          </div>
+        </div>
+
+        {/* Task Filter */}
+        <div>
+          <label className="block text-[11px] font-bold text-muted-foreground mb-1.5 mr-1">تصفية حسب المهمة</label>
+          <div className="relative">
+            <select
+              value={taskFilter}
+              onChange={e => setTaskFilter(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-2xl text-xs bg-muted/20 text-foreground border border-border/80 focus:outline-none focus:ring-2 focus:ring-primary/25 text-right cursor-pointer"
+            >
+              <option value="">كل المهام المشتركة</option>
+              {uniqueTasks.map((t: any) => (
+                <option key={t._id} value={t._id}>{t.Name_task || 'مهمة مجهولة'}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* User Filter */}
+        <div>
+          <label className="block text-[11px] font-bold text-muted-foreground mb-1.5 mr-1">تصفية حسب العضو</label>
+          <div className="relative">
+            <select
+              value={userFilter}
+              onChange={e => setUserFilter(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-2xl text-xs bg-muted/20 text-foreground border border-border/80 focus:outline-none focus:ring-2 focus:ring-primary/25 text-right cursor-pointer"
+            >
+              <option value="">كل أعضاء الفريق</option>
+              {uniqueUsers.map((u: any) => (
+                <option key={u._id} value={u._id}>{u.username}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Date Filter */}
+        <div>
+          <label className="block text-[11px] font-bold text-muted-foreground mb-1.5 mr-1">تاريخ الإرسال المحدد</label>
+          <div className="relative">
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={e => setDateFilter(e.target.value)}
+              className="w-full pl-3 pr-9 py-2.5 rounded-2xl text-xs bg-muted/20 text-foreground border border-border/80 focus:outline-none focus:ring-2 focus:ring-primary/25 text-right cursor-pointer"
+            />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <Calendar className="h-3.5 w-3.5 text-muted-foreground/50" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Table/Logs Stream ── */}
+      {filteredComments.length === 0 ? (
+        <div className="text-center py-16 bg-card rounded-3xl shadow-200 border border-border/50">
           <MessageSquare className="h-10 w-10 text-muted-foreground/45 mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground font-semibold">لا توجد تعليقات مرسلة من قبل أعضاء الفريق بعد.</p>
+          <p className="text-sm text-muted-foreground font-semibold">لا توجد تعليقات مطابقة لخيارات التصفية الحالية.</p>
         </div>
       ) : (
-        <div className="w-full overflow-x-auto rounded-2xl bg-card shadow-300">
-          <table className="w-full min-w-[750px] text-right border-collapse">
+        <div className="w-full overflow-x-auto rounded-3xl bg-card shadow-300 border border-border/60">
+          <table className="w-full min-w-[800px] text-right border-collapse">
             <thead>
-              <tr className="bg-muted/30 text-xs font-bold text-muted-foreground/80 uppercase tracking-wider">
-                <th className="px-6 py-4.5">العضو</th>
+              <tr className="bg-muted/30 text-xs font-bold text-muted-foreground/80 uppercase tracking-wider border-b border-border/40">
+                <th className="px-6 py-4.5">كاتب التعليق</th>
                 <th className="px-6 py-4.5">سياق المهمة</th>
                 <th className="px-6 py-4.5">محتوى التعليق</th>
+                <th className="px-6 py-4.5">منشئ المهمة (المدير)</th>
                 <th className="px-6 py-4.5">تاريخ الإرسال</th>
-                <th className="px-6 py-4.5">الحالة</th>
                 <th className="px-6 py-4.5 text-left">الإجراءات</th>
               </tr>
             </thead>
@@ -147,38 +256,70 @@ export default function AdminCommentsPage() {
               animate="show"
               className="divide-y divide-border/20 text-sm text-foreground"
             >
-              {allComments.map((comment) => {
-                const displayName = comment.user?.username || 'مستحدم غير معروف';
-                const ac = avatarColor(displayName);
+              {filteredComments.map((comment: any) => {
+                const userObj = comment.userId && typeof comment.userId === 'object' ? comment.userId : null;
+                const taskObj = comment.taskId && typeof comment.taskId === 'object' ? comment.taskId : null;
+
+                const displayName = comment.authorName || userObj?.username || 'مستخدم غير معروف';
+                const role = comment.authorRole || userObj?.role || 'user';
+                
+                const taskCreator = taskObj?.createdBy && typeof taskObj.createdBy === 'object' ? taskObj.createdBy.username : 'المدير';
 
                 return (
                   <motion.tr 
                     key={comment._id} 
                     variants={rowVariants}
-                    className="hover:bg-muted/20 transition-colors duration-200"
+                    className="hover:bg-muted/10 transition-colors duration-200"
                   >
-                    
                     {/* User profile */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <div 
-                          className="h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-bold uppercase shrink-0"
-                          style={{ background: ac.bg, border: `1.5px solid ${ac.border}`, color: ac.text }}
-                        >
-                          {getAvatarFallback(displayName)}
+                        {userObj?.avatar ? (
+                          <img 
+                            src={userObj.avatar} 
+                            alt="Avatar"
+                            className="h-8 w-8 rounded-full object-cover shadow-100" 
+                          />
+                        ) : (
+                          <div className="h-8 w-8 rounded-full bg-primary/15 border border-primary/20 text-xs font-bold text-primary flex items-center justify-center uppercase shrink-0">
+                            {getAvatarFallback(displayName)}
+                          </div>
+                        )}
+                        <div className="flex flex-col">
+                          <span className="font-bold text-foreground text-xs flex items-center gap-1">
+                            {displayName}
+                            {role === 'admin' && (
+                              <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/20" />
+                            )}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground/75 font-semibold mt-0.5">{userObj?.email || ''}</span>
                         </div>
-                        <span className="font-bold text-foreground text-xs">{displayName}</span>
                       </div>
                     </td>
                     
                     {/* Task context */}
-                    <td className="px-6 py-4 font-bold text-primary text-xs">
-                      {comment.task?.title || 'مهمة مجهولة'}
+                    <td className="px-6 py-4">
+                      {taskObj ? (
+                        <Link 
+                          href={`/tasks/${taskObj._id}`}
+                          className="font-bold text-primary text-xs hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <Link2 className="h-3 w-3 shrink-0" />
+                          <span>{taskObj.Name_task}</span>
+                        </Link>
+                      ) : (
+                        <span className="text-xs text-muted-foreground font-semibold">مهمة غير متوفرة</span>
+                      )}
                     </td>
                     
                     {/* Comment Content */}
-                    <td className="px-6 py-4 max-w-xs truncate text-muted-foreground text-xs font-semibold">
+                    <td className="px-6 py-4 max-w-xs truncate text-muted-foreground text-xs font-semibold leading-relaxed">
                       {comment.content}
+                    </td>
+
+                    {/* Task Creator (Admin) */}
+                    <td className="px-6 py-4 font-semibold text-foreground/80 text-xs">
+                      {taskCreator}
                     </td>
                     
                     {/* Date */}
@@ -186,37 +327,15 @@ export default function AdminCommentsPage() {
                       {formatArabicDateTime(comment.createdAt)}
                     </td>
                     
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded-full border shadow-100 ${
-                        comment.isReviewed 
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                          : 'bg-amber-50 text-amber-700 border-amber-100'
-                      }`}>
-                        {comment.isReviewed ? 'تمت مراجعتها' : 'قيد الانتظار'}
-                      </span>
-                    </td>
-                    
                     {/* Actions */}
                     <td className="px-6 py-4 text-left">
-                      <div className="flex items-center justify-start gap-1.5">
-                        {!comment.isReviewed && (
-                          <button
-                            onClick={() => handleMarkReviewed(comment._id)}
-                            className="p-2 rounded-xl text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-all shadow-100"
-                            title="تأكيد المراجعة"
-                          >
-                            <CheckCircle className="h-4.5 w-4.5" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleDelete(comment._id)}
-                          className="p-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 transition-all shadow-100"
-                          title="حذف التعليق"
-                        >
-                          <Trash2 className="h-4.5 w-4.5" />
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => handleDelete(comment._id)}
+                        className="p-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 transition-all shadow-100"
+                        title="حذف التعليق"
+                      >
+                        <Trash2 className="h-4.5 w-4.5" />
+                      </button>
                     </td>
 
                   </motion.tr>
@@ -227,5 +346,13 @@ export default function AdminCommentsPage() {
         </div>
       )}
     </motion.div>
+  );
+}
+
+export default function AdminCommentsPage() {
+  return (
+    <Suspense fallback={<LoadingSpinner size="lg" className="h-[50vh]" />}>
+      <AdminCommentsContent />
+    </Suspense>
   );
 }
