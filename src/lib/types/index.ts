@@ -10,6 +10,7 @@ export interface User {
   status: UserStatus;
   createdAt: string;
   avatar?: string;
+  isVerified?: boolean;
 }
 
 // Task Types

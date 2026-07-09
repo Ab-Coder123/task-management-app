@@ -30,6 +30,8 @@ export default function Page() {
     // Check local session redirection after hydration completes
     if (!isAuthenticated || !user) {
       router.replace('/login');
+    } else if (!user.isVerified) {
+      router.replace('/waiting-approval');
     } else if (user.role === 'admin') {
       router.replace('/admin/dashboard');
     } else {
