@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5500';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://taskmanager-backend-flax.vercel.app';
 
 interface RequestOptions extends RequestInit {
   bodyData?: any;
