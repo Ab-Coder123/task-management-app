@@ -33,6 +33,7 @@ export const ADMIN_NAV_ITEMS = [
   { label: 'إدارة المهام', href: '/admin/tasks', icon: 'CheckSquare' },
   { label: 'المهام المكتملة', href: '/admin/tasks/completed', icon: 'FolderCheck' },
   { label: 'إدارة التعليقات', href: '/admin/comments', icon: 'MessageSquare' },
+  { label: 'التقارير والتصدير', href: '/admin/reports', icon: 'BarChart3' },
   { label: 'الإشعارات', href: '/admin/notifications', icon: 'Bell' },
 ];
 
