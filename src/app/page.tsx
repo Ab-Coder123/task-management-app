@@ -8,26 +8,15 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 export default function Page() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
-  const [hydrated, setHydrated] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check if store is already hydrated
-    if (useAuthStore.persist.hasHydrated()) {
-      setHydrated(true);
-    } else {
-      // Trigger rehydration and listen for it
-      const unsubFinish = useAuthStore.persist.onFinishHydration(() => {
-        setHydrated(true);
-      });
-      useAuthStore.persist.rehydrate();
-      return () => unsubFinish();
-    }
+    setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!mounted) return;
 
-    // Check local session redirection after hydration completes
     if (!isAuthenticated || !user) {
       router.replace('/login');
     } else if (!user.isVerified) {
@@ -37,7 +26,7 @@ export default function Page() {
     } else {
       router.replace('/dashboard');
     }
-  }, [user, isAuthenticated, router, hydrated]);
+  }, [user, isAuthenticated, router, mounted]);
 
   return <LoadingSpinner fullPage />;
 }
