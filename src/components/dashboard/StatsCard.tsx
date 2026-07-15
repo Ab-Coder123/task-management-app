@@ -44,7 +44,7 @@ export default function StatsCard({
         <h3 className="text-3xl font-bold tracking-tight text-foreground">{value}</h3>
 
         {(description || trend) && (
-          <div className="mt-2 flex items-center space-x-2">
+          <div className="mt-2 flex items-center gap-2">
             {trend && (
               <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${trend.isPositive
                 ? 'bg-emerald-500/10 text-emerald-500'

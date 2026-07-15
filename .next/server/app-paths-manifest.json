@@ -1,7 +1,0 @@
-{
-  "/waiting-approval/page": "app/waiting-approval/page.js",
-  "/register/page": "app/register/page.js",
-  "/admin/users/page": "app/admin/users/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/profile/page": "app/dashboard/profile/page.js"
-}

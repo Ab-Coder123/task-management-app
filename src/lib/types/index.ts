@@ -18,6 +18,18 @@ export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'overdue';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 export type TaskType = 'bug' | 'feature' | 'improvement' | 'documentation';
 
+// Attachment Types
+export interface TaskAttachment {
+  id: string;
+  originalName: string;
+  fileName: string;
+  mimeType: string;
+  size: number;           // bytes
+  url: string;            // Cloudinary secure URL
+  uploadedBy?: string;
+  uploadedAt?: string;
+}
+
 export interface ChecklistItem {
   _id: string;
   userId: string;
@@ -41,6 +53,7 @@ export interface RawTask {
   isPrivate?: boolean;
   createdBy?: string | User;
   privateChecklist?: ChecklistItem[];
+  attachments?: TaskAttachment[];
   __v?: number;
 }
 
@@ -58,6 +71,7 @@ export interface Task {
   isPrivate?: boolean;
   createdBy?: string | User;
   privateChecklist?: ChecklistItem[];
+  attachments?: TaskAttachment[];
 }
 
 // Comment Types

@@ -6,6 +6,7 @@ import { useAuthStore } from '@/lib/store/authStore';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 export default function Page() {
+
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
   const [mounted, setMounted] = useState(false);

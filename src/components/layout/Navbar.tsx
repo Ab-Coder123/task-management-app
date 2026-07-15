@@ -30,6 +30,21 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
     <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md shadow-100">
       <div className="flex h-16 items-center justify-between px-6">
 
+        {/* Right side (RTL): Badge + Mobile menu */}
+        <div className="flex items-center gap-3">
+          <div className="hidden lg:block">
+            <span className="text-xs font-bold text-primary bg-primary/10 px-3.5 py-1.5 rounded-full shadow-100">
+              {role === 'admin' ? 'بوابة مدير النظام' : 'مساحة العمل'}
+            </span>
+          </div>
+          <button
+            onClick={onMenuClick}
+            className="rounded-xl p-2 text-muted-foreground hover:bg-muted/60 lg:hidden transition-all"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        </div>
+
         {/* Left side (RTL): Profile & Notifications */}
         <div className="flex items-center gap-3">
 
@@ -93,7 +108,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
 
           {/* Notification Bell */}
           <Link
-            href={role === 'admin' ? '/admin/notifications' : '#'}
+            href={role === 'admin' ? '/admin/notifications' : '/dashboard/notifications'}
             className="relative rounded-xl p-2 text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-all"
           >
             <Bell className="h-5 w-5" />
@@ -105,20 +120,6 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
           </Link>
         </div>
 
-        {/* Right side (RTL): Badge + Mobile menu */}
-        <div className="flex items-center gap-3">
-          <div className="hidden lg:block">
-            <span className="text-xs font-bold text-primary bg-primary/10 px-3.5 py-1.5 rounded-full shadow-100">
-              {role === 'admin' ? 'بوابة مدير النظام' : 'مساحة العمل'}
-            </span>
-          </div>
-          <button
-            onClick={onMenuClick}
-            className="rounded-xl p-2 text-muted-foreground hover:bg-muted/60 lg:hidden transition-all"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-        </div>
       </div>
     </header>
   );

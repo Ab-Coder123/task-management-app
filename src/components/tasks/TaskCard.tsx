@@ -22,7 +22,7 @@ export default function TaskCard({ task, onComplete, isAdmin = false }: TaskCard
           {getTypeLabel(task.type)}
         </span>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${getPriorityColor(task.priority)}`}>
             {task.priority}
           </span>
@@ -89,7 +89,7 @@ export default function TaskCard({ task, onComplete, isAdmin = false }: TaskCard
       </div>
 
       {/* Hover action card buttons */}
-      <div className="mt-4 flex items-center justify-end space-x-2.5">
+      <div className="mt-4 flex items-center justify-end gap-2.5">
         <Link
           href={isAdmin ? `/admin/tasks/${task._id}/edit` : `/tasks/${task._id}`}
           className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-border/80 text-muted-foreground hover:bg-muted/40 transition-all"

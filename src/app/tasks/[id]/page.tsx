@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import TaskCommentSection from '@/components/tasks/TaskCommentSection';
+import AttachmentSection from '@/components/attachments/AttachmentSection';
 import { useTasks } from '@/lib/hooks/useTasks';
 import { useUsers } from '@/lib/hooks/useUsers';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -278,6 +279,19 @@ export default function TaskDetailsPage() {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+
+          {/* Attachments Panel */}
+          {(task.attachments && task.attachments.length > 0) && (
+            <div className="bg-card border border-border/80 rounded-3xl p-6 md:p-8 shadow-200">
+              <AttachmentSection
+                taskId={task._id}
+                initialAttachments={task.attachments}
+                canUpload={currentUser?.role === 'admin'}
+                canDelete={currentUser?.role === 'admin'}
+              />
             </div>
           )}
 

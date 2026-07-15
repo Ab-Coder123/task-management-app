@@ -12,6 +12,7 @@ import { TaskType, TaskPriority, User } from '@/lib/types';
 import { Plus, X, Calendar, Edit3, List, Layers, ShieldAlert, Check, BadgeCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { AnimatePresence, motion } from 'framer-motion';
+import AttachmentUploader from '@/components/attachments/AttachmentUploader';
 
 const pageVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -56,6 +57,7 @@ export default function AdminTasksPage() {
 
   // Creation Popup State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [queuedFiles, setQueuedFiles] = useState<File[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<TaskType>('feature');
@@ -129,7 +131,7 @@ export default function AdminTasksPage() {
 
     try {
       const selectedDueDate = dueDate ? new Date(dueDate).toISOString() : new Date(Date.now() + 86400000 * 3).toISOString();
-      await createTask({
+      const newTask = await createTask({
         title: title.trim(),
         description: description.trim() || 'لا يوجد وصف مضاف.',
         status: 'pending',
@@ -137,18 +139,30 @@ export default function AdminTasksPage() {
         priority,
         assignedTo,
         dueDate: selectedDueDate,
-        isPrivate: false // Admins create public tasks on this dashboard
+        isPrivate: false
       });
 
-      toast.success('تم إنشاء وتعيين المهمة بنجاح!');
+      // Upload queued files if any
+      if (queuedFiles.length > 0 && newTask?._id) {
+        try {
+          const { attachmentsApi } = await import('@/lib/api/tasks');
+          await attachmentsApi.uploadFiles(newTask._id, queuedFiles);
+          toast.success(`تم إنشاء المهمة ورفع ${queuedFiles.length} مرفق بنجاح!`);
+        } catch (uploadErr: any) {
+          toast.warning('تم إنشاء المهمة، لكن فشل رفع بعض المرفقات: ' + (uploadErr.message || ''));
+        }
+      } else {
+        toast.success('تم إنشاء وتعيين المهمة بنجاح!');
+      }
+
       setIsCreateModalOpen(false);
-      // Reset form fields
       setTitle('');
       setDescription('');
       setType('feature');
       setPriority('medium');
       setAssignedTo([]);
       setDueDate('');
+      setQueuedFiles([]);
     } catch (err) {
       console.error('Task creation failed', err);
       toast.error('فشلت عملية إنشاء المهمة.');
@@ -217,7 +231,7 @@ export default function AdminTasksPage() {
       {/* Create Task Popup Modal */}
       <AnimatePresence>
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
             {/* Dark blur overlay */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -510,6 +524,14 @@ export default function AdminTasksPage() {
                       className="w-full pl-9 pr-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm cursor-pointer focus:border-primary/80"
                     />
                   </div>
+                </div>
+
+                {/* Attachments Uploader (queue before task create) */}
+                <div className="border-t border-border/30 pt-3">
+                  <p className="text-[11px] font-bold text-muted-foreground mb-2">المرفقات (اختياري)</p>
+                  <AttachmentUploader
+                    onFilesQueued={(files) => setQueuedFiles(files)}
+                  />
                 </div>
 
                 {/* Buttons */}

@@ -1,5 +1,8 @@
 import { apiFetch } from './base';
-import { Task, RawTask, TaskStatus, TaskType, TaskPriority, User } from '../types';
+import { Task, RawTask, TaskStatus, TaskType, TaskPriority, User, TaskAttachment } from '../types';
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://taskmanager-backend-flax.vercel.app';
+
 
 // Helper to extract Unix timestamp from MongoDB ObjectId
 function getTimestampFromObjectId(id: string): string | null {
@@ -122,6 +125,7 @@ function mapRawTask(raw: RawTask): Task {
     isPrivate: raw.isPrivate ?? false,
     createdBy: raw.createdBy,
     privateChecklist: raw.privateChecklist ?? [],
+    attachments: raw.attachments ?? [],
   };
 }
 
@@ -243,3 +247,55 @@ export const tasksApi = {
     return mapRawTask(raw);
   },
 };
+
+// ─── Attachment API ──────────────────────────────────────────────────────────
+
+function getToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const s = localStorage.getItem('auth-storage');
+    if (s) return JSON.parse(s).state?.token || null;
+  } catch { /* ignore */ }
+  return null;
+}
+
+export const attachmentsApi = {
+  /** Upload files to a task (admin only) */
+  uploadFiles: async (taskId: string, files: File[]): Promise<TaskAttachment[]> => {
+    const token = getToken();
+    const formData = new FormData();
+    files.forEach(f => formData.append('files', f));
+
+    const res = await fetch(`${BASE_URL}/api/attachments/${taskId}/upload`, {
+      method: 'POST',
+      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: formData,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: 'Upload failed' }));
+      throw new Error(err.message);
+    }
+    const data = await res.json();
+    return data.attachments || [];
+  },
+
+  /** Get attachment list for a task */
+  getAttachments: async (taskId: string): Promise<TaskAttachment[]> => {
+    const data = await apiFetch<{ attachments: TaskAttachment[] }>(`/api/attachments/${taskId}`);
+    return data.attachments || [];
+  },
+
+  /** Get a signed (15-min) URL for secure file viewing/download */
+  getSignedUrl: async (taskId: string, attachmentId: string): Promise<{ signedUrl: string; attachment: Partial<TaskAttachment> }> => {
+    return apiFetch(`/api/attachments/${taskId}/signed/${attachmentId}`);
+  },
+
+  /** Delete an attachment (admin or task creator) */
+  deleteAttachment: async (taskId: string, attachmentId: string): Promise<TaskAttachment[]> => {
+    const data = await apiFetch<{ attachments: TaskAttachment[] }>(`/api/attachments/${taskId}/${attachmentId}`, {
+      method: 'DELETE',
+    });
+    return data.attachments || [];
+  },
+};
+

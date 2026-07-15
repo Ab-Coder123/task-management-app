@@ -25,11 +25,11 @@ export default function TaskChart({ data, title }: TaskChartProps) {
           return (
             <div key={item.name} className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <span className={`h-2.5 w-2.5 rounded-full`} style={{ backgroundColor: item.color }} />
                   <span className="font-medium text-foreground">{item.name}</span>
                 </div>
-                <div className="flex items-center space-x-2 text-muted-foreground font-semibold">
+                <div className="flex items-center gap-2 text-muted-foreground font-semibold">
                   <span>{item.value}</span>
                   <span className="text-xs text-muted-foreground/60">({percentage}%)</span>
                 </div>

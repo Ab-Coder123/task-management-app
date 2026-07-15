@@ -26,7 +26,7 @@ export default function ConfirmDialog({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -44,7 +44,7 @@ export default function ConfirmDialog({
             transition={{ type: 'spring', duration: 0.3 }}
             className="relative z-10 w-full max-w-md overflow-hidden border border-border/80 rounded-2xl bg-card p-6 shadow-2xl"
           >
-            <div className="flex items-start space-x-4">
+            <div className="flex items-start gap-4">
               <div className={`flex items-center justify-center w-10 h-10 rounded-full shrink-0 ${isDanger ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}`}>
                 <AlertTriangle className="w-5 h-5" />
               </div>
@@ -54,7 +54,7 @@ export default function ConfirmDialog({
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-end space-x-3">
+            <div className="mt-6 flex items-center justify-end gap-3">
               <button
                 onClick={onCancel}
                 className="px-4 py-2 text-sm font-medium transition-all rounded-xl border border-border/80 text-muted-foreground hover:bg-muted/30"
