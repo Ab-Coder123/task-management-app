@@ -1,60 +1,126 @@
 'use client';
 
 import * as React from 'react';
-import { Moon, Sun, Laptop } from 'lucide-react';
+import { Moon, Sun, Laptop, ChevronDown, Check, Sparkles } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     setMounted(true);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   if (!mounted) {
     return (
-      <div className="h-9 w-9 rounded-xl bg-muted animate-pulse" />
+      <div className="h-9 w-32 rounded-xl bg-muted animate-pulse" />
     );
   }
 
+  const getActiveConfig = () => {
+    if (theme === 'dark') {
+      return { label: 'الوضع الليلي', Icon: Moon, color: 'text-indigo-400', bg: 'bg-indigo-500/10' };
+    }
+    if (theme === 'light') {
+      return { label: 'الوضع المضيء', Icon: Sun, color: 'text-amber-500', bg: 'bg-amber-500/10' };
+    }
+    return { label: 'تلقائي (النظام)', Icon: Laptop, color: 'text-blue-500', bg: 'bg-blue-500/10' };
+  };
+
+  const current = getActiveConfig();
+  const CurrentIcon = current.Icon;
+
   return (
-    <div className="relative inline-flex items-center rounded-xl bg-muted/70 p-1 border border-border/60 shadow-sm">
+    <div className="relative inline-block text-right select-none" ref={dropdownRef} dir="rtl">
+      {/* Select Trigger Button */}
       <button
-        onClick={() => setTheme('light')}
-        title="الوضع المضيء"
-        className={`flex items-center justify-center h-7 w-7 rounded-lg transition-all cursor-pointer ${
-          theme === 'light'
-            ? 'bg-card text-primary shadow-sm font-bold scale-105'
-            : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
-        }`}
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-card border border-border/80 hover:border-primary/50 text-xs font-extrabold text-foreground shadow-100 hover:shadow-200 transition-all cursor-pointer group"
+        title="تغيير مظهر واجهة الاستخدام"
       >
-        <Sun className="h-4 w-4" />
+        <div className={`p-1 rounded-lg ${current.bg} ${current.color} transition-transform group-hover:scale-110`}>
+          <CurrentIcon className="h-3.5 w-3.5" />
+        </div>
+        <span>{current.label}</span>
+        <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180 text-primary' : ''}`} />
       </button>
 
-      <button
-        onClick={() => setTheme('dark')}
-        title="الوضع الليلي"
-        className={`flex items-center justify-center h-7 w-7 rounded-lg transition-all cursor-pointer ${
-          theme === 'dark'
-            ? 'bg-card text-primary shadow-sm font-bold scale-105'
-            : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
-        }`}
-      >
-        <Moon className="h-4 w-4" />
-      </button>
+      {/* Select Dropdown Menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+            className="absolute left-0 mt-2 w-48 rounded-2xl bg-card border border-border/90 shadow-500 p-1.5 z-50 overflow-hidden"
+          >
+            <div className="px-2.5 py-1.5 mb-1 border-b border-border/40 text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1.5">
+              <Sparkles className="h-3 w-3 text-primary" />
+              <span>مظهر واجهة التطبيق</span>
+            </div>
 
-      <button
-        onClick={() => setTheme('system')}
-        title="تلقائي (حسب ألوان الجهاز)"
-        className={`flex items-center justify-center h-7 w-7 rounded-lg transition-all cursor-pointer ${
-          theme === 'system'
-            ? 'bg-card text-primary shadow-sm font-bold scale-105'
-            : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
-        }`}
-      >
-        <Laptop className="h-3.5 w-3.5" />
-      </button>
+            {/* Light Option */}
+            <button
+              onClick={() => { setTheme('light'); setIsOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                theme === 'light'
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-foreground hover:bg-muted/70'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Sun className={`h-4 w-4 ${theme === 'light' ? 'text-amber-500 fill-amber-500/20' : 'text-muted-foreground'}`} />
+                <span>الوضع المضيء</span>
+              </div>
+              {theme === 'light' && <Check className="h-4 w-4 text-primary stroke-[2.5]" />}
+            </button>
+
+            {/* Dark Option */}
+            <button
+              onClick={() => { setTheme('dark'); setIsOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer mt-0.5 ${
+                theme === 'dark'
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-foreground hover:bg-muted/70'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Moon className={`h-4 w-4 ${theme === 'dark' ? 'text-indigo-400 fill-indigo-400/20' : 'text-muted-foreground'}`} />
+                <span>الوضع الليلي</span>
+              </div>
+              {theme === 'dark' && <Check className="h-4 w-4 text-primary stroke-[2.5]" />}
+            </button>
+
+            {/* System Option */}
+            <button
+              onClick={() => { setTheme('system'); setIsOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer mt-0.5 ${
+                theme === 'system'
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-foreground hover:bg-muted/70'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Laptop className={`h-4 w-4 ${theme === 'system' ? 'text-blue-500' : 'text-muted-foreground'}`} />
+                <span>تلقائي (حسب النظام)</span>
+              </div>
+              {theme === 'system' && <Check className="h-4 w-4 text-primary stroke-[2.5]" />}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

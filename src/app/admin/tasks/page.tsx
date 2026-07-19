@@ -250,7 +250,7 @@ export default function AdminTasksPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 15 }}
               transition={{ type: 'spring', duration: 0.45, bounce: 0.2 }}
-              className="bg-white w-full max-w-4xl rounded-3xl p-6 md:p-8 relative shadow-600 text-right z-10 border border-slate-200 overflow-visible my-auto"
+              className="bg-card w-full max-w-4xl rounded-3xl p-6 md:p-8 relative shadow-600 text-right z-10 border border-border overflow-visible my-auto"
             >
               {/* Close Button */}
               <button
@@ -258,13 +258,13 @@ export default function AdminTasksPage() {
                   setIsCreateModalOpen(false);
                   setIsUserDropdownOpen(false);
                 }}
-                className="absolute top-6 left-6 p-2.5 rounded-xl text-muted-foreground hover:bg-slate-100 hover:text-foreground transition-all cursor-pointer shadow-100"
+                className="absolute top-6 left-6 p-2.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer shadow-100"
               >
                 <X className="h-5 w-5" />
               </button>
 
               {/* Header Title & Description */}
-              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-slate-150">
+              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-border">
                 <div className="relative w-12 h-12 flex items-center justify-center bg-primary/10 rounded-2xl shrink-0">
                   <Edit3 className="h-6 w-6 text-primary" />
                 </div>
@@ -283,8 +283,8 @@ export default function AdminTasksPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
                   {/* Column 1 (Right in RTL): Title & Description - 7 cols on lg */}
-                  <div className="lg:col-span-7 bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 space-y-5">
-                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200/60 pb-3">
+                  <div className="lg:col-span-7 bg-muted/30 border border-border/80 rounded-2xl p-5 space-y-5">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/60 pb-3">
                       <span className="w-2 h-2 rounded-full bg-primary inline-block" />
                       <span>البيانات الأساسية للمهمة</span>
                     </div>
@@ -300,7 +300,7 @@ export default function AdminTasksPage() {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="مثال: تطوير صفحة تسجيل الدخول الجديدة..."
-                        className="w-full px-4 py-3 rounded-xl bg-white border border-slate-250 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm focus:border-primary"
+                        className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm focus:border-primary"
                       />
                     </div>
 
@@ -314,14 +314,14 @@ export default function AdminTasksPage() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="أدخل تفاصيل المهمة، قائمة التحقق، أو أي تعليمات خاصة بالفريق..."
-                        className="w-full px-4 py-3 rounded-xl bg-white border border-slate-250 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all resize-none shadow-sm focus:border-primary min-h-[200px]"
+                        className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all resize-none shadow-sm focus:border-primary min-h-[200px]"
                       />
                     </div>
                   </div>
 
                   {/* Column 2 (Left in RTL): Assignee, Type/Priority & Due Date - 5 cols on lg */}
-                  <div className="lg:col-span-5 bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 space-y-5">
-                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200/60 pb-3">
+                  <div className="lg:col-span-5 bg-muted/30 border border-border/80 rounded-2xl p-5 space-y-5">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/60 pb-3">
                       <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
                       <span>التصنيف وتعيين المسؤولين</span>
                     </div>
@@ -334,7 +334,7 @@ export default function AdminTasksPage() {
                       <button
                         type="button"
                         onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white border border-slate-250 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-right shadow-sm cursor-pointer min-h-[46px] focus:border-primary"
+                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-right shadow-sm cursor-pointer min-h-[46px] focus:border-primary"
                       >
                         <span>
                           {assignedTo.length === 0
@@ -371,13 +371,13 @@ export default function AdminTasksPage() {
                             {/* Overlay to handle click outside */}
                             <div className="fixed inset-0 z-30" onClick={() => setIsUserDropdownOpen(false)} />
                             
-                            {/* Solid white dropdown list panel */}
+                            {/* Solid card dropdown list panel */}
                             <motion.div
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: 10 }}
                               transition={{ duration: 0.15 }}
-                              className="absolute left-0 right-0 mt-2 p-2 bg-white border border-slate-200 rounded-2xl shadow-600 max-h-60 overflow-y-auto z-40 space-y-1 text-right"
+                              className="absolute left-0 right-0 mt-2 p-2 bg-card border border-border rounded-2xl shadow-600 max-h-60 overflow-y-auto z-40 space-y-1 text-right"
                             >
                               {approvedUsers.map((user) => {
                                 const isSelected = assignedTo.includes(user._id);
@@ -393,7 +393,7 @@ export default function AdminTasksPage() {
                                         setAssignedTo([...assignedTo, user._id]);
                                       }
                                     }}
-                                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-slate-50 cursor-pointer ${
+                                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-muted/70 cursor-pointer ${
                                       isSelected ? 'bg-primary/10 text-primary font-bold' : 'text-foreground'
                                     }`}
                                   >
@@ -444,12 +444,12 @@ export default function AdminTasksPage() {
                         <select
                           value={type}
                           onChange={(e) => setType(e.target.value as TaskType)}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-250 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
                         >
-                          <option value="feature">ميزة جديدة</option>
-                          <option value="bug">إصلاح مشكلة (Bug)</option>
-                          <option value="improvement">تحسين أداء</option>
-                          <option value="documentation">توثيق / ملفات</option>
+                          <option value="feature" className="bg-card">ميزة جديدة</option>
+                          <option value="bug" className="bg-card">إصلاح مشكلة (Bug)</option>
+                          <option value="improvement" className="bg-card">تحسين أداء</option>
+                          <option value="documentation" className="bg-card">توثيق / ملفات</option>
                         </select>
                       </div>
 
@@ -461,12 +461,12 @@ export default function AdminTasksPage() {
                         <select
                           value={priority}
                           onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-250 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
                         >
-                          <option value="low">منخفضة</option>
-                          <option value="medium">متوسطة</option>
-                          <option value="high">عالية</option>
-                          <option value="critical">حرجة</option>
+                          <option value="low" className="bg-card">منخفضة</option>
+                          <option value="medium" className="bg-card">متوسطة</option>
+                          <option value="high" className="bg-card">عالية</option>
+                          <option value="critical" className="bg-card">حرجة</option>
                         </select>
                       </div>
                     </div>
@@ -485,7 +485,7 @@ export default function AdminTasksPage() {
                           required
                           value={dueDate}
                           onChange={(e) => setDueDate(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-250 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm cursor-pointer focus:border-primary"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm cursor-pointer focus:border-primary"
                         />
                       </div>
                     </div>
@@ -494,7 +494,7 @@ export default function AdminTasksPage() {
                 </div>
 
                 {/* Attachments Uploader - Full Width across bottom */}
-                <div className="border-t border-slate-200 pt-5">
+                <div className="border-t border-border pt-5">
                   <p className="text-xs font-bold text-foreground mb-2 flex items-center gap-1.5">
                     <span>📎 المرفقات والملفات الدائمة</span>
                     <span className="text-[10px] text-muted-foreground font-normal">(اختياري - يمكنك سحب وإفلات الملفات هنا)</span>
@@ -505,14 +505,14 @@ export default function AdminTasksPage() {
                 </div>
 
                 {/* Buttons */}
-                <div className="flex items-center justify-end gap-3 pt-5 border-t border-slate-200">
+                <div className="flex items-center justify-end gap-3 pt-5 border-t border-border">
                   <button
                     type="button"
                     onClick={() => {
                       setIsCreateModalOpen(false);
                       setIsUserDropdownOpen(false);
                     }}
-                    className="px-6 py-3 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer"
+                    className="px-6 py-3 rounded-xl text-xs font-bold bg-muted hover:bg-muted/80 text-muted-foreground transition-all cursor-pointer"
                   >
                     إلغاء
                   </button>

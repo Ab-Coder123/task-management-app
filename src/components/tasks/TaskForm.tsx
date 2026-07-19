@@ -112,8 +112,8 @@ export default function TaskForm({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Column 1 (Right side in RTL): Title & Description - 7 cols on lg */}
-        <div className="lg:col-span-7 bg-muted/20 border border-border/60 rounded-2xl p-5 space-y-5">
-          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/40 pb-3">
+        <div className="lg:col-span-7 bg-muted/30 border border-border/80 rounded-2xl p-5 space-y-5 shadow-100">
+          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/60 pb-3">
             <span className="w-2 h-2 rounded-full bg-primary inline-block" />
             <span>البيانات الأساسية للمهمة</span>
           </div>
@@ -128,7 +128,7 @@ export default function TaskForm({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right shadow-sm"
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right shadow-sm"
               placeholder="مثال: تطوير صفحة تسجيل الدخول الجديدة..."
             />
           </div>
@@ -143,15 +143,15 @@ export default function TaskForm({
               onChange={(e) => setDescription(e.target.value)}
               required
               rows={8}
-              className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right resize-none shadow-sm min-h-[230px]"
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right resize-none shadow-sm min-h-[230px]"
               placeholder="أدخل تفاصيل المهمة، قائمة التحقق، أو أي تعليمات خاصة بالفريق..."
             />
           </div>
         </div>
 
         {/* Column 2 (Left side in RTL): Assignment, Classification, Due Date & Privacy - 5 cols on lg */}
-        <div className="lg:col-span-5 bg-muted/20 border border-border/60 rounded-2xl p-5 space-y-5">
-          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/40 pb-3">
+        <div className="lg:col-span-5 bg-muted/30 border border-border/80 rounded-2xl p-5 space-y-5 shadow-100">
+          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/60 pb-3">
             <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
             <span>التصنيف وتعيين المسؤولين</span>
           </div>
@@ -164,7 +164,7 @@ export default function TaskForm({
             <button
               type="button"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer min-h-[46px] shadow-sm"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer min-h-[46px] shadow-sm"
             >
               <span>
                 {assignedTo.length === 0
@@ -265,7 +265,7 @@ export default function TaskForm({
                 id="taskType"
                 value={type}
                 onChange={(e) => setType(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
               >
                 {TASK_TYPES.map((t) => (
                   <option key={t.value} value={t.value} className="bg-card">
@@ -283,7 +283,7 @@ export default function TaskForm({
                 id="taskPriority"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
               >
                 {TASK_PRIORITIES.map((p) => (
                   <option key={p.value} value={p.value} className="bg-card">
@@ -303,7 +303,7 @@ export default function TaskForm({
               id="taskStatus"
               value={status}
               onChange={(e) => setStatus(e.target.value as any)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
             >
               {TASK_STATUSES.map((s) => (
                 <option key={s.value} value={s.value} className="bg-card">
@@ -324,7 +324,7 @@ export default function TaskForm({
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               required
-              className="w-full px-4 py-2.5 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer shadow-sm"
+              className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer shadow-sm"
             >
             </input>
           </div>
