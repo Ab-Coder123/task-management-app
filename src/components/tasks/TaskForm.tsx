@@ -96,241 +96,271 @@ export default function TaskForm({
   const approvedUsers = users;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-2xl bg-card border border-border/80 rounded-2xl p-6 md:p-8 shadow-sm text-right" dir="rtl">
-
-      {/* Title */}
-      <div>
-        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-          اسم المهمة <span className="text-rose-500">*</span>
-        </label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className="w-full px-4 py-3 rounded-xl bg-card/50 border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-right"
-          placeholder="مثال: إضافة التحقق من الحساب..."
-        />
+    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-5xl bg-card border border-border/80 rounded-3xl p-6 md:p-8 shadow-sm text-right" dir="rtl">
+      
+      {/* Header Info */}
+      <div className="pb-4 border-b border-border/40">
+        <h3 className="text-lg font-extrabold text-foreground flex items-center gap-2">
+          📋 إعداد تفاصيل وتعيين المهمة
+        </h3>
+        <p className="text-xs text-muted-foreground font-semibold mt-1">
+          أدخل عنوان ووصف المهمة بدقة، ثم حدد المسؤولين من الفريق وتاريخ التسليم المحدد.
+        </p>
       </div>
 
-      {/* Description */}
-      <div>
-        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-          وصف المهمة <span className="text-rose-500">*</span>
-        </label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          rows={4}
-          className="w-full px-4 py-3 rounded-xl bg-card/50 border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-right resize-none"
-          placeholder="أدخل تفاصيل المهمة والخطوات المطلوبة للتنفيذ..."
-        />
-      </div>
+      {/* Two-Column Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Column 1 (Right side in RTL): Title & Description - 7 cols on lg */}
+        <div className="lg:col-span-7 bg-muted/20 border border-border/60 rounded-2xl p-5 space-y-5">
+          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/40 pb-3">
+            <span className="w-2 h-2 rounded-full bg-primary inline-block" />
+            <span>البيانات الأساسية للمهمة</span>
+          </div>
 
-      {/* Select Grids: Type, Priority, Status */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-          <label htmlFor="taskType" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-            نوع المهمة
-          </label>
-          <select
-            id="taskType"
-            value={type}
-            onChange={(e) => setType(e.target.value as any)}
-            className="w-full px-4 py-3 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none text-right cursor-pointer"
-          >
-            {TASK_TYPES.map((t) => (
-              <option key={t.value} value={t.value} className="bg-card">
-                {t.label === 'Bug' ? 'إصلاح مشكلة (Bug)' : t.label === 'Feature' ? 'ميزة جديدة' : t.label === 'Improvement' ? 'تحسين أداء' : 'توثيق وملفات'}
-              </option>
-            ))}
-          </select>
+          {/* Title */}
+          <div>
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+              اسم المهمة <span className="text-rose-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right shadow-sm"
+              placeholder="مثال: تطوير صفحة تسجيل الدخول الجديدة..."
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+              وصف المهمة والخطوات المطلوبة <span className="text-rose-500">*</span>
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              rows={8}
+              className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right resize-none shadow-sm min-h-[230px]"
+              placeholder="أدخل تفاصيل المهمة، قائمة التحقق، أو أي تعليمات خاصة بالفريق..."
+            />
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="taskPriority" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-            الأهمية
-          </label>
-          <select 
-            id="taskPriority"
-            value={priority}
-            onChange={(e) => setPriority(e.target.value as any)}
-            className="w-full px-4 py-3 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none text-right cursor-pointer"
-          >
-            {TASK_PRIORITIES.map((p) => (
-              <option key={p.value} value={p.value} className="bg-card">
-                {p.label === 'Low' ? 'منخفضة' : p.label === 'Medium' ? 'متوسطة' : p.label === 'High' ? 'عالية' : 'حرجة'}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Column 2 (Left side in RTL): Assignment, Classification, Due Date & Privacy - 5 cols on lg */}
+        <div className="lg:col-span-5 bg-muted/20 border border-border/60 rounded-2xl p-5 space-y-5">
+          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/40 pb-3">
+            <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
+            <span>التصنيف وتعيين المسؤولين</span>
+          </div>
 
-        <div>
-          <label htmlFor="taskStatus" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-            حالة المهمة
-          </label>
-          <select
-            id="taskStatus"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as any)}
-            className="w-full px-4 py-3 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none text-right cursor-pointer"
-          >
-            {TASK_STATUSES.map((s) => (
-              <option key={s.value} value={s.value} className="bg-card">
-                {s.label === 'Pending' ? 'معلقة' : s.label === 'In Progress' ? 'قيد التنفيذ' : s.label === 'Completed' ? 'مكتملة' : 'متأخرة'}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Assignments and Due date Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Custom Multi-Select User Selector */}
-        <div className="relative">
-          <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-            الموكل إليهم <span className="text-rose-500">*</span>
-          </label>
-          <button
-            type="button"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-right cursor-pointer min-h-[45px]"
-          >
-            <span>
-              {assignedTo.length === 0
-                ? 'اختر أعضاء الفريق...'
-                : `تم تحديد ${assignedTo.length} أعضاء`}
-            </span>
-            {assignedTo.length > 0 && (
-              <div className="flex items-center -space-x-1.5 space-x-reverse">
-                {assignedTo.slice(0, 3).map((id) => {
-                  const user = approvedUsers.find(u => u._id === id);
-                  if (!user) return null;
-                  const ac = avatarColor(user.username);
-                  return user.avatar ? (
-                    <img key={user._id} src={user.avatar} className="h-5 w-5 rounded-full border border-card object-cover shrink-0" />
-                  ) : (
-                    <div key={user._id} className="h-5 w-5 rounded-full flex items-center justify-center text-[7px] font-bold border border-card uppercase shrink-0" style={{ background: ac.bg, color: ac.text }}>
-                      {getAvatarFallback(user.username)}
-                    </div>
-                  );
-                })}
-                {assignedTo.length > 3 && (
-                  <div className="h-5 w-5 rounded-full bg-muted border border-card flex items-center justify-center text-[7px] font-bold text-muted-foreground shrink-0">
-                    +{assignedTo.length - 3}
-                  </div>
-                )}
-              </div>
-            )}
-          </button>
-
-          <AnimatePresence>
-            {isDropdownOpen && (
-              <>
-                <div className="fixed inset-0 z-30" onClick={() => setIsDropdownOpen(false)} />
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute left-0 right-0 mt-2 p-2 bg-card border rounded-2xl shadow-600 max-h-60 overflow-y-auto z-40 space-y-1 text-right"
-                >
-                  {approvedUsers.map((user) => {
-                    const isSelected = assignedTo.includes(user._id);
+          {/* Custom Multi-Select User Selector */}
+          <div className="relative">
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+              الموكل إليهم (أعضاء الفريق) <span className="text-rose-500">*</span>
+            </label>
+            <button
+              type="button"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer min-h-[46px] shadow-sm"
+            >
+              <span>
+                {assignedTo.length === 0
+                  ? '🔍 اضغط لاختيار أعضاء الفريق...'
+                  : `✅ تم اختيار ${assignedTo.length} أعضاء`}
+              </span>
+              {assignedTo.length > 0 && (
+                <div className="flex items-center -space-x-1.5 space-x-reverse">
+                  {assignedTo.slice(0, 3).map((id) => {
+                    const user = approvedUsers.find(u => u._id === id);
+                    if (!user) return null;
                     const ac = avatarColor(user.username);
-                    return (
-                      <button
-                        key={user._id}
-                        type="button"
-                        onClick={() => {
-                          if (isSelected) {
-                            setAssignedTo(assignedTo.filter(id => id !== user._id));
-                          } else {
-                            setAssignedTo([...assignedTo, user._id]);
-                          }
-                        }}
-                        className={`w-full flex items-center gap-3 p-2 rounded-xl text-xs font-semibold text-right transition-all hover:bg-muted/70 cursor-pointer ${
-                          isSelected ? 'bg-primary/5 text-primary font-bold' : 'text-foreground'
-                        }`}
-                      >
-                        <div className={`h-4.5 w-4.5 rounded-md border flex items-center justify-center transition-all shrink-0 ${
-                          isSelected ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground/30'
-                        }`}>
-                          {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
-                        </div>
-                        
-                        {user.avatar ? (
-                          <img src={user.avatar} className="h-7 w-7 rounded-full object-cover shrink-0 shadow-200" />
-                        ) : (
-                          <div className="h-7 w-7 rounded-full flex items-center justify-center text-[9px] font-bold uppercase shrink-0" style={{ background: ac.bg, border: `1px solid ${ac.border}`, color: ac.text }}>
-                            {getAvatarFallback(user.username)}
-                          </div>
-                        )}
-                        
-                        <div className="flex flex-col grow">
-                          <span className="font-bold text-foreground flex items-center gap-1.5 justify-start">
-                            {user.username}
-                            {user.role === 'admin' && (
-                              <BadgeCheck className="h-4.5 w-4.5 text-blue-500 fill-blue-500/10 shrink-0" />
-                            )}
-                          </span>
-                          <span className="text-[10px] text-muted-foreground/80">{user.email}</span>
-                        </div>
-                      </button>
+                    return user.avatar ? (
+                      <img key={user._id} src={user.avatar} className="h-5 w-5 rounded-full border border-card object-cover shrink-0 shadow-sm" />
+                    ) : (
+                      <div key={user._id} className="h-5 w-5 rounded-full flex items-center justify-center text-[7px] font-bold border border-card uppercase shrink-0" style={{ background: ac.bg, color: ac.text }}>
+                        {getAvatarFallback(user.username)}
+                      </div>
                     );
                   })}
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+                  {assignedTo.length > 3 && (
+                    <div className="h-5 w-5 rounded-full bg-muted border border-card flex items-center justify-center text-[7px] font-bold text-muted-foreground shrink-0">
+                      +{assignedTo.length - 3}
+                    </div>
+                  )}
+                </div>
+              )}
+            </button>
+
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-30" onClick={() => setIsDropdownOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-0 right-0 mt-2 p-2 bg-card border border-border rounded-2xl shadow-600 max-h-60 overflow-y-auto z-40 space-y-1 text-right"
+                  >
+                    {approvedUsers.map((user) => {
+                      const isSelected = assignedTo.includes(user._id);
+                      const ac = avatarColor(user.username);
+                      return (
+                        <button
+                          key={user._id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setAssignedTo(assignedTo.filter(id => id !== user._id));
+                            } else {
+                              setAssignedTo([...assignedTo, user._id]);
+                            }
+                          }}
+                          className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-muted/70 cursor-pointer ${
+                            isSelected ? 'bg-primary/10 text-primary font-bold' : 'text-foreground'
+                          }`}
+                        >
+                          <div className={`h-4.5 w-4.5 rounded-md border flex items-center justify-center transition-all shrink-0 ${
+                            isSelected ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground/30'
+                          }`}>
+                            {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                          </div>
+                          
+                          {user.avatar ? (
+                            <img src={user.avatar} className="h-7 w-7 rounded-full object-cover shrink-0 shadow-200" />
+                          ) : (
+                            <div className="h-7 w-7 rounded-full flex items-center justify-center text-[9px] font-bold uppercase shrink-0" style={{ background: ac.bg, border: `1px solid ${ac.border}`, color: ac.text }}>
+                              {getAvatarFallback(user.username)}
+                            </div>
+                          )}
+                          
+                          <div className="flex flex-col grow">
+                            <span className="font-bold text-foreground flex items-center gap-1.5 justify-start">
+                              {user.username}
+                              {user.role === 'admin' && (
+                                <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/10 shrink-0" />
+                              )}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground/80">{user.email}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Select Grids: Type, Priority, Status */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label htmlFor="taskType" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                نوع المهمة
+              </label>
+              <select
+                id="taskType"
+                value={type}
+                onChange={(e) => setType(e.target.value as any)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+              >
+                {TASK_TYPES.map((t) => (
+                  <option key={t.value} value={t.value} className="bg-card">
+                    {t.label === 'Bug' ? 'إصلاح مشكلة (Bug)' : t.label === 'Feature' ? 'ميزة جديدة' : t.label === 'Improvement' ? 'تحسين أداء' : 'توثيق وملفات'}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="taskPriority" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                الأهمية
+              </label>
+              <select 
+                id="taskPriority"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as any)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+              >
+                {TASK_PRIORITIES.map((p) => (
+                  <option key={p.value} value={p.value} className="bg-card">
+                    {p.label === 'Low' ? 'منخفضة' : p.label === 'Medium' ? 'متوسطة' : p.label === 'High' ? 'عالية' : 'حرجة'}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Status Select */}
+          <div>
+            <label htmlFor="taskStatus" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+              حالة المهمة الحالية
+            </label>
+            <select
+              id="taskStatus"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as any)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+            >
+              {TASK_STATUSES.map((s) => (
+                <option key={s.value} value={s.value} className="bg-card">
+                  {s.label === 'Pending' ? ' معلقة' : s.label === 'In Progress' ? ' قيد التنفيذ' : s.label === 'Completed' ? ' مكتملة' : ' متأخرة'}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Due date input */}
+          <div>
+            <label htmlFor="dueDate" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+              تاريخ الاستحقاق <span className="text-rose-500">*</span>
+            </label>
+            <input
+              type="date"
+              id="dueDate"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              required
+              className="w-full px-4 py-2.5 rounded-xl bg-card border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer shadow-sm"
+            >
+            </input>
+          </div>
+
+          {/* Task Privacy Control */}
+          <div className="flex items-center gap-2.5 pt-2 justify-start bg-card/60 p-3 rounded-xl border border-border/50">
+            <input 
+              type="checkbox"
+              id="isPrivate"
+              checked={isPrivate}
+              onChange={(e) => setIsPrivate(e.target.checked)}
+              className="h-4 w-4 rounded border-muted-foreground/30 text-primary focus:ring-primary/20 shrink-0 cursor-pointer"
+            />
+            <label htmlFor="isPrivate" className="text-xs font-bold text-foreground select-none cursor-pointer">
+              مهمة خاصة <span className="text-[10px] text-muted-foreground font-normal">(تظهر للمسؤول والمنشئ فقط)</span>
+            </label>
+          </div>
         </div>
 
-        {/* Due date input */}
-        <div>
-          <label htmlFor="dueDate" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-            تاريخ الاستحقاق <span className="text-rose-500">*</span>
-          </label>
-          <input
-            type="date"
-            id="dueDate"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            required
-            className="w-full px-4 py-3 rounded-xl bg-card border border-border/80 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-right cursor-pointer"
-          />
-        </div>
-      </div>
-
-      {/* Task Privacy Control (Phase 8/12) */}
-      <div className="flex items-center gap-2 pt-2 justify-start">
-        <input 
-          type="checkbox"
-          id="isPrivate"
-          checked={isPrivate}
-          onChange={(e) => setIsPrivate(e.target.checked)}
-          className="h-4 w-4 rounded border-muted-foreground/30 text-primary focus:ring-primary/20 shrink-0 cursor-pointer"
-        />
-        <label htmlFor="isPrivate" className="text-xs font-bold text-muted-foreground select-none cursor-pointer">
-          تعيين كـ مهمة خاصة (تظهر لصاحب المهمة والمنشئ فقط)
-        </label>
       </div>
 
       {/* Submission CTA */}
-      <div className="flex items-center justify-end space-x-4 space-x-reverse pt-4 border-t border-border/40">
+      <div className="flex items-center justify-end space-x-4 space-x-reverse pt-6 border-t border-border/60 mt-4">
         <button
           type="button"
           onClick={() => router.push('/admin/tasks')}
-          className="px-5 py-3 rounded-xl text-muted-foreground bg-muted hover:bg-muted/80 text-xs font-bold transition-all cursor-pointer"
+          className="px-6 py-3 rounded-xl text-muted-foreground bg-muted hover:bg-muted/80 text-xs font-bold transition-all cursor-pointer"
         >
           إلغاء
         </button>
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:bg-primary/95 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+          className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-extrabold text-xs hover:bg-primary/95 transition-all shadow-lg shadow-primary/25 disabled:opacity-50 disabled:pointer-events-none cursor-pointer flex items-center gap-2"
         >
-          {isLoading ? 'جاري الحفظ...' : 'حفظ التعديلات'}
+          {isLoading ? 'جاري الحفظ...' : 'حفظ ونشر المهمة'}
         </button>
       </div>
 

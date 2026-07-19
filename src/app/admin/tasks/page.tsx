@@ -231,7 +231,7 @@ export default function AdminTasksPage() {
       {/* Create Task Popup Modal */}
       <AnimatePresence>
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 md:py-10 overflow-y-auto">
             {/* Dark blur overlay */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -241,16 +241,16 @@ export default function AdminTasksPage() {
                 setIsCreateModalOpen(false);
                 setIsUserDropdownOpen(false);
               }}
-              className="fixed inset-0 bg-black/30 backdrop-blur-md"
+              className="fixed inset-0 bg-black/40 backdrop-blur-md"
             />
 
-            {/* Modal Dialog Content - Fixed to Solid White background, narrower max-w-sm, and no scrollbars (overflow-visible) */}
+            {/* Modal Dialog Content - Wide Two-Column layout (max-w-4xl) */}
             <motion.div
               initial={{ opacity: 0, scale: 0.96, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 15 }}
               transition={{ type: 'spring', duration: 0.45, bounce: 0.2 }}
-              className="bg-white w-full max-w-sm rounded-3xl p-5 relative shadow-600 text-right z-10 border border-slate-200 overflow-visible"
+              className="bg-white w-full max-w-4xl rounded-3xl p-6 md:p-8 relative shadow-600 text-right z-10 border border-slate-200 overflow-visible my-auto"
             >
               {/* Close Button */}
               <button
@@ -258,300 +258,270 @@ export default function AdminTasksPage() {
                   setIsCreateModalOpen(false);
                   setIsUserDropdownOpen(false);
                 }}
-                className="absolute top-4 left-4 p-1.5 rounded-xl text-muted-foreground hover:bg-muted transition-all cursor-pointer"
+                className="absolute top-6 left-6 p-2.5 rounded-xl text-muted-foreground hover:bg-slate-100 hover:text-foreground transition-all cursor-pointer shadow-100"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </button>
 
-              {/* 3D Floating Clipboard Animation */}
-              <div className="flex justify-center items-center py-2 mb-1">
-                <div className="relative w-16 h-16 perspective-1000 flex items-center justify-center">
-                  
-                  {/* Outer floating ambient glow ring */}
-                  <motion.div
-                    animate={{
-                      scale: [0.95, 1.05, 0.95],
-                      opacity: [0.3, 0.5, 0.3]
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 3,
-                      ease: "easeInOut"
-                    }}
-                    className="absolute inset-0 rounded-full bg-primary/10 blur-md pointer-events-none"
-                  />
-
-                  {/* 3D Clipboard Sheet */}
-                  <motion.div
-                    animate={{ 
-                      rotateY: [-10, 10, -10], 
-                      rotateX: [12, 22, 12],
-                      y: [-2, 2, -2]
-                    }}
-                    transition={{ 
-                      repeat: Infinity, 
-                      duration: 6, 
-                      ease: "easeInOut" 
-                    }}
-                    className="absolute w-10 h-13 bg-gradient-to-br from-white to-slate-50 rounded-xl shadow-200 flex flex-col p-1.5 preserve-3d"
-                    style={{ transformStyle: 'preserve-3d', border: '1px solid rgba(255,255,255,0.85)' }}
-                  >
-                    {/* Metal Clip */}
-                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-5 h-2 bg-gradient-to-b from-slate-300 to-slate-450 rounded shadow-sm" />
-                    
-                    {/* Checklist lines */}
-                    <div className="w-full h-1 bg-blue-100 rounded-full mt-2" />
-                    <div className="w-11/12 h-1 bg-indigo-50 rounded-full mt-1" />
-                    <div className="w-8/12 h-1 bg-slate-100 rounded-full mt-1" />
-                  </motion.div>
-
-                  {/* Floating 3D Checkmark Circle */}
-                  <motion.div
-                    animate={{ 
-                      y: [2, -5, 2],
-                      rotate: [8, -8, 8],
-                      scale: [0.96, 1.04, 0.96]
-                    }}
-                    transition={{ 
-                      repeat: Infinity, 
-                      duration: 4.5, 
-                      ease: "easeInOut" 
-                    }}
-                    className="absolute -bottom-1 -left-1 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-300 text-white border-2 border-white preserve-3d"
-                    style={{ transform: 'translateZ(20px)' }}
-                  >
-                    <Check className="h-3 w-3 stroke-[3]" />
-                  </motion.div>
+              {/* Header Title & Description */}
+              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-slate-150">
+                <div className="relative w-12 h-12 flex items-center justify-center bg-primary/10 rounded-2xl shrink-0">
+                  <Edit3 className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-extrabold text-foreground flex items-center gap-2">
+                    📋 إنشاء وتعيين مهمة جديدة
+                  </h3>
+                  <p className="text-xs text-muted-foreground font-semibold mt-1">
+                    أدخل عنوان ووصف المهمة بدقة، ثم حدد المسؤولين من الفريق وتاريخ التسليم المحدد.
+                  </p>
                 </div>
               </div>
 
-              <h3 className="text-lg font-extrabold text-foreground flex items-center gap-2 mb-1">
-                <Edit3 className="h-5 w-5 text-primary" />
-                إنشاء مهمة جديدة وتعيينها
-              </h3>
-              <p className="text-[11px] text-muted-foreground font-semibold mb-4">
-                املأ الحقول أدناه لتعيين مهمة مخصصة لأعضاء الفريق بنجاح.
-              </p>
+              <form onSubmit={handleCreateTask} className="space-y-6">
+                {/* Two-Column Layout Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                  
+                  {/* Column 1 (Right in RTL): Title & Description - 7 cols on lg */}
+                  <div className="lg:col-span-7 bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 space-y-5">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200/60 pb-3">
+                      <span className="w-2 h-2 rounded-full bg-primary inline-block" />
+                      <span>البيانات الأساسية للمهمة</span>
+                    </div>
 
-              <form onSubmit={handleCreateTask} className="space-y-3.5">
-                {/* Task Title */}
-                <div>
-                  <label className="block text-[11px] font-bold text-muted-foreground mb-1">
-                    اسم المهمة
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="ما هي المهمة الجديدة؟"
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm focus:border-primary/80"
-                  />
-                </div>
+                    {/* Task Title */}
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+                        اسم المهمة <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="مثال: تطوير صفحة تسجيل الدخول الجديدة..."
+                        className="w-full px-4 py-3 rounded-xl bg-white border border-slate-250 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm focus:border-primary"
+                      />
+                    </div>
 
-                {/* Description */}
-                <div>
-                  <label className="block text-[11px] font-bold text-muted-foreground mb-1">
-                    الوصف / التفاصيل
-                  </label>
-                  <textarea
-                    rows={2.5}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="اكتب تفاصيل أو متطلبات المهمة هنا..."
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all resize-none shadow-sm focus:border-primary/80"
-                  />
-                </div>
+                    {/* Description */}
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+                        وصف المهمة والخطوات المطلوبة <span className="text-rose-500">*</span>
+                      </label>
+                      <textarea
+                        rows={7}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="أدخل تفاصيل المهمة، قائمة التحقق، أو أي تعليمات خاصة بالفريق..."
+                        className="w-full px-4 py-3 rounded-xl bg-white border border-slate-250 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all resize-none shadow-sm focus:border-primary min-h-[200px]"
+                      />
+                    </div>
+                  </div>
 
-                {/* Custom Multi-Select Dropdown for Assigning Task - Solid White & Clean dropdown list */}
-                <div className="relative">
-                  <label className="block text-[11px] font-bold text-muted-foreground mb-1">
-                    تعيين المهمة إلى
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                    className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right shadow-sm cursor-pointer min-h-[38px] focus:border-primary/80"
-                  >
-                    <span>
-                      {assignedTo.length === 0
-                        ? 'اختر أعضاء الفريق...'
-                        : `تم تحديد ${assignedTo.length} أعضاء`}
-                    </span>
-                    {/* Selected Avatars stack inside button */}
-                    {assignedTo.length > 0 && (
-                      <div className="flex items-center -space-x-1.5 space-x-reverse">
-                        {assignedTo.slice(0, 3).map((id) => {
-                          const user = approvedUsers.find(u => u._id === id);
-                          if (!user) return null;
-                          const ac = avatarColor(user.username);
-                          return user.avatar ? (
-                            <img key={user._id} src={user.avatar} className="h-5 w-5 rounded-full border border-card object-cover shrink-0" />
-                          ) : (
-                            <div key={user._id} className="h-5 w-5 rounded-full flex items-center justify-center text-[7px] font-bold border border-card uppercase shrink-0" style={{ background: ac.bg, color: ac.text }}>
-                              {getAvatarFallback(user.username)}
-                            </div>
-                          );
-                        })}
-                        {assignedTo.length > 3 && (
-                          <div className="h-5 w-5 rounded-full bg-muted border border-card flex items-center justify-center text-[7px] font-bold text-muted-foreground shrink-0">
-                            +{assignedTo.length - 3}
+                  {/* Column 2 (Left in RTL): Assignee, Type/Priority & Due Date - 5 cols on lg */}
+                  <div className="lg:col-span-5 bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 space-y-5">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200/60 pb-3">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
+                      <span>التصنيف وتعيين المسؤولين</span>
+                    </div>
+
+                    {/* Custom Multi-Select Dropdown for Assigning Task */}
+                    <div className="relative">
+                      <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+                        الموكل إليهم (أعضاء الفريق) <span className="text-rose-500">*</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white border border-slate-250 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-right shadow-sm cursor-pointer min-h-[46px] focus:border-primary"
+                      >
+                        <span>
+                          {assignedTo.length === 0
+                            ? '🔍 اضغط لاختيار أعضاء الفريق...'
+                            : `✅ تم اختيار ${assignedTo.length} أعضاء`}
+                        </span>
+                        {/* Selected Avatars stack inside button */}
+                        {assignedTo.length > 0 && (
+                          <div className="flex items-center -space-x-1.5 space-x-reverse">
+                            {assignedTo.slice(0, 3).map((id) => {
+                              const user = approvedUsers.find(u => u._id === id);
+                              if (!user) return null;
+                              const ac = avatarColor(user.username);
+                              return user.avatar ? (
+                                <img key={user._id} src={user.avatar} className="h-5 w-5 rounded-full border border-card object-cover shrink-0 shadow-sm" />
+                              ) : (
+                                <div key={user._id} className="h-5 w-5 rounded-full flex items-center justify-center text-[7px] font-bold border border-card uppercase shrink-0" style={{ background: ac.bg, color: ac.text }}>
+                                  {getAvatarFallback(user.username)}
+                                </div>
+                              );
+                            })}
+                            {assignedTo.length > 3 && (
+                              <div className="h-5 w-5 rounded-full bg-muted border border-card flex items-center justify-center text-[7px] font-bold text-muted-foreground shrink-0">
+                                +{assignedTo.length - 3}
+                              </div>
+                            )}
                           </div>
                         )}
-                      </div>
-                    )}
-                  </button>
+                      </button>
 
-                  <AnimatePresence>
-                    {isUserDropdownOpen && (
-                      <>
-                        {/* Overlay to handle click outside */}
-                        <div className="fixed inset-0 z-30" onClick={() => setIsUserDropdownOpen(false)} />
-                        
-                        {/* Solid white dropdown list panel */}
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute left-0 right-0 mt-1.5 p-1.5 bg-white border border-slate-200 rounded-2xl shadow-600 max-h-48 overflow-y-auto z-40 space-y-0.5 text-right"
-                        >
-                          {approvedUsers.map((user) => {
-                            const isSelected = assignedTo.includes(user._id);
-                            const ac = avatarColor(user.username);
-                            return (
-                              <button
-                                key={user._id}
-                                type="button"
-                                onClick={() => {
-                                  if (isSelected) {
-                                    setAssignedTo(assignedTo.filter(id => id !== user._id));
-                                  } else {
-                                    setAssignedTo([...assignedTo, user._id]);
-                                  }
-                                }}
-                                className={`w-full flex items-center gap-2.5 p-1.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-slate-50 cursor-pointer ${
-                                  isSelected ? 'bg-primary/5 text-primary font-bold' : 'text-foreground'
-                                }`}
-                              >
-                                {/* Custom Checkbox */}
-                                <div className={`h-4 w-4 rounded-md border flex items-center justify-center transition-all shrink-0 ${
-                                  isSelected ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground/30'
-                                }`}>
-                                  {isSelected && <Check className="h-2.5 w-2.5 stroke-[3]" />}
-                                </div>
-                                
-                                {/* User avatar or fallback */}
-                                {user.avatar ? (
-                                  <img src={user.avatar} className="h-6 w-6 rounded-full object-cover shrink-0 shadow-200" />
-                                ) : (
-                                  <div className="h-6 w-6 rounded-full flex items-center justify-center text-[8px] font-bold uppercase shrink-0" style={{ background: ac.bg, border: `1px solid ${ac.border}`, color: ac.text }}>
-                                    {getAvatarFallback(user.username)}
-                                  </div>
-                                )}
-                                
-                                {/* User Name & Email */}
-                                <div className="flex flex-col grow select-none text-right">
-                                  <span className="font-bold text-foreground flex items-center gap-1 justify-start">
-                                    {user.username}
-                                    {user.role === 'admin' && (
-                                      <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/10 shrink-0" />
+                      <AnimatePresence>
+                        {isUserDropdownOpen && (
+                          <>
+                            {/* Overlay to handle click outside */}
+                            <div className="fixed inset-0 z-30" onClick={() => setIsUserDropdownOpen(false)} />
+                            
+                            {/* Solid white dropdown list panel */}
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              transition={{ duration: 0.15 }}
+                              className="absolute left-0 right-0 mt-2 p-2 bg-white border border-slate-200 rounded-2xl shadow-600 max-h-60 overflow-y-auto z-40 space-y-1 text-right"
+                            >
+                              {approvedUsers.map((user) => {
+                                const isSelected = assignedTo.includes(user._id);
+                                const ac = avatarColor(user.username);
+                                return (
+                                  <button
+                                    key={user._id}
+                                    type="button"
+                                    onClick={() => {
+                                      if (isSelected) {
+                                        setAssignedTo(assignedTo.filter(id => id !== user._id));
+                                      } else {
+                                        setAssignedTo([...assignedTo, user._id]);
+                                      }
+                                    }}
+                                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-slate-50 cursor-pointer ${
+                                      isSelected ? 'bg-primary/10 text-primary font-bold' : 'text-foreground'
+                                    }`}
+                                  >
+                                    {/* Custom Checkbox */}
+                                    <div className={`h-4.5 w-4.5 rounded-md border flex items-center justify-center transition-all shrink-0 ${
+                                      isSelected ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground/30'
+                                    }`}>
+                                      {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                                    </div>
+                                    
+                                    {/* User avatar or fallback */}
+                                    {user.avatar ? (
+                                      <img src={user.avatar} className="h-7 w-7 rounded-full object-cover shrink-0 shadow-200" />
+                                    ) : (
+                                      <div className="h-7 w-7 rounded-full flex items-center justify-center text-[9px] font-bold uppercase shrink-0" style={{ background: ac.bg, border: `1px solid ${ac.border}`, color: ac.text }}>
+                                        {getAvatarFallback(user.username)}
+                                      </div>
                                     )}
-                                  </span>
-                                  <span className="text-[9px] text-muted-foreground/80">{user.email}</span>
-                                </div>
-                              </button>
-                            );
-                          })}
-                          {approvedUsers.length === 0 && (
-                            <p className="text-center text-[10px] text-muted-foreground py-3 font-semibold">لا يوجد أعضاء نشطين بالفريق حالياً.</p>
-                          )}
-                        </motion.div>
-                      </>
-                    )}
-                  </AnimatePresence>
-                </div>
+                                    
+                                    {/* User Name & Email */}
+                                    <div className="flex flex-col grow select-none text-right">
+                                      <span className="font-bold text-foreground flex items-center gap-1.5 justify-start">
+                                        {user.username}
+                                        {user.role === 'admin' && (
+                                          <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/10 shrink-0" />
+                                        )}
+                                      </span>
+                                      <span className="text-[10px] text-muted-foreground/80">{user.email}</span>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                              {approvedUsers.length === 0 && (
+                                <p className="text-center text-[10px] text-muted-foreground py-3 font-semibold">لا يوجد أعضاء نشطين بالفريق حالياً.</p>
+                              )}
+                            </motion.div>
+                          </>
+                        )}
+                      </AnimatePresence>
+                    </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Task Type */}
-                  <div>
-                    <label className="block text-[11px] font-bold text-muted-foreground mb-1">
-                      نوع المهمة
-                    </label>
-                    <select
-                      value={type}
-                      onChange={(e) => setType(e.target.value as TaskType)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary/80"
-                    >
-                      <option value="feature">ميزة جديدة</option>
-                      <option value="bug">إصلاح مشكلة (Bug)</option>
-                      <option value="improvement">تحسين أداء</option>
-                      <option value="documentation">توثيق / ملفات</option>
-                    </select>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      {/* Task Type */}
+                      <div>
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                          نوع المهمة
+                        </label>
+                        <select
+                          value={type}
+                          onChange={(e) => setType(e.target.value as TaskType)}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-250 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
+                        >
+                          <option value="feature">ميزة جديدة</option>
+                          <option value="bug">إصلاح مشكلة (Bug)</option>
+                          <option value="improvement">تحسين أداء</option>
+                          <option value="documentation">توثيق / ملفات</option>
+                        </select>
+                      </div>
+
+                      {/* Priority */}
+                      <div>
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                          الأهمية
+                        </label>
+                        <select
+                          value={priority}
+                          onChange={(e) => setPriority(e.target.value as TaskPriority)}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-250 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
+                        >
+                          <option value="low">منخفضة</option>
+                          <option value="medium">متوسطة</option>
+                          <option value="high">عالية</option>
+                          <option value="critical">حرجة</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Due Date */}
+                    <div>
+                      <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                        تاريخ الاستحقاق <span className="text-rose-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-muted-foreground/60">
+                          <Calendar className="h-4.5 w-4.5" />
+                        </span>
+                        <input
+                          type="date"
+                          required
+                          value={dueDate}
+                          onChange={(e) => setDueDate(e.target.value)}
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-250 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm cursor-pointer focus:border-primary"
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Priority */}
-                  <div>
-                    <label className="block text-[11px] font-bold text-muted-foreground mb-1">
-                      الأهمية
-                    </label>
-                    <select
-                      value={priority}
-                      onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary/80"
-                    >
-                      <option value="low">منخفضة</option>
-                      <option value="medium">متوسطة</option>
-                      <option value="high">عالية</option>
-                      <option value="critical">حرجة</option>
-                    </select>
-                  </div>
                 </div>
 
-                {/* Due Date */}
-                <div>
-                  <label className="block text-[11px] font-bold text-muted-foreground mb-1">
-                    تاريخ الاستحقاق
-                  </label>
-                  <div className="relative">
-                    <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground/60">
-                      <Calendar className="h-4 w-4" />
-                    </span>
-                    <input
-                      type="date"
-                      value={dueDate}
-                      onChange={(e) => setDueDate(e.target.value)}
-                      className="w-full pl-9 pr-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm cursor-pointer focus:border-primary/80"
-                    />
-                  </div>
-                </div>
-
-                {/* Attachments Uploader (queue before task create) */}
-                <div className="border-t border-border/30 pt-3">
-                  <p className="text-[11px] font-bold text-muted-foreground mb-2">المرفقات (اختياري)</p>
+                {/* Attachments Uploader - Full Width across bottom */}
+                <div className="border-t border-slate-200 pt-5">
+                  <p className="text-xs font-bold text-foreground mb-2 flex items-center gap-1.5">
+                    <span>📎 المرفقات والملفات الدائمة</span>
+                    <span className="text-[10px] text-muted-foreground font-normal">(اختياري - يمكنك سحب وإفلات الملفات هنا)</span>
+                  </p>
                   <AttachmentUploader
                     onFilesQueued={(files) => setQueuedFiles(files)}
                   />
                 </div>
 
                 {/* Buttons */}
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-border/30 mt-1">
+                <div className="flex items-center justify-end gap-3 pt-5 border-t border-slate-200">
                   <button
                     type="button"
                     onClick={() => {
                       setIsCreateModalOpen(false);
                       setIsUserDropdownOpen(false);
                     }}
-                    className="px-4 py-2 rounded-xl text-xs font-bold bg-muted hover:bg-muted/80 text-muted-foreground transition-all cursor-pointer"
+                    className="px-6 py-3 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer"
                   >
                     إلغاء
                   </button>
                   <button
                     type="submit"
                     disabled={isCreating}
-                    className="px-5 py-2 rounded-xl text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-200 cursor-pointer"
+                    className="px-8 py-3 rounded-xl text-xs font-extrabold bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-lg shadow-primary/25 cursor-pointer flex items-center gap-2"
                   >
-                    {isCreating ? 'جاري الإنشاء...' : 'إنشاء وتعيين'}
+                    {isCreating ? 'جاري الإنشاء...' : 'إنشاء وتعيين المهمة'}
                   </button>
                 </div>
               </form>

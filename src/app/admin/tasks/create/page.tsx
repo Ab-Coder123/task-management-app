@@ -27,13 +27,13 @@ export default function AdminCreateTaskPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-right" dir="rtl">
       <PageHeader
-        title="Create New Task"
-        description="Assign assignments to verified accounts, select categories, priorities, and deadlines."
+        title="إنشاء مهمة جديدة وتعيينها"
+        description="قم بتحديد عنوان المهمة وتفاصيلها، وتعيينها إلى أعضاء الفريق مع تحديد نوع المهمة والأهمية وتاريخ الاستحقاق."
       />
 
-      <div className="flex justify-center md:justify-start">
+      <div className="w-full flex justify-start">
         <TaskForm
           users={users}
           onSubmit={handleFormSubmit}
