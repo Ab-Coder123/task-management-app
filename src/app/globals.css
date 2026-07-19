@@ -35,6 +35,37 @@
 
     --radius: 0.75rem;
   }
+
+  .dark {
+    /* Engineered Dark Mode Palette (Sleek Deep Slate/Navy) */
+    --background: 222 47% 9%;          /* #0b1120 deep rich dark slate */
+    --foreground: 210 40% 98%;         /* #f8fafc bright white text */
+
+    --card: 222 47% 12%;               /* #101828 elevated dark card */
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 60%;            /* #3b82f6 vibrant blue for dark mode */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 33% 17%;          /* dark neutral accent */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;              /* #1e293b dark blue-gray tint */
+    --muted-foreground: 215 20% 65%;   /* soft light gray */
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 33% 20%;             /* #1e293b defined subtle dark border */
+    --input: 217 33% 20%;
+    --ring: 217 91% 60%;
+  }
 }
 
 @layer base {

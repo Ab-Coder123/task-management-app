@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/providers/QueryProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Toaster } from "sonner";
 import FloatingTaskGraphics from "@/components/shared/FloatingTaskGraphics";
 
@@ -21,13 +22,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className="light">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       <body className={cairo.className}>
-        <QueryProvider>
-          <FloatingTaskGraphics />
-          {children}
-          <Toaster position="top-center" richColors dir="rtl" />
-        </QueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            <FloatingTaskGraphics />
+            {children}
+            <Toaster position="top-center" richColors dir="rtl" />
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

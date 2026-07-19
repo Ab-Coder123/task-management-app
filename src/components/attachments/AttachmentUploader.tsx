@@ -140,7 +140,7 @@ export default function AttachmentUploader({ taskId, onUploadComplete, onFilesQu
         className={`relative flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200 p-8 text-center
           ${isDragging
             ? 'border-primary bg-primary/5 scale-[1.01]'
-            : 'border-border hover:border-primary/50 hover:bg-primary/3 bg-slate-900/40'
+            : 'border-border hover:border-primary/50 hover:bg-primary/5 bg-muted/40'
           }`}
       >
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">

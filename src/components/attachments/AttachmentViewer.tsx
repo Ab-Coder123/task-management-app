@@ -156,7 +156,7 @@ export default function AttachmentViewer({ attachments, initialIndex = 0, taskId
     if (isText(mime)) {
       return (
         <div className="h-full overflow-auto p-6">
-          <pre className="text-xs text-foreground font-mono whitespace-pre-wrap leading-relaxed break-words bg-slate-900/60 p-4 rounded-xl border border-border">
+          <pre className="text-xs text-foreground font-mono whitespace-pre-wrap leading-relaxed break-words bg-muted/50 p-4 rounded-xl border border-border">
             {textContent || 'جارٍ التحميل...'}
           </pre>
         </div>
@@ -211,12 +211,12 @@ export default function AttachmentViewer({ attachments, initialIndex = 0, taskId
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.93, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-          className={`relative flex flex-col bg-slate-950 border border-slate-800 shadow-2xl rounded-2xl overflow-hidden
+          className={`relative flex flex-col bg-card border border-border shadow-2xl rounded-2xl overflow-hidden
             ${isFullscreen ? 'w-full h-full rounded-none' : 'w-full max-w-4xl h-[88vh]'}`}
           dir="rtl"
         >
           {/* ── Header ──────────────────────────────────────────────────────── */}
-          <div className="flex items-center gap-3 border-b border-slate-800 bg-slate-900/80 px-4 py-3 shrink-0">
+          <div className="flex items-center gap-3 border-b border-border bg-muted/50 px-4 py-3 shrink-0">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground truncate">{current?.originalName}</p>
               <p className="text-xs text-muted-foreground">{current && formatBytes(current.size)}</p>
