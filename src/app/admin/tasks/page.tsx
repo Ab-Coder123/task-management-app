@@ -233,16 +233,7 @@ export default function AdminTasksPage() {
         {isCreateModalOpen && (
           <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 md:py-10 overflow-y-auto">
             {/* Dark blur overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => {
-                setIsCreateModalOpen(false);
-                setIsUserDropdownOpen(false);
-              }}
-              className="fixed inset-0 bg-black/40 backdrop-blur-md"
-            />
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-md" onClick={() => { setIsCreateModalOpen(false); setIsUserDropdownOpen(false); }} />
 
             {/* Modal Dialog Content - Wide Two-Column layout (max-w-4xl) */}
             <motion.div
@@ -250,7 +241,7 @@ export default function AdminTasksPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 15 }}
               transition={{ type: 'spring', duration: 0.45, bounce: 0.2 }}
-              className="bg-card w-full max-w-4xl rounded-3xl p-6 md:p-8 relative shadow-600 text-right z-10 border border-border overflow-visible my-auto"
+              className="bg-white dark:bg-[#0f172a] w-full max-w-4xl rounded-3xl p-6 md:p-8 relative shadow-xl text-right z-10 border border-slate-200 dark:border-slate-800 overflow-visible my-auto"
             >
               {/* Close Button */}
               <button
@@ -258,13 +249,13 @@ export default function AdminTasksPage() {
                   setIsCreateModalOpen(false);
                   setIsUserDropdownOpen(false);
                 }}
-                className="absolute top-6 left-6 p-2.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer shadow-100"
+                className="absolute top-6 left-6 p-2.5 rounded-xl text-muted-foreground hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground transition-all cursor-pointer shadow-sm"
               >
                 <X className="h-5 w-5" />
               </button>
 
               {/* Header Title & Description */}
-              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-border">
+              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
                 <div className="relative w-12 h-12 flex items-center justify-center bg-primary/10 rounded-2xl shrink-0">
                   <Edit3 className="h-6 w-6 text-primary" />
                 </div>
@@ -283,8 +274,8 @@ export default function AdminTasksPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
                   {/* Column 1 (Right in RTL): Title & Description - 7 cols on lg */}
-                  <div className="lg:col-span-7 bg-muted/30 border border-border/80 rounded-2xl p-5 space-y-5">
-                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/60 pb-3">
+                  <div className="lg:col-span-7 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-2xl p-5 space-y-5">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200 dark:border-slate-700/60 pb-3">
                       <span className="w-2 h-2 rounded-full bg-primary inline-block" />
                       <span>البيانات الأساسية للمهمة</span>
                     </div>
@@ -300,7 +291,7 @@ export default function AdminTasksPage() {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="مثال: تطوير صفحة تسجيل الدخول الجديدة..."
-                        className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm focus:border-primary"
+                        className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm focus:border-primary"
                       />
                     </div>
 
@@ -314,14 +305,14 @@ export default function AdminTasksPage() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="أدخل تفاصيل المهمة، قائمة التحقق، أو أي تعليمات خاصة بالفريق..."
-                        className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all resize-none shadow-sm focus:border-primary min-h-[200px]"
+                        className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all resize-none shadow-sm focus:border-primary min-h-[200px]"
                       />
                     </div>
                   </div>
 
                   {/* Column 2 (Left in RTL): Assignee, Type/Priority & Due Date - 5 cols on lg */}
-                  <div className="lg:col-span-5 bg-muted/30 border border-border/80 rounded-2xl p-5 space-y-5">
-                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/60 pb-3">
+                  <div className="lg:col-span-5 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-2xl p-5 space-y-5">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200 dark:border-slate-700/60 pb-3">
                       <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
                       <span>التصنيف وتعيين المسؤولين</span>
                     </div>
@@ -334,7 +325,7 @@ export default function AdminTasksPage() {
                       <button
                         type="button"
                         onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-right shadow-sm cursor-pointer min-h-[46px] focus:border-primary"
+                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-right shadow-sm cursor-pointer min-h-[46px] focus:border-primary"
                       >
                         <span>
                           {assignedTo.length === 0
@@ -373,11 +364,10 @@ export default function AdminTasksPage() {
                             
                             {/* Solid card dropdown list panel */}
                             <motion.div
-                              initial={{ opacity: 0, y: 10 }}
+                              initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: 10 }}
-                              transition={{ duration: 0.15 }}
-                              className="absolute left-0 right-0 mt-2 p-2 bg-card border border-border rounded-2xl shadow-600 max-h-60 overflow-y-auto z-40 space-y-1 text-right"
+                              exit={{ opacity: 0, y: -10 }}
+                              className="absolute z-40 left-0 right-0 mt-2 p-2 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl max-h-60 overflow-y-auto space-y-1 text-right"
                             >
                               {approvedUsers.map((user) => {
                                 const isSelected = assignedTo.includes(user._id);
@@ -393,7 +383,7 @@ export default function AdminTasksPage() {
                                         setAssignedTo([...assignedTo, user._id]);
                                       }
                                     }}
-                                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-muted/70 cursor-pointer ${
+                                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer ${
                                       isSelected ? 'bg-primary/10 text-primary font-bold' : 'text-foreground'
                                     }`}
                                   >
@@ -406,7 +396,7 @@ export default function AdminTasksPage() {
                                     
                                     {/* User avatar or fallback */}
                                     {user.avatar ? (
-                                      <img src={user.avatar} className="h-7 w-7 rounded-full object-cover shrink-0 shadow-200" />
+                                      <img src={user.avatar} className="h-7 w-7 rounded-full object-cover shrink-0 shadow-sm" />
                                     ) : (
                                       <div className="h-7 w-7 rounded-full flex items-center justify-center text-[9px] font-bold uppercase shrink-0" style={{ background: ac.bg, border: `1px solid ${ac.border}`, color: ac.text }}>
                                         {getAvatarFallback(user.username)}
@@ -435,24 +425,24 @@ export default function AdminTasksPage() {
                       </AnimatePresence>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                      {/* Task Type */}
-                      <div>
-                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
-                          نوع المهمة
-                        </label>
-                        <select
-                          value={type}
-                          onChange={(e) => setType(e.target.value as TaskType)}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
-                        >
-                          <option value="feature" className="bg-card">ميزة جديدة</option>
-                          <option value="bug" className="bg-card">إصلاح مشكلة (Bug)</option>
-                          <option value="improvement" className="bg-card">تحسين أداء</option>
-                          <option value="documentation" className="bg-card">توثيق / ملفات</option>
-                        </select>
-                      </div>
+                    {/* Task Type */}
+                    <div className="w-full">
+                      <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                        نوع المهمة
+                      </label>
+                      <select
+                        value={type}
+                        onChange={(e) => setType(e.target.value as TaskType)}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
+                      >
+                        <option value="feature" className="bg-white dark:bg-[#0f172a] text-foreground">ميزة جديدة</option>
+                        <option value="bug" className="bg-white dark:bg-[#0f172a] text-foreground">إصلاح مشكلة (Bug)</option>
+                        <option value="improvement" className="bg-white dark:bg-[#0f172a] text-foreground">تحسين أداء</option>
+                        <option value="documentation" className="bg-white dark:bg-[#0f172a] text-foreground">توثيق / ملفات</option>
+                      </select>
+                    </div>
 
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       {/* Priority */}
                       <div>
                         <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
@@ -461,32 +451,32 @@ export default function AdminTasksPage() {
                         <select
                           value={priority}
                           onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all appearance-none cursor-pointer text-right shadow-sm focus:border-primary"
                         >
-                          <option value="low" className="bg-card">منخفضة</option>
-                          <option value="medium" className="bg-card">متوسطة</option>
-                          <option value="high" className="bg-card">عالية</option>
-                          <option value="critical" className="bg-card">حرجة</option>
+                          <option value="low" className="bg-white dark:bg-[#0f172a] text-foreground">منخفضة</option>
+                          <option value="medium" className="bg-white dark:bg-[#0f172a] text-foreground">متوسطة</option>
+                          <option value="high" className="bg-white dark:bg-[#0f172a] text-foreground">عالية</option>
+                          <option value="critical" className="bg-white dark:bg-[#0f172a] text-foreground">حرجة</option>
                         </select>
                       </div>
-                    </div>
 
-                    {/* Due Date */}
-                    <div>
-                      <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
-                        تاريخ الاستحقاق <span className="text-rose-500">*</span>
-                      </label>
-                      <div className="relative">
-                        <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-muted-foreground/60">
-                          <Calendar className="h-4.5 w-4.5" />
-                        </span>
-                        <input
-                          type="date"
-                          required
-                          value={dueDate}
-                          onChange={(e) => setDueDate(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm cursor-pointer focus:border-primary"
-                        />
+                      {/* Due Date */}
+                      <div>
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                          تاريخ الاستحقاق <span className="text-rose-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-muted-foreground/60">
+                            <Calendar className="h-4.5 w-4.5" />
+                          </span>
+                          <input
+                            type="date"
+                            required
+                            value={dueDate}
+                            onChange={(e) => setDueDate(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 text-right transition-all shadow-sm cursor-pointer focus:border-primary"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

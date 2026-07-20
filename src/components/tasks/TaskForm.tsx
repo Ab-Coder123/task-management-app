@@ -96,10 +96,9 @@ export default function TaskForm({
   const approvedUsers = users;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-5xl bg-card border border-border/80 rounded-3xl p-6 md:p-8 shadow-sm text-right" dir="rtl">
+    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-5xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl text-right" dir="rtl">
       
-      {/* Header Info */}
-      <div className="pb-4 border-b border-border/40">
+      <div className="pb-4 border-b border-slate-200 dark:border-slate-800">
         <h3 className="text-lg font-extrabold text-foreground flex items-center gap-2">
           📋 إعداد تفاصيل وتعيين المهمة
         </h3>
@@ -108,17 +107,14 @@ export default function TaskForm({
         </p>
       </div>
 
-      {/* Two-Column Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        {/* Column 1 (Right side in RTL): Title & Description - 7 cols on lg */}
-        <div className="lg:col-span-7 bg-muted/30 border border-border/80 rounded-2xl p-5 space-y-5 shadow-100">
-          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/60 pb-3">
+        <div className="lg:col-span-7 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-2xl p-5 space-y-5 shadow-sm">
+          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200 dark:border-slate-700/60 pb-3">
             <span className="w-2 h-2 rounded-full bg-primary inline-block" />
             <span>البيانات الأساسية للمهمة</span>
           </div>
 
-          {/* Title */}
           <div>
             <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
               اسم المهمة <span className="text-rose-500">*</span>
@@ -128,12 +124,11 @@ export default function TaskForm({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right shadow-sm"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right shadow-sm"
               placeholder="مثال: تطوير صفحة تسجيل الدخول الجديدة..."
             />
           </div>
 
-          {/* Description */}
           <div>
             <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
               وصف المهمة والخطوات المطلوبة <span className="text-rose-500">*</span>
@@ -143,20 +138,18 @@ export default function TaskForm({
               onChange={(e) => setDescription(e.target.value)}
               required
               rows={8}
-              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right resize-none shadow-sm min-h-[230px]"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right resize-none shadow-sm min-h-[230px]"
               placeholder="أدخل تفاصيل المهمة، قائمة التحقق، أو أي تعليمات خاصة بالفريق..."
             />
           </div>
         </div>
 
-        {/* Column 2 (Left side in RTL): Assignment, Classification, Due Date & Privacy - 5 cols on lg */}
-        <div className="lg:col-span-5 bg-muted/30 border border-border/80 rounded-2xl p-5 space-y-5 shadow-100">
-          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-border/60 pb-3">
+        <div className="lg:col-span-5 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-2xl p-5 space-y-5 shadow-sm">
+          <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200 dark:border-slate-700/60 pb-3">
             <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
             <span>التصنيف وتعيين المسؤولين</span>
           </div>
 
-          {/* Custom Multi-Select User Selector */}
           <div className="relative">
             <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
               الموكل إليهم (أعضاء الفريق) <span className="text-rose-500">*</span>
@@ -164,7 +157,7 @@ export default function TaskForm({
             <button
               type="button"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer min-h-[46px] shadow-sm"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer min-h-[46px] shadow-sm"
             >
               <span>
                 {assignedTo.length === 0
@@ -199,11 +192,11 @@ export default function TaskForm({
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setIsDropdownOpen(false)} />
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
+                    exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute left-0 right-0 mt-2 p-2 bg-card border border-border rounded-2xl shadow-600 max-h-60 overflow-y-auto z-40 space-y-1 text-right"
+                    className="absolute z-40 left-0 right-0 mt-2 p-2 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl max-h-60 overflow-y-auto space-y-1 text-right"
                   >
                     {approvedUsers.map((user) => {
                       const isSelected = assignedTo.includes(user._id);
@@ -219,7 +212,7 @@ export default function TaskForm({
                               setAssignedTo([...assignedTo, user._id]);
                             }
                           }}
-                          className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-muted/70 cursor-pointer ${
+                          className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer ${
                             isSelected ? 'bg-primary/10 text-primary font-bold' : 'text-foreground'
                           }`}
                         >
@@ -230,14 +223,14 @@ export default function TaskForm({
                           </div>
                           
                           {user.avatar ? (
-                            <img src={user.avatar} className="h-7 w-7 rounded-full object-cover shrink-0 shadow-200" />
+                            <img src={user.avatar} className="h-7 w-7 rounded-full object-cover shrink-0 shadow-sm" />
                           ) : (
                             <div className="h-7 w-7 rounded-full flex items-center justify-center text-[9px] font-bold uppercase shrink-0" style={{ background: ac.bg, border: `1px solid ${ac.border}`, color: ac.text }}>
                               {getAvatarFallback(user.username)}
                             </div>
                           )}
                           
-                          <div className="flex flex-col grow">
+                          <div className="flex flex-col grow select-none text-right">
                             <span className="font-bold text-foreground flex items-center gap-1.5 justify-start">
                               {user.username}
                               {user.role === 'admin' && (
@@ -255,26 +248,25 @@ export default function TaskForm({
             </AnimatePresence>
           </div>
 
-          {/* Select Grids: Type, Priority, Status */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label htmlFor="taskType" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
-                نوع المهمة
-              </label>
-              <select
-                id="taskType"
-                value={type}
-                onChange={(e) => setType(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
-              >
-                {TASK_TYPES.map((t) => (
-                  <option key={t.value} value={t.value} className="bg-card">
-                    {t.label === 'Bug' ? 'إصلاح مشكلة (Bug)' : t.label === 'Feature' ? 'ميزة جديدة' : t.label === 'Improvement' ? 'تحسين أداء' : 'توثيق وملفات'}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="w-full">
+            <label htmlFor="taskType" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+              نوع المهمة
+            </label>
+            <select
+              id="taskType"
+              value={type}
+              onChange={(e) => setType(e.target.value as any)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+            >
+              {TASK_TYPES.map((t) => (
+                <option key={t.value} value={t.value} className="bg-white dark:bg-[#0f172a] text-foreground">
+                  {t.label === 'Bug' ? 'إصلاح مشكلة (Bug)' : t.label === 'Feature' ? 'ميزة جديدة' : t.label === 'Improvement' ? 'تحسين أداء' : 'توثيق وملفات'}
+                </option>
+              ))}
+            </select>
+          </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
               <label htmlFor="taskPriority" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
                 الأهمية
@@ -283,37 +275,35 @@ export default function TaskForm({
                 id="taskPriority"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
               >
                 {TASK_PRIORITIES.map((p) => (
-                  <option key={p.value} value={p.value} className="bg-card">
+                  <option key={p.value} value={p.value} className="bg-white dark:bg-[#0f172a] text-foreground">
                     {p.label === 'Low' ? 'منخفضة' : p.label === 'Medium' ? 'متوسطة' : p.label === 'High' ? 'عالية' : 'حرجة'}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="taskStatus" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+                حالة المهمة الحالية
+              </label>
+              <select
+                id="taskStatus"
+                value={status}
+                onChange={(e) => setStatus(e.target.value as any)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
+              >
+                {TASK_STATUSES.map((s) => (
+                  <option key={s.value} value={s.value} className="bg-white dark:bg-[#0f172a] text-foreground">
+                    {s.label === 'Pending' ? ' معلقة' : s.label === 'In Progress' ? ' قيد التنفيذ' : s.label === 'Completed' ? ' مكتملة' : ' متأخرة'}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          {/* Status Select */}
-          <div>
-            <label htmlFor="taskStatus" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
-              حالة المهمة الحالية
-            </label>
-            <select
-              id="taskStatus"
-              value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none text-right cursor-pointer shadow-sm"
-            >
-              {TASK_STATUSES.map((s) => (
-                <option key={s.value} value={s.value} className="bg-card">
-                  {s.label === 'Pending' ? ' معلقة' : s.label === 'In Progress' ? ' قيد التنفيذ' : s.label === 'Completed' ? ' مكتملة' : ' متأخرة'}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Due date input */}
           <div>
             <label htmlFor="dueDate" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
               تاريخ الاستحقاق <span className="text-rose-500">*</span>
@@ -324,19 +314,17 @@ export default function TaskForm({
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               required
-              className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer shadow-sm"
-            >
-            </input>
+              className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-700 text-foreground text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-right cursor-pointer shadow-sm"
+            />
           </div>
 
-          {/* Task Privacy Control */}
-          <div className="flex items-center gap-2.5 pt-2 justify-start bg-card/60 p-3 rounded-xl border border-border/50">
+          <div className="flex items-center gap-2.5 pt-2 justify-start bg-white dark:bg-[#0f172a] p-3 rounded-xl border border-slate-200 dark:border-slate-700">
             <input 
               type="checkbox"
               id="isPrivate"
               checked={isPrivate}
               onChange={(e) => setIsPrivate(e.target.checked)}
-              className="h-4 w-4 rounded border-muted-foreground/30 text-primary focus:ring-primary/20 shrink-0 cursor-pointer"
+              className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/20 shrink-0 cursor-pointer"
             />
             <label htmlFor="isPrivate" className="text-xs font-bold text-foreground select-none cursor-pointer">
               مهمة خاصة <span className="text-[10px] text-muted-foreground font-normal">(تظهر للمسؤول والمنشئ فقط)</span>
@@ -346,12 +334,11 @@ export default function TaskForm({
 
       </div>
 
-      {/* Submission CTA */}
-      <div className="flex items-center justify-end space-x-4 space-x-reverse pt-6 border-t border-border/60 mt-4">
+      <div className="flex items-center justify-end space-x-4 space-x-reverse pt-6 border-t border-slate-200 dark:border-slate-800 mt-4">
         <button
           type="button"
           onClick={() => router.push('/admin/tasks')}
-          className="px-6 py-3 rounded-xl text-muted-foreground bg-muted hover:bg-muted/80 text-xs font-bold transition-all cursor-pointer"
+          className="px-6 py-3 rounded-xl text-muted-foreground bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold transition-all cursor-pointer"
         >
           إلغاء
         </button>
