@@ -41,7 +41,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           role="admin"
           onMenuClick={() => setMobileSidebarOpen(true)}
         />
-        <main className="relative z-0 flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto animate-fade-in">
+        <main className="isolate relative z-0 flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto animate-fade-in">
           {children}
         </main>
       </div>
