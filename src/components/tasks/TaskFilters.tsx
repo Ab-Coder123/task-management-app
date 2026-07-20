@@ -26,8 +26,8 @@ export default function TaskFilters({
   setTypeFilter,
 }: TaskFiltersProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-5 rounded-2xl bg-card border border-border/80 shadow-100 hover:shadow-200 transition-all text-right dir-rtl mb-6">
-      
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-5 rounded-2xl bg-card shadow-md  hover:shadow-200 transition-all text-right dir-rtl mb-6">
+
       {/* Search Input */}
       <div className="relative flex flex-col justify-end">
         <label className="block text-xs font-extrabold text-foreground mb-1.5 flex items-center gap-1.5">

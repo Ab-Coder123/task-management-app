@@ -15,12 +15,12 @@ interface UserTableProps {
 }
 
 const AVATAR_COLORS = [
-  { bg: 'rgba(99, 102, 241, 0.1)',  border: 'rgba(99, 102, 241, 0.25)',  text: '#4f46e5' }, // indigo
-  { bg: 'rgba(236, 72, 153, 0.08)',  border: 'rgba(236, 72, 153, 0.2)', text: '#db2777' }, // pink
-  { bg: 'rgba(245, 158, 11, 0.08)',  border: 'rgba(245, 158, 11, 0.2)', text: '#d97706' }, // amber
-  { bg: 'rgba(16, 185, 129, 0.08)',  border: 'rgba(16, 185, 129, 0.2)', text: '#059669' }, // emerald
-  { bg: 'rgba(239, 68, 68, 0.08)',   border: 'rgba(239, 68, 68, 0.2)',  text: '#dc2626' }, // red
-  { bg: 'rgba(59, 130, 246, 0.08)',  border: 'rgba(59, 130, 246, 0.2)', text: '#2563eb' }, // blue
+  { bg: 'rgba(99, 102, 241, 0.1)', border: 'rgba(99, 102, 241, 0.25)', text: '#4f46e5' }, // indigo
+  { bg: 'rgba(236, 72, 153, 0.08)', border: 'rgba(236, 72, 153, 0.2)', text: '#db2777' }, // pink
+  { bg: 'rgba(245, 158, 11, 0.08)', border: 'rgba(245, 158, 11, 0.2)', text: '#d97706' }, // amber
+  { bg: 'rgba(16, 185, 129, 0.08)', border: 'rgba(16, 185, 129, 0.2)', text: '#059669' }, // emerald
+  { bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.2)', text: '#dc2626' }, // red
+  { bg: 'rgba(59, 130, 246, 0.08)', border: 'rgba(59, 130, 246, 0.2)', text: '#2563eb' }, // blue
 ];
 
 function avatarColor(name: string) {
@@ -39,10 +39,10 @@ const containerVariants = {
 
 const rowVariants = {
   hidden: { opacity: 0, y: 12 },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: 'spring', stiffness: 110, damping: 14 } 
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 110, damping: 14 }
   }
 };
 
@@ -68,18 +68,18 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
   };
 
   return (
-    <div className="w-full overflow-x-auto rounded-2xl bg-card shadow-300">
+    <div className="w-full overflow-x-auto rounded-2xl bg-card dark:bg-[#0f172a] dark:border-transparent shadow-300 dark:shadow-2xl">
       <table className="w-full min-w-[700px] text-right border-collapse">
         <thead>
           <tr className="bg-muted/30 text-xs font-bold text-muted-foreground/80 uppercase tracking-wider">
-            <th className="px-6 py-4.5">المستخدم</th>
-            <th className="px-6 py-4.5">تاريخ التسجيل</th>
-            <th className="px-6 py-4.5">الصلاحية</th>
-            <th className="px-6 py-4.5">الحالة</th>
-            <th className="px-6 py-4.5 text-left">الإجراءات</th>
+            <th className="px-6 py-4">المستخدم</th>
+            <th className="px-6 py-4">تاريخ التسجيل</th>
+            <th className="px-6 py-4">الصلاحية</th>
+            <th className="px-6 py-4">الحالة</th>
+            <th className="px-6 py-4">الإجراءات</th>
           </tr>
         </thead>
-        <motion.tbody 
+        <motion.tbody
           variants={containerVariants}
           initial="hidden"
           animate="show"
@@ -87,18 +87,18 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
         >
           {users.map((user) => {
             const ac = avatarColor(user.username || 'غ م');
-            
+
             return (
-              <motion.tr 
-                key={user._id} 
+              <motion.tr
+                key={user._id}
                 variants={rowVariants}
                 className="hover:bg-muted/20 transition-colors duration-200"
               >
-                
+
                 {/* User Identity */}
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div 
+                    <div
                       className="h-9 w-9 rounded-full flex items-center justify-center text-xs font-bold uppercase"
                       style={{ background: ac.bg, border: `1.5px solid ${ac.border}`, color: ac.text }}
                     >
@@ -110,7 +110,7 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
                     </div>
                   </div>
                 </td>
-                
+
                 {/* Registration Date */}
                 <td className="px-6 py-4 text-muted-foreground font-semibold">
                   {formatArabicDate(user.createdAt)}
@@ -118,20 +118,19 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
 
                 {/* Role */}
                 <td className="px-6 py-4">
-                  <span className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border shadow-100 ${
-                    user.role === 'admin' 
-                      ? 'bg-violet-50 text-violet-700 border-violet-100' 
-                      : 'bg-slate-50 text-slate-600 border-slate-100'
-                  }`}>
+                  <span className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border shadow-100 ${user.role === 'admin'
+                    ? 'bg-violet-50 text-violet-700 border-violet-100'
+                    : 'bg-slate-50 text-slate-600 border-slate-100'
+                    }`}>
                     {user.role === 'admin' ? 'مدير النظام' : 'عضو فريق'}
                   </span>
                 </td>
-                
+
                 {/* Status Badge */}
                 <td className="px-6 py-4">
                   <UserStatusBadge status={user.status} />
                 </td>
-                
+
                 {/* Action Operations */}
                 <td className="px-6 py-4 text-left">
                   <div className="flex items-center justify-start gap-1.5">
@@ -159,7 +158,7 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
                         className="p-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 transition-all shadow-100"
                         title="حذف المستخدم"
                       >
-                        <Trash2 className="h-4.5 w-4.5" />
+                        <Trash2 className="h-3 w-3" />
                       </button>
                     )}
                   </div>

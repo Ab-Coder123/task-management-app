@@ -28,7 +28,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
   const profileHref = role === 'admin' ? '/admin/profile' : '/dashboard/profile';
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md shadow-100">
+    <header className="sticky top-0 z-[1000] w-full bg-background/80 backdrop-blur-md shadow-100">
       <div className="flex h-16 items-center justify-between px-6">
 
         {/* Right side (RTL): Badge + Mobile menu */}
@@ -79,8 +79,8 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
 
             {dropdownOpen && user && (
               <>
-                <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                <div className="absolute left-0 mt-2.5 z-20 w-56 rounded-2xl p-2 shadow-400 text-right bg-card border border-border animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="fixed inset-0 z-[999]" onClick={() => setDropdownOpen(false)} />
+                <div className="absolute left-0 mt-2.5 z-[1000] w-56 rounded-2xl p-2 shadow-400 text-right bg-card border border-border animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-3.5 py-3 mb-2 bg-muted/40 rounded-xl border border-border/50">
                     <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">الحساب النشط</p>
                     <p className="text-xs font-bold text-foreground truncate mt-0.5" title={user.email}>{user.email}</p>

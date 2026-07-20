@@ -277,7 +277,7 @@ export default function AdminReportsPage() {
         </div>
 
         {/* Top Performers Table - Fully Responsive & Semantic */}
-        <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-100 lg:col-span-2 space-y-4">
+        <div className="rounded-2xl border border-border/80 dark:border-transparent bg-card dark:bg-[#0f172a] p-6 shadow-100 dark:shadow-2xl lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between border-b border-border/40 pb-3">
             <h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
               <Award className="h-5 w-5 text-amber-500" />

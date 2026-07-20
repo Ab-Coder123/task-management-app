@@ -28,10 +28,10 @@ const containerVariants = {
 
 const rowVariants = {
   hidden: { opacity: 0, y: 12 },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: 'spring', stiffness: 110, damping: 14 } 
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 110, damping: 14 }
   }
 };
 
@@ -41,7 +41,7 @@ function AdminCommentsContent() {
 
   const { comments, isLoading, deleteComment } = useAdminComments();
   const [mounted, setMounted] = useState(false);
-  
+
   // Search & Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [taskFilter, setTaskFilter] = useState(initialTaskId);
@@ -110,7 +110,7 @@ function AdminCommentsContent() {
     const authorId = userObj?._id || comment.authorId || '';
 
     // Search Query (Task Title, User Name, User Email)
-    const matchesSearch = 
+    const matchesSearch =
       taskTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       authorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       authorEmail.toLowerCase().includes(searchQuery.toLowerCase());
@@ -136,9 +136,9 @@ function AdminCommentsContent() {
     try {
       const d = new Date(dateStr);
       if (isNaN(d.getTime())) return 'تاريخ غير محدد';
-      return d.toLocaleDateString('ar-EG', { 
-        day: 'numeric', 
-        month: 'short', 
+      return d.toLocaleDateString('ar-EG', {
+        day: 'numeric',
+        month: 'short',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
@@ -149,7 +149,7 @@ function AdminCommentsContent() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial="hidden"
       animate="visible"
       variants={pageVariants}
@@ -162,13 +162,13 @@ function AdminCommentsContent() {
       />
 
       {/* ── Search & Filters Panel ── */}
-      <div className="bg-card border border-border/60 rounded-3xl p-5 md:p-6 shadow-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="bg-card  rounded-3xl p-5 md:p-6 shadow-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Search */}
         <div className="relative w-full">
           <label className="block text-[11px] font-bold text-muted-foreground mb-1.5 mr-1">البحث بالنص</label>
           <div className="relative">
             <input
-              type="text" 
+              type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="ابحث بعنوان المهمة، العضو، الإيميل..."
@@ -238,7 +238,7 @@ function AdminCommentsContent() {
           <p className="text-sm text-muted-foreground font-semibold">لا توجد تعليقات مطابقة لخيارات التصفية الحالية.</p>
         </div>
       ) : (
-        <div className="w-full overflow-x-auto rounded-3xl bg-card shadow-300 border border-border/60">
+        <div className="w-full overflow-x-auto rounded-3xl bg-card dark:bg-[#0f172a] shadow-300 dark:shadow-2xl border border-border/60 dark:border-transparent">
           <table className="w-full min-w-[800px] text-right border-collapse">
             <thead>
               <tr className="bg-muted/30 text-xs font-bold text-muted-foreground/80 uppercase tracking-wider border-b border-border/40">
@@ -250,7 +250,7 @@ function AdminCommentsContent() {
                 <th className="px-6 py-4.5 text-left">الإجراءات</th>
               </tr>
             </thead>
-            <motion.tbody 
+            <motion.tbody
               variants={containerVariants}
               initial="hidden"
               animate="show"
@@ -262,12 +262,12 @@ function AdminCommentsContent() {
 
                 const displayName = comment.authorName || userObj?.username || 'مستخدم غير معروف';
                 const role = comment.authorRole || userObj?.role || 'user';
-                
+
                 const taskCreator = taskObj?.createdBy && typeof taskObj.createdBy === 'object' ? taskObj.createdBy.username : 'المدير';
 
                 return (
-                  <motion.tr 
-                    key={comment._id} 
+                  <motion.tr
+                    key={comment._id}
                     variants={rowVariants}
                     className="hover:bg-muted/10 transition-colors duration-200"
                   >
@@ -275,10 +275,10 @@ function AdminCommentsContent() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         {userObj?.avatar ? (
-                          <img 
-                            src={userObj.avatar} 
+                          <img
+                            src={userObj.avatar}
                             alt="Avatar"
-                            className="h-8 w-8 rounded-full object-cover shadow-100" 
+                            className="h-8 w-8 rounded-full object-cover shadow-100"
                           />
                         ) : (
                           <div className="h-8 w-8 rounded-full bg-primary/15 border border-primary/20 text-xs font-bold text-primary flex items-center justify-center uppercase shrink-0">
@@ -296,11 +296,11 @@ function AdminCommentsContent() {
                         </div>
                       </div>
                     </td>
-                    
+
                     {/* Task context */}
                     <td className="px-6 py-4">
                       {taskObj ? (
-                        <Link 
+                        <Link
                           href={`/tasks/${taskObj._id}`}
                           className="font-bold text-primary text-xs hover:underline flex items-center gap-1 cursor-pointer"
                         >
@@ -311,7 +311,7 @@ function AdminCommentsContent() {
                         <span className="text-xs text-muted-foreground font-semibold">مهمة غير متوفرة</span>
                       )}
                     </td>
-                    
+
                     {/* Comment Content */}
                     <td className="px-6 py-4 max-w-xs truncate text-muted-foreground text-xs font-semibold leading-relaxed">
                       {comment.content}
@@ -321,12 +321,12 @@ function AdminCommentsContent() {
                     <td className="px-6 py-4 font-semibold text-foreground/80 text-xs">
                       {taskCreator}
                     </td>
-                    
+
                     {/* Date */}
                     <td className="px-6 py-4 text-xs font-semibold text-muted-foreground">
                       {formatArabicDateTime(comment.createdAt)}
                     </td>
-                    
+
                     {/* Actions */}
                     <td className="px-6 py-4 text-left">
                       <button

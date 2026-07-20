@@ -3,7 +3,7 @@
 import React from 'react';
 import { Task, User } from '@/lib/types';
 import { getPriorityColor, getStatusColor, formatDate } from '@/lib/utils';
-import { Edit2, Trash2, CheckCircle2, BadgeCheck, Lock } from 'lucide-react';
+import { Edit2, Trash2, CheckCircle2, BadgeCheck, Lock, Bug, Activity, FileText, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -14,12 +14,12 @@ interface TaskTableProps {
 }
 
 const AVATAR_COLORS = [
-  { bg: 'rgba(99, 102, 241, 0.1)',  border: 'rgba(99, 102, 241, 0.25)',  text: '#4f46e5' }, // indigo
-  { bg: 'rgba(236, 72, 153, 0.08)',  border: 'rgba(236, 72, 153, 0.2)', text: '#db2777' }, // pink
-  { bg: 'rgba(245, 158, 11, 0.08)',  border: 'rgba(245, 158, 11, 0.2)', text: '#d97706' }, // amber
-  { bg: 'rgba(16, 185, 129, 0.08)',  border: 'rgba(16, 185, 129, 0.2)', text: '#059669' }, // emerald
-  { bg: 'rgba(239, 68, 68, 0.08)',   border: 'rgba(239, 68, 68, 0.2)',  text: '#dc2626' }, // red
-  { bg: 'rgba(59, 130, 246, 0.08)',  border: 'rgba(59, 130, 246, 0.2)', text: '#2563eb' }, // blue
+  { bg: 'rgba(99, 102, 241, 0.1)', border: 'rgba(99, 102, 241, 0.25)', text: '#4f46e5' }, // indigo
+  { bg: 'rgba(236, 72, 153, 0.08)', border: 'rgba(236, 72, 153, 0.2)', text: '#db2777' }, // pink
+  { bg: 'rgba(245, 158, 11, 0.08)', border: 'rgba(245, 158, 11, 0.2)', text: '#d97706' }, // amber
+  { bg: 'rgba(16, 185, 129, 0.08)', border: 'rgba(16, 185, 129, 0.2)', text: '#059669' }, // emerald
+  { bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.2)', text: '#dc2626' }, // red
+  { bg: 'rgba(59, 130, 246, 0.08)', border: 'rgba(59, 130, 246, 0.2)', text: '#2563eb' }, // blue
 ];
 
 function avatarColor(name: string) {
@@ -45,10 +45,10 @@ const containerVariants = {
 
 const rowVariants = {
   hidden: { opacity: 0, y: 10 },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: 'spring', stiffness: 120, damping: 14 } 
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 120, damping: 14 }
   }
 };
 
@@ -101,20 +101,20 @@ export default function TaskTable({ tasks, onDelete, onComplete }: TaskTableProp
   };
 
   return (
-    <div className="w-full overflow-x-auto rounded-2xl bg-card border border-border/80 shadow-200">
+    <div className="w-full overflow-x-auto rounded-2xl bg-card dark:bg-[#0f172a] border border-border/80 dark:border-transparent shadow-200 dark:shadow-2xl p-2 sm:p-4">
       <table className="w-full min-w-[880px] text-right border-collapse">
         <thead>
           <tr className="bg-muted/40 border-b border-border/80 text-xs font-extrabold text-muted-foreground uppercase tracking-wider">
-            <th className="px-6 py-4.5">المهمة والوصف</th>
-            <th className="px-6 py-4.5">الموكل إليهم</th>
-            <th className="px-6 py-4.5">النوع</th>
-            <th className="px-6 py-4.5">الأهمية</th>
-            <th className="px-6 py-4.5">تاريخ الاستحقاق</th>
-            <th className="px-6 py-4.5">الحالة</th>
-            <th className="px-6 py-4.5 text-left">الإجراءات</th>
+            <th className="px-6 py-4">المهمة والوصف</th>
+            <th className="px-6 py-4">الموكل إليهم</th>
+            <th className="px-6 py-4">النوع</th>
+            <th className="px-6 py-4">الأهمية</th>
+            <th className="px-6 py-4">تاريخ </th>
+            <th className="px-6 py-4">الحالة</th>
+            <th className="px-6 py-4 text-left">الإجراءات</th>
           </tr>
         </thead>
-        <motion.tbody 
+        <motion.tbody
           variants={containerVariants}
           initial="hidden"
           animate="show"
@@ -125,8 +125,8 @@ export default function TaskTable({ tasks, onDelete, onComplete }: TaskTableProp
             const assignedUsers = task.assignedUsers || [];
 
             return (
-              <motion.tr 
-                key={task._id} 
+              <motion.tr
+                key={task._id}
                 variants={rowVariants}
                 className={`transition-all duration-200 ${theme.accent}`}
               >
@@ -164,7 +164,7 @@ export default function TaskTable({ tasks, onDelete, onComplete }: TaskTableProp
                                   className="h-7 w-7 rounded-full object-cover border-2 border-card shadow-100"
                                 />
                               ) : (
-                                <div 
+                                <div
                                   className="h-7 w-7 rounded-full flex items-center justify-center text-[9px] font-bold uppercase border-2 border-card"
                                   style={{ background: ac.bg, border: `1px solid ${ac.border}`, color: ac.text }}
                                 >
@@ -194,8 +194,12 @@ export default function TaskTable({ tasks, onDelete, onComplete }: TaskTableProp
                 </td>
 
                 {/* Type tag */}
-                <td className="px-6 py-4">
-                  <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm ${theme.labelBg}`}>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`inline-flex items-center gap-1.5 text-[11px] font-extrabold px-3 py-1.5 rounded-full shadow-sm ${theme.labelBg}`}>
+                    {task.type === 'bug' && <Bug className="h-3 w-3" />}
+                    {task.type === 'improvement' && <Activity className="h-3 w-3" />}
+                    {task.type === 'documentation' && <FileText className="h-3 w-3" />}
+                    {task.type === 'feature' && <Sparkles className="h-3 w-3" />}
                     {getTypeLabelArabic(task.type)}
                   </span>
                 </td>

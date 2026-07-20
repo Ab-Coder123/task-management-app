@@ -20,12 +20,12 @@ const pageVariants = {
 };
 
 const AVATAR_COLORS = [
-  { bg: 'rgba(99, 102, 241, 0.1)',  border: 'rgba(99, 102, 241, 0.25)',  text: '#4f46e5' }, // indigo
-  { bg: 'rgba(236, 72, 153, 0.08)',  border: 'rgba(236, 72, 153, 0.2)', text: '#db2777' }, // pink
-  { bg: 'rgba(245, 158, 11, 0.08)',  border: 'rgba(245, 158, 11, 0.2)', text: '#d97706' }, // amber
-  { bg: 'rgba(16, 185, 129, 0.08)',  border: 'rgba(16, 185, 129, 0.2)', text: '#059669' }, // emerald
-  { bg: 'rgba(239, 68, 68, 0.08)',   border: 'rgba(239, 68, 68, 0.2)',  text: '#dc2626' }, // red
-  { bg: 'rgba(59, 130, 246, 0.08)',  border: 'rgba(59, 130, 246, 0.2)', text: '#2563eb' }, // blue
+  { bg: 'rgba(99, 102, 241, 0.1)', border: 'rgba(99, 102, 241, 0.25)', text: '#4f46e5' }, // indigo
+  { bg: 'rgba(236, 72, 153, 0.08)', border: 'rgba(236, 72, 153, 0.2)', text: '#db2777' }, // pink
+  { bg: 'rgba(245, 158, 11, 0.08)', border: 'rgba(245, 158, 11, 0.2)', text: '#d97706' }, // amber
+  { bg: 'rgba(16, 185, 129, 0.08)', border: 'rgba(16, 185, 129, 0.2)', text: '#059669' }, // emerald
+  { bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.2)', text: '#dc2626' }, // red
+  { bg: 'rgba(59, 130, 246, 0.08)', border: 'rgba(59, 130, 246, 0.2)', text: '#2563eb' }, // blue
 ];
 
 function avatarColor(name: string) {
@@ -43,7 +43,7 @@ const getAvatarFallback = (name: string) => {
 export default function AdminTasksPage() {
   const { tasks, isLoading: tasksLoading, deleteTask, completeTask, createTask, isCreating } = useTasks();
   const { users, isLoading: usersLoading } = useUsers();
-  
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -98,7 +98,7 @@ export default function AdminTasksPage() {
   // Filtering logic
   const filteredTasks = tasksWithUsers.filter((task) => {
     const matchesSearch =
-      !search || 
+      !search ||
       task.title.toLowerCase().includes(search.toLowerCase()) ||
       task.description.toLowerCase().includes(search.toLowerCase());
 
@@ -173,11 +173,11 @@ export default function AdminTasksPage() {
   const approvedUsers = users;
 
   return (
-    <motion.div 
+    <motion.div
       initial="hidden"
       animate="visible"
       variants={pageVariants}
-      className="space-y-6 text-right" 
+      className="space-y-6 text-right"
       dir="rtl"
     >
       <PageHeader
@@ -186,9 +186,9 @@ export default function AdminTasksPage() {
         action={
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:bg-primary/95 active:scale-95 transition-all shadow-200"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:bg-primary/95 active:scale-95 transition-all shadow-200"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-5 w-5 bg-green-300 rounded-sm " />
             <span>إنشاء مهمة جديدة</span>
           </button>
         }
@@ -272,7 +272,7 @@ export default function AdminTasksPage() {
               <form onSubmit={handleCreateTask} className="space-y-6">
                 {/* Two-Column Layout Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                  
+
                   {/* Column 1 (Right in RTL): Title & Description - 7 cols on lg */}
                   <div className="lg:col-span-7 bg-slate-50 dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-2xl p-5 space-y-5">
                     <div className="flex items-center gap-2 text-sm font-extrabold text-foreground border-b border-slate-200 dark:border-slate-700/60 pb-3">
@@ -361,7 +361,7 @@ export default function AdminTasksPage() {
                           <>
                             {/* Overlay to handle click outside */}
                             <div className="fixed inset-0 z-30" onClick={() => setIsUserDropdownOpen(false)} />
-                            
+
                             {/* Solid card dropdown list panel */}
                             <motion.div
                               initial={{ opacity: 0, y: -10 }}
@@ -383,17 +383,15 @@ export default function AdminTasksPage() {
                                         setAssignedTo([...assignedTo, user._id]);
                                       }
                                     }}
-                                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer ${
-                                      isSelected ? 'bg-primary/10 text-primary font-bold' : 'text-foreground'
-                                    }`}
+                                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-xs font-semibold text-right transition-all hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer ${isSelected ? 'bg-primary/10 text-primary font-bold' : 'text-foreground'
+                                      }`}
                                   >
                                     {/* Custom Checkbox */}
-                                    <div className={`h-4.5 w-4.5 rounded-md border flex items-center justify-center transition-all shrink-0 ${
-                                      isSelected ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground/30'
-                                    }`}>
+                                    <div className={`h-4.5 w-4.5 rounded-md border flex items-center justify-center transition-all shrink-0 ${isSelected ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground/30'
+                                      }`}>
                                       {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
                                     </div>
-                                    
+
                                     {/* User avatar or fallback */}
                                     {user.avatar ? (
                                       <img src={user.avatar} className="h-7 w-7 rounded-full object-cover shrink-0 shadow-sm" />
@@ -402,7 +400,7 @@ export default function AdminTasksPage() {
                                         {getAvatarFallback(user.username)}
                                       </div>
                                     )}
-                                    
+
                                     {/* User Name & Email */}
                                     <div className="flex flex-col grow select-none text-right">
                                       <span className="font-bold text-foreground flex items-center gap-1.5 justify-start">

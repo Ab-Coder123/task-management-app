@@ -42,7 +42,7 @@ export default function ThemeToggle() {
   const CurrentIcon = current.Icon;
 
   return (
-    <div className="relative inline-block text-right select-none" ref={dropdownRef} dir="rtl">
+    <div className="relative inline-block text-right select-none z-[1000]" ref={dropdownRef} dir="rtl">
       {/* Select Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -64,7 +64,7 @@ export default function ThemeToggle() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.96 }}
             transition={{ duration: 0.16, ease: 'easeOut' }}
-            className="absolute left-0 mt-2 w-48 rounded-2xl bg-card border border-border/90 shadow-500 p-1.5 z-50 overflow-hidden"
+            className="absolute left-0 mt-2 w-48 rounded-2xl bg-card border border-border/90 shadow-500 p-1.5 z-[1000] overflow-hidden"
           >
             <div className="px-2.5 py-1.5 mb-1 border-b border-border/40 text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1.5">
               <Sparkles className="h-3 w-3 text-primary" />
@@ -74,11 +74,10 @@ export default function ThemeToggle() {
             {/* Light Option */}
             <button
               onClick={() => { setTheme('light'); setIsOpen(false); }}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                theme === 'light'
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-foreground hover:bg-muted/70'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${theme === 'light'
+                ? 'bg-primary/10 text-primary'
+                : 'text-foreground hover:bg-muted/70'
+                }`}
             >
               <div className="flex items-center gap-2">
                 <Sun className={`h-4 w-4 ${theme === 'light' ? 'text-amber-500 fill-amber-500/20' : 'text-muted-foreground'}`} />
@@ -90,11 +89,10 @@ export default function ThemeToggle() {
             {/* Dark Option */}
             <button
               onClick={() => { setTheme('dark'); setIsOpen(false); }}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer mt-0.5 ${
-                theme === 'dark'
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-foreground hover:bg-muted/70'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer mt-0.5 ${theme === 'dark'
+                ? 'bg-primary/10 text-primary'
+                : 'text-foreground hover:bg-muted/70'
+                }`}
             >
               <div className="flex items-center gap-2">
                 <Moon className={`h-4 w-4 ${theme === 'dark' ? 'text-indigo-400 fill-indigo-400/20' : 'text-muted-foreground'}`} />
@@ -106,11 +104,10 @@ export default function ThemeToggle() {
             {/* System Option */}
             <button
               onClick={() => { setTheme('system'); setIsOpen(false); }}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer mt-0.5 ${
-                theme === 'system'
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-foreground hover:bg-muted/70'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer mt-0.5 ${theme === 'system'
+                ? 'bg-primary/10 text-primary'
+                : 'text-foreground hover:bg-muted/70'
+                }`}
             >
               <div className="flex items-center gap-2">
                 <Laptop className={`h-4 w-4 ${theme === 'system' ? 'text-blue-500' : 'text-muted-foreground'}`} />

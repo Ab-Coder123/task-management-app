@@ -41,7 +41,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
           role="user"
           onMenuClick={() => setMobileSidebarOpen(true)}
         />
-        <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto animate-fade-in">
+        <main className="relative z-0 flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto animate-fade-in">
           {children}
         </main>
       </div>
