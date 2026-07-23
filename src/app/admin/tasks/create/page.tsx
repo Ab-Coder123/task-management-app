@@ -14,12 +14,8 @@ export default function AdminCreateTaskPage() {
   const { users, isLoading: usersLoading } = useUsers();
 
   const handleFormSubmit = async (taskData: any) => {
-    try {
-      await createTask(taskData);
-      router.push('/admin/tasks');
-    } catch (err) {
-      console.error('Failed to create task', err);
-    }
+    await createTask(taskData);
+    router.push('/admin/tasks');
   };
 
   if (usersLoading) {

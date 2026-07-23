@@ -3,7 +3,6 @@
 import React from 'react';
 import { TASK_PRIORITIES, TASK_STATUSES, TASK_TYPES } from '@/lib/constants';
 import { Search, Filter, Layers, AlertCircle, CheckCircle2 } from 'lucide-react';
-
 interface TaskFiltersProps {
   search: string;
   setSearch: (value: string) => void;

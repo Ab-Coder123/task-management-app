@@ -11,12 +11,15 @@ import {
   Lock,
   Plus,
   Calendar,
-  ChevronLeft
+  ChevronLeft,
+  Edit2,
+  Trash2,
+  X
 } from 'lucide-react';
 import { useTasks } from '@/lib/hooks/useTasks';
 import { useAuthStore } from '@/lib/store/authStore';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import { TaskStatus } from '@/lib/types';
+import { TaskStatus, Task } from '@/lib/types';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -28,7 +31,7 @@ const pageVariants = {
 
 export default function PersonalTasksPage() {
   const { user } = useAuthStore();
-  const { tasks, isLoading, createTask, isCreating, completeTask } = useTasks();
+  const { tasks, isLoading, createTask, isCreating, completeTask, editTask, isEditing, deleteTask } = useTasks();
   
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -40,6 +43,13 @@ export default function PersonalTasksPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | TaskStatus>('all');
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+
+  // Edit Task State
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editStatus, setEditStatus] = useState<TaskStatus>('pending');
+  const [editDueDate, setEditDueDate] = useState('');
 
   if (isLoading || !mounted) {
     return <LoadingSpinner size="lg" className="h-[60vh]" />;
@@ -91,6 +101,47 @@ export default function PersonalTasksPage() {
     } catch (err) {
       console.error('Failed to complete task:', err);
       toast.error('فشلت عملية إكمال المهمة.');
+    }
+  };
+
+  const handleOpenEditModal = (task: Task) => {
+    setEditingTask(task);
+    setEditTitle(task.title);
+    setEditDesc(task.description || '');
+    setEditStatus(task.status);
+    setEditDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '');
+  };
+
+  const handleUpdateTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingTask || !editTitle.trim()) return;
+
+    try {
+      await editTask({
+        id: editingTask._id,
+        data: {
+          title: editTitle.trim(),
+          description: editDesc.trim(),
+          status: editStatus,
+          dueDate: editDueDate ? new Date(editDueDate).toISOString() : editingTask.dueDate,
+        }
+      });
+      toast.success('تم تحديث المهمة الشخصية بنجاح!');
+      setEditingTask(null);
+    } catch (err) {
+      console.error('Failed to update task:', err);
+      toast.error('فشلت عملية تحديث المهمة.');
+    }
+  };
+
+  const handleDeleteTask = async (id: string, title: string) => {
+    if (!window.confirm(`هل أنت متأكد من رغبتك في حذف المهمة "${title}"؟`)) return;
+    try {
+      await deleteTask(id);
+      toast.success('تم حذف المهمة الشخصية بنجاح!');
+    } catch (err) {
+      console.error('Failed to delete task:', err);
+      toast.error('فشلت عملية حذف المهمة.');
     }
   };
 
@@ -206,6 +257,105 @@ export default function PersonalTasksPage() {
                 </button>
               </div>
             </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Task Modal */}
+      <AnimatePresence>
+        {editingTask && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="bg-card border border-border rounded-3xl p-6 w-full max-w-lg space-y-4 shadow-2xl"
+              dir="rtl"
+            >
+              <div className="flex items-center justify-between border-b border-border/40 pb-3">
+                <h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
+                  <Edit2 className="h-5 w-5 text-primary" />
+                  <span>تعديل المهمة الشخصية</span>
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setEditingTask(null)}
+                  className="p-1 rounded-lg text-muted-foreground hover:bg-muted transition-all"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleUpdateTask} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-foreground mb-1.5">عنوان المهمة</label>
+                  <input
+                    type="text"
+                    required
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-muted/20 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-foreground mb-1.5">وصف المهمة</label>
+                  <textarea
+                    rows={3}
+                    value={editDesc}
+                    onChange={(e) => setEditDesc(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-muted/20 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right resize-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-foreground mb-1.5">حالة المهمة</label>
+                    <select
+                      value={editStatus}
+                      onChange={(e) => setEditStatus(e.target.value as TaskStatus)}
+                      className="w-full px-3 py-2.5 rounded-xl bg-muted/20 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right"
+                    >
+                      <option value="pending">معلقة</option>
+                      <option value="in_progress">قيد التنفيذ</option>
+                      <option value="completed">مكتملة</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-foreground mb-1.5">تاريخ الاستحقاق</label>
+                    <input
+                      type="date"
+                      value={editDueDate}
+                      onChange={(e) => setEditDueDate(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-muted/20 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2.5 pt-3 border-t border-border/40">
+                  <button
+                    type="button"
+                    onClick={() => setEditingTask(null)}
+                    className="px-5 py-2.5 rounded-xl text-xs font-bold bg-muted hover:bg-muted/80 text-muted-foreground transition-all"
+                  >
+                    إلغاء
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isEditing}
+                    className="px-6 py-2.5 rounded-xl text-xs font-extrabold bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md"
+                  >
+                    {isEditing ? 'جاري الحفظ...' : 'حفظ التعديلات'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -334,18 +484,34 @@ export default function PersonalTasksPage() {
                 <span className="text-[11px] font-semibold">تاريخ الاستحقاق: {new Date(task.dueDate).toLocaleDateString('ar-EG')}</span>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button
+                  onClick={() => handleOpenEditModal(task)}
+                  className="p-1.5 rounded-lg border border-border bg-card hover:bg-muted text-foreground transition-all shrink-0"
+                  title="تعديل المهمة"
+                >
+                  <Edit2 className="h-3.5 w-3.5" />
+                </button>
+
+                <button
+                  onClick={() => handleDeleteTask(task._id, task.title)}
+                  className="p-1.5 rounded-lg border border-border bg-card hover:bg-rose-50 text-rose-600 transition-all shrink-0"
+                  title="حذف المهمة"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+
                 <Link
                   href={`/tasks/${task._id}`}
-                  className="px-3 py-1.5 text-[10px] font-bold rounded-lg border border-border bg-card hover:bg-muted text-foreground transition-all"
+                  className="px-2.5 py-1.5 text-[10px] font-bold rounded-lg border border-border bg-card hover:bg-muted text-foreground transition-all shrink-0"
                 >
-                  التفاصيل والقرارات
+                  التفاصيل
                 </Link>
                 
                 {task.status !== 'completed' && (
                   <button
                     onClick={() => handleCompleteTask(task._id)}
-                    className="px-3 py-1.5 text-[10px] font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer"
+                    className="px-2.5 py-1.5 text-[10px] font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer shrink-0"
                   >
                     إكمال
                   </button>

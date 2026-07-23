@@ -111,7 +111,7 @@ function mapRawTask(raw: RawTask): Task {
     assignedToArr = [raw.assignedTo];
   }
 
-  return {
+  const task: Task = {
     _id: raw._id,
     title: raw.Name_task ?? '',
     description: raw.Description ?? '',
@@ -124,9 +124,12 @@ function mapRawTask(raw: RawTask): Task {
     completedAt,
     isPrivate: raw.isPrivate ?? false,
     createdBy: raw.createdBy,
-    privateChecklist: raw.privateChecklist ?? [],
+    assigneeProgress: raw.assigneeProgress ?? [],
+    privateChecklist: raw.assigneeProgress?.[0]?.checklist || [],
     attachments: raw.attachments ?? [],
   };
+  (task as any).personalStatus = raw.assigneeProgress?.[0]?.status || 'pending';
+  return task;
 }
 
 // ─── Reverse mapper  (Task → backend payload) ────────────────────────────────
@@ -144,6 +147,9 @@ function toBackendTask(data: Partial<Task>): Record<string, unknown> {
   if (data.status !== undefined) {
     out.status = data.status;
     out.Status = data.status;
+  }
+  if ((data as any).personalStatus !== undefined) {
+    out.personalStatus = (data as any).personalStatus;
   }
   if (data.type !== undefined) {
     out.type_task = data.type;
@@ -173,8 +179,9 @@ function toBackendTask(data: Partial<Task>): Record<string, unknown> {
 
 export const tasksApi = {
   getTasks: async (): Promise<Task[]> => {
-    const raw = await apiFetch<RawTask[]>('/api/tasks/gettasks', { method: 'GET' });
-    return Array.isArray(raw) ? raw.map(mapRawTask) : [];
+    const raw = await apiFetch<any>('/api/tasks/gettasks', { method: 'GET' });
+    const tasksArray = Array.isArray(raw) ? raw : raw.tasks || [];
+    return Array.isArray(tasksArray) ? tasksArray.map(mapRawTask) : [];
   },
 
   addTask: async (taskData: Partial<Task>): Promise<Task> => {

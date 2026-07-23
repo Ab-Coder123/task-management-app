@@ -62,9 +62,9 @@ export default function AdminCompletedTasksPage() {
     return <LoadingSpinner size="lg" className="h-[50vh]" />;
   }
 
-  // Filter completed tasks and join with user profiles
+  // Filter completed tasks (excluding private tasks) and join with user profiles
   const completedTasks = tasks
-    .filter((t) => t.status === 'completed')
+    .filter((t) => !t.isPrivate && t.status === 'completed')
     .map((task) => {
       const assignedUsers = (task.assignedTo || []).map(id => {
         if (typeof id === 'string') {

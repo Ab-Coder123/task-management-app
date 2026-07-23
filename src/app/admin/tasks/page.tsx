@@ -97,6 +97,7 @@ export default function AdminTasksPage() {
 
   // Filtering logic
   const filteredTasks = tasksWithUsers.filter((task) => {
+    if (task.isPrivate) return false;
     const matchesSearch =
       !search ||
       task.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -163,9 +164,9 @@ export default function AdminTasksPage() {
       setAssignedTo([]);
       setDueDate('');
       setQueuedFiles([]);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Task creation failed', err);
-      toast.error('فشلت عملية إنشاء المهمة.');
+      toast.error('فشلت عملية إنشاء المهمة: ' + (err?.message || 'خطأ غير معروف'));
     }
   };
 
@@ -231,7 +232,7 @@ export default function AdminTasksPage() {
       {/* Create Task Popup Modal */}
       <AnimatePresence>
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 md:py-10 overflow-y-auto">
+          <div className="fixed inset-0 z-[9999] flex items-start justify-center p-4 sm:p-6 md:py-10 overflow-y-auto">
             {/* Dark blur overlay */}
             <div className="fixed inset-0 bg-black/40 backdrop-blur-md" onClick={() => { setIsCreateModalOpen(false); setIsUserDropdownOpen(false); }} />
 

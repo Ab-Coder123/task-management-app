@@ -12,7 +12,9 @@ import {
   MessageSquareText, 
   ChevronLeft,
   Filter,
-  Sparkles
+  Sparkles,
+  Trash2,
+  FileText
 } from 'lucide-react';
 import { useNotifications } from '@/lib/hooks/useNotifications';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -99,14 +101,22 @@ export default function UserNotificationsPage() {
     } catch { return 'الآن'; }
   };
 
-  const getNotifIcon = (type: string) => {
-    switch (type) {
+  const getNotifIcon = (type: string, action?: string) => {
+    const checkType = action || type;
+    switch (checkType) {
       case 'new_user':
         return <UserCheck className="h-5 w-5 text-emerald-600" />;
       case 'task_completed':
         return <Check className="h-5 w-5 text-indigo-600" />;
       case 'new_comment':
+      case 'comment_added':
         return <MessageSquare className="h-5 w-5 text-violet-600" />;
+      case 'task_created':
+      case 'task_assigned':
+      case 'task_updated':
+        return <FileText className="h-5 w-5 text-blue-600" />;
+      case 'task_deleted':
+        return <Trash2 className="h-5 w-5 text-rose-600" />;
       default:
         return <Bell className="h-5 w-5 text-blue-600" />;
     }
@@ -233,7 +243,7 @@ export default function UserNotificationsPage() {
                   <div className={`h-11 w-11 rounded-2xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm ${
                     isRead ? 'bg-muted text-muted-foreground' : 'bg-primary/20 text-primary'
                   }`}>
-                    {getNotifIcon(n.type)}
+                    {getNotifIcon(n.type, n.action)}
                   </div>
                   <div>
                     <p className="text-sm font-bold text-foreground leading-relaxed">

@@ -19,12 +19,7 @@ export function useTasks() {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
       // Play a success sound
       playSuccessSound();
-      // Notify Admin
-      notificationsApi.addNotification({
-        type: 'new_user', // standard notification category
-        message: `New task "${newTask.title}" has been created.`,
-        metadata: { taskId: newTask._id, taskTitle: newTask.title }
-      });
+      // Notifications are now handled securely by the backend
     },
   });
 
@@ -49,18 +44,13 @@ export function useTasks() {
 
   const completeTaskMutation = useMutation({
     mutationFn: ({ id, username }: { id: string; username: string }) =>
-      tasksApi.editTask(id, { status: 'completed', completedAt: new Date().toISOString() }),
+      tasksApi.editTask(id, { personalStatus: 'completed' } as any),
     onSuccess: (completedTask, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
       // Play a success sound
       playSuccessSound();
-      // Notify Admin on task completion
-      notificationsApi.addNotification({
-        type: 'task_completed',
-        message: `User "${variables.username}" completed the task "${completedTask.title}".`,
-        metadata: { taskId: completedTask._id, username: variables.username, taskTitle: completedTask.title }
-      });
+      // Notifications are now handled securely by the backend
     },
   });
 

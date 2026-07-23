@@ -25,7 +25,7 @@ export default function LoadingSpinner({ size = 'md', fullPage = false, classNam
 
   if (fullPage) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-background/80 backdrop-blur-md">
         {container}
       </div>
     );

@@ -44,8 +44,9 @@ export default function UserDashboardPage() {
     return <LoadingSpinner size="lg" className="h-[60vh]" />;
   }
 
-  // Filter tasks assigned to the logged-in user
+  // Filter shared tasks assigned to the logged-in user (strictly exclude personal/private tasks)
   const myTasks = tasks.filter((t) => {
+    if (t.isPrivate) return false;
     const isAssigned = Array.isArray(t.assignedTo)
       ? t.assignedTo.some(id => (typeof id === 'string' ? id === user?._id : id?._id === user?._id))
       : t.assignedTo === user?._id;
@@ -65,11 +66,12 @@ export default function UserDashboardPage() {
     try {
       await createTask({
         title: newTaskTitle.trim(),
-        description: 'مهمة شخصية تم إنشاؤها من لوحة التحكم السريعة.',
+        description: 'مهمة تم إنشاؤها من لوحة التحكم السريعة.',
         status: 'pending',
         type: 'feature',
         priority: 'medium',
         assignedTo: user?._id ? [user._id] : [],
+        isPrivate: false,
         dueDate: new Date(Date.now() + 86400000 * 3).toISOString(), // 3 days from now
       });
       toast.success('تمت عملية الإضافة بنجاح!');

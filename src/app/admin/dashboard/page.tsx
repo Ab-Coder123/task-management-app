@@ -71,10 +71,11 @@ export default function AdminDashboardPage() {
     return <LoadingSpinner size="lg" className="h-[60vh]" />;
   }
 
-  const totalTasks     = tasks.length;
-  const completedTasks = tasks.filter(t => t.status === 'completed').length;
-  const activeTasks    = tasks.filter(t => t.status === 'in_progress').length;
-  const overdueTasks   = tasks.filter(t => t.status === 'overdue').length;
+  const sharedTasks    = tasks.filter(t => !t.isPrivate);
+  const totalTasks     = sharedTasks.length;
+  const completedTasks = sharedTasks.filter(t => t.status === 'completed').length;
+  const activeTasks    = sharedTasks.filter(t => t.status === 'in_progress').length;
+  const overdueTasks   = sharedTasks.filter(t => t.status === 'overdue').length;
 
   const handleSendAnnouncement = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,7 +100,15 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const filteredTasks = tasks.filter(task => {
+  const filterTabs: { label: string; value: 'all' | TaskStatus }[] = [
+    { label: 'الكل', value: 'all' },
+    { label: 'جديدة', value: 'pending' },
+    { label: 'قيد التنفيذ', value: 'in_progress' },
+    { label: 'مكتملة', value: 'completed' },
+    { label: 'متأخرة', value: 'overdue' },
+  ];
+
+  const filteredTasks = sharedTasks.filter(task => {
     const matchStatus = statusFilter === 'all' || task.status === statusFilter;
     
     // Resolve assignee names for search
@@ -180,13 +189,6 @@ export default function AdminDashboardPage() {
     { label: 'قيد التنفيذ',   value: activeTasks,    sub: 'يعمل عليها الفريق الآن',       Icon: BarChart2,   iconBg: 'bg-amber-50', iconColor: 'text-amber-600' },
     { label: 'مكتملة',        value: completedTasks, sub: totalTasks > 0 ? `${Math.round(completedTasks/totalTasks*100)}% من المهام الكلية` : 'لا توجد مهام', Icon: FolderCheck, iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
     { label: 'متأخرة',        value: overdueTasks,   sub: 'تطلب إجراءً فورياً',           Icon: AlertCircle, iconBg: 'bg-rose-50', iconColor: 'text-rose-600', subColor: 'text-rose-500 font-semibold' },
-  ];
-
-  const filterTabs: { label: string; value: 'all' | TaskStatus }[] = [
-    { label: 'الكل', value: 'all' },
-    { label: 'قيد التنفيذ', value: 'in_progress' },
-    { label: 'مكتملة', value: 'completed' },
-    { label: 'متأخرة', value: 'overdue' },
   ];
 
   return (

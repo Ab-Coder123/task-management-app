@@ -32,11 +32,19 @@ export interface TaskAttachment {
 
 export interface ChecklistItem {
   _id: string;
-  userId: string;
   text: string;
   completed: boolean;
   createdAt: string;
 }
+
+export interface AssigneeProgress {
+  userId: string | User;
+  status: TaskStatus;
+  completedAt?: string;
+  checklist?: ChecklistItem[];
+  checklistProgress?: string;
+}
+
 
 // Raw shape returned directly from the backend/database
 export interface RawTask {
@@ -52,7 +60,7 @@ export interface RawTask {
   completedAt?: string;
   isPrivate?: boolean;
   createdBy?: string | User;
-  privateChecklist?: ChecklistItem[];
+  assigneeProgress?: AssigneeProgress[];
   attachments?: TaskAttachment[];
   __v?: number;
 }
@@ -70,6 +78,7 @@ export interface Task {
   completedAt?: string;
   isPrivate?: boolean;
   createdBy?: string | User;
+  assigneeProgress?: AssigneeProgress[];
   privateChecklist?: ChecklistItem[];
   attachments?: TaskAttachment[];
 }
@@ -90,11 +99,25 @@ export interface Comment {
 }
 
 // Notification Types
-export type NotificationType = 'new_user' | 'task_completed' | 'new_comment' | 'task_created' | 'task_updated';
+export type NotificationType = 'new_user' | 'task_completed' | 'new_comment' | 'task_created' | 'task_updated' | 'task_deleted' | 'info' | string;
+
+export type NotificationAction = 'task_assigned' | 'task_updated' | 'task_completed' | 'task_deleted' | 'comment_added' | 'new_user' | string;
 
 export interface Notification {
   _id: string;
   type: NotificationType;
+  action?: NotificationAction;
+  recipient?: string | User;
+  sender?: {
+    id?: string;
+    username?: string;
+    avatar?: string;
+    role?: string;
+  } | string;
+  task?: {
+    id?: string;
+    title?: string;
+  } | string;
   message: string;
   isRead: boolean;
   createdAt: string;
@@ -104,7 +127,8 @@ export interface Notification {
     commentId?: string;
     username?: string;
     taskTitle?: string;
-    assignedTo?: string[];
+    assignedTo?: string[] | any;
+    authorId?: string;
   };
 }
 

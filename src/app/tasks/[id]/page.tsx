@@ -9,7 +9,7 @@ import { useTasks } from '@/lib/hooks/useTasks';
 import { useUsers } from '@/lib/hooks/useUsers';
 import { useAuthStore } from '@/lib/store/authStore';
 import { getPriorityColor, getStatusColor, getTypeLabel, formatDate, getAvatarFallback } from '@/lib/utils';
-import { Calendar, User as UserIcon, Clock, CheckCircle2, ChevronRight, Tag, List, Check, X, FileText, Sparkles, MessageSquare } from 'lucide-react';
+import { Calendar, User as UserIcon, Clock, CheckCircle2, ChevronRight, Tag, List, Check, X, FileText, Sparkles, MessageSquare, Lock } from 'lucide-react';
 import { User, TaskStatus } from '@/lib/types';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -59,7 +59,6 @@ export default function TaskDetailsPage() {
     );
   }
 
-  // Find assignee user profiles
   const assignedUsers = (task.assignedTo || []).map(id => {
     if (typeof id === 'string') {
       return users.find(u => u._id === id);
@@ -67,7 +66,18 @@ export default function TaskDetailsPage() {
     return id;
   }).filter((u): u is User => !!u);
 
-  const isCompleted = task.status === 'completed';
+  // Find current user's personal progress entry in assigneeProgress
+  const currentUserProgress = task.assigneeProgress?.find(p => {
+    const pUserId = typeof p.userId === 'object' ? (p.userId as User)._id : p.userId;
+    return pUserId && currentUser?._id && pUserId.toString() === currentUser._id.toString();
+  }) || (task.assigneeProgress && task.assigneeProgress.length > 0 ? task.assigneeProgress[0] : undefined);
+
+  const checklistItems = currentUserProgress?.checklist || task.privateChecklist || [];
+
+  const isCompleted = currentUser?.role === 'admin' 
+    ? task.status === 'completed' 
+    : (currentUserProgress?.status ? currentUserProgress.status === 'completed' : (task as any).personalStatus === 'completed');
+  
   const showChecklist = currentUser?.role !== 'admin';
 
   const handleComplete = async () => {
@@ -169,6 +179,12 @@ export default function TaskDetailsPage() {
                 <span className={`text-[11px] font-extrabold px-3 py-0.5 rounded-full border ${getPriorityColor(task.priority)}`}>
                   أولوية: {getPriorityArabicLabel(task.priority)}
                 </span>
+                {task.isPrivate && (
+                  <span className="text-[11px] font-extrabold px-3 py-0.5 rounded-full border bg-blue-50 text-blue-600 border-blue-200 flex items-center gap-1 shadow-sm">
+                    <Lock className="h-3 w-3" />
+                    مهمة شخصية خاصة 🔒
+                  </span>
+                )}
               </div>
               <h1 className="text-xl md:text-2xl font-extrabold text-foreground tracking-tight leading-snug">
                 {task.title}
@@ -230,8 +246,8 @@ export default function TaskDetailsPage() {
 
               {/* Checklist items list */}
               <div className="space-y-2.5 mt-4">
-                {task.privateChecklist && task.privateChecklist.length > 0 ? (
-                  task.privateChecklist.map((item) => (
+                {checklistItems && checklistItems.length > 0 ? (
+                  checklistItems.map((item) => (
                     <div
                       key={item._id}
                       className={`flex items-center justify-between p-3.5 rounded-2xl border transition-all ${
@@ -295,25 +311,27 @@ export default function TaskDetailsPage() {
             </div>
           )}
 
-          {/* Comment Section Panel */}
-          <div className="bg-card border border-border/80 rounded-3xl p-6 md:p-8 shadow-200">
-            <div className="border-b border-border/40 pb-4 mb-6">
-              <h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-primary" />
-                <span>المحادثة والتعليقات مع الإدارة</span>
-              </h3>
-              <p className="text-xs text-muted-foreground mt-1">
-                يمكنك هنا تبادل التعليقات، ورفع التحديثات، والتواصل المباشر مع المدير بخصوص هذه المهمة.
-              </p>
+          {/* Comment Section Panel (Disabled for Personal Tasks per Phase 3) */}
+          {!task.isPrivate && (
+            <div className="bg-card border border-border/80 rounded-3xl p-6 md:p-8 shadow-200">
+              <div className="border-b border-border/40 pb-4 mb-6">
+                <h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  <span>المحادثة والتعليقات مع الإدارة</span>
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  يمكنك هنا تبادل التعليقات، ورفع التحديثات، والتواصل المباشر مع المدير بخصوص هذه المهمة.
+                </p>
+              </div>
+              <TaskCommentSection
+                taskId={task._id}
+                userId={currentUser?._id || ''}
+                username={currentUser?.username || ''}
+                taskTitle={task.title}
+                isAdmin={currentUser?.role === 'admin'}
+              />
             </div>
-            <TaskCommentSection
-              taskId={task._id}
-              userId={currentUser?._id || ''}
-              username={currentUser?.username || ''}
-              taskTitle={task.title}
-              isAdmin={currentUser?.role === 'admin'}
-            />
-          </div>
+          )}
 
         </div>
 
@@ -370,28 +388,35 @@ export default function TaskDetailsPage() {
                 </span>
               </div>
 
-              {/* Created By Admin (Assigned by) */}
+              {/* Created By */}
               {task.createdBy && (
                 <div className="flex justify-between items-center text-xs font-bold border-b border-border/30 pb-3.5">
                   <span className="text-muted-foreground flex items-center gap-2">
                     <UserIcon className="h-4 w-4 text-primary/70" />
-                    <span>تم التعيين بواسطة</span>
+                    <span>أنشئت بواسطة</span>
                   </span>
-                  <div className="flex items-center gap-1.5 bg-primary/5 px-2.5 py-1 rounded-xl border border-primary/20">
-                    {typeof task.createdBy === 'object' && (task.createdBy as any).avatar ? (
-                      <img 
-                        src={(task.createdBy as any).avatar} 
-                        className="h-5 w-5 rounded-full object-cover shrink-0" 
-                      />
-                    ) : (
-                      <div className="h-5 w-5 rounded-full bg-primary/10 text-[9px] font-bold text-primary flex items-center justify-center uppercase shrink-0">
-                        {getAvatarFallback(typeof task.createdBy === 'object' ? (task.createdBy as any).username : 'Admin')}
-                      </div>
-                    )}
-                    <span className="text-[11px] font-extrabold text-foreground">
-                      {typeof task.createdBy === 'object' ? (task.createdBy as any).username : 'Admin'}
-                    </span>
-                  </div>
+                  {task.isPrivate ? (
+                    <div className="flex items-center gap-1.5 bg-blue-50 px-3 py-1 rounded-xl border border-blue-200 text-blue-700 shadow-sm">
+                      <Lock className="h-3.5 w-3.5 shrink-0" />
+                      <span className="text-[11px] font-extrabold">أنا (مهمة خاصة)</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5 bg-primary/5 px-2.5 py-1 rounded-xl border border-primary/20">
+                      {typeof task.createdBy === 'object' && (task.createdBy as any).avatar ? (
+                        <img 
+                          src={(task.createdBy as any).avatar} 
+                          className="h-5 w-5 rounded-full object-cover shrink-0" 
+                        />
+                      ) : (
+                        <div className="h-5 w-5 rounded-full bg-primary/10 text-[9px] font-bold text-primary flex items-center justify-center uppercase shrink-0">
+                          {getAvatarFallback(typeof task.createdBy === 'object' ? (task.createdBy as any).username : 'Admin')}
+                        </div>
+                      )}
+                      <span className="text-[11px] font-extrabold text-foreground">
+                        {typeof task.createdBy === 'object' ? (task.createdBy as any).username : 'Admin'}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
 

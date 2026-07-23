@@ -42,7 +42,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-[1000] w-full bg-background/80 backdrop-blur-md shadow-100">
+    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md shadow-100">
       <div className="flex h-16 items-center justify-between px-6">
 
         {/* Right side (RTL): Badge + Mobile menu */}

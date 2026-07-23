@@ -69,14 +69,17 @@ export default function TaskForm({
     return '';
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
+      setFormError(null);
       if (!title || !description || assignedTo.length === 0 || !dueDate) {
-        alert('Please fill in all required fields and select at least one assignee.');
+        setFormError('من فضلك املأ جميع الحقول المطلوبة واختر منفذاً على الأقل.');
         return;
       }
-      onSubmit({
+      await onSubmit({
         title,
         description,
         type,
@@ -86,9 +89,9 @@ export default function TaskForm({
         isPrivate,
         dueDate: new Date(dueDate).toISOString(),
       });
-      toast?.success ? toast.success('Task saved successfully') : alert('Task saved successfully');
-    } catch (error) {
-      alert('Failed to save task');
+    } catch (error: any) {
+      const msg = error?.message || 'فشل حفظ المهمة. حاول مرة أخرى.';
+      setFormError(msg);
       console.error('Failed to save task', error);
     }
   };
@@ -333,6 +336,12 @@ export default function TaskForm({
         </div>
 
       </div>
+
+      {formError && (
+        <div className="mx-2 p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm font-semibold text-right">
+          ⚠️ {formError}
+        </div>
+      )}
 
       <div className="flex items-center justify-end space-x-4 space-x-reverse pt-6 border-t border-slate-200 dark:border-slate-800 mt-4">
         <button

@@ -1,5 +1,5 @@
 ---
-description: 
+description: 10 phases to verify and complet the logic code of user 
 ---
 
 # Release Workflow

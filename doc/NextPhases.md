@@ -93,7 +93,7 @@ No discussion system.
 
 ### Objective
 
-Improve Shared Tasks.
+Improve Shared Tasks 
 
 ### Requirements
 

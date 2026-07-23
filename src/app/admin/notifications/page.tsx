@@ -5,7 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useNotifications } from '@/lib/hooks/useNotifications';
 import { formatDate } from '@/lib/utils';
-import { Bell, Check, UserCheck, MessageSquare, AlertCircle } from 'lucide-react';
+import { Bell, Check, UserCheck, MessageSquare, AlertCircle, Trash2, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const pageVariants = {
@@ -39,42 +39,58 @@ export default function AdminNotificationsPage() {
     setMounted(true);
   }, []);
 
-  const getIcon = (type: string) => {
-    switch (type) {
+  const getIcon = (type: string, action?: string) => {
+    const checkType = action || type;
+    switch (checkType) {
       case 'new_user':
         return <UserCheck className="h-4.5 w-4.5 text-emerald-600" />;
       case 'task_completed':
         return <Check className="h-4.5 w-4.5 text-indigo-600" />;
       case 'new_comment':
+      case 'comment_added':
         return <MessageSquare className="h-4.5 w-4.5 text-violet-600" />;
+      case 'task_created':
+      case 'task_assigned':
+      case 'task_updated':
+        return <FileText className="h-4.5 w-4.5 text-blue-600" />;
+      case 'task_deleted':
+        return <Trash2 className="h-4.5 w-4.5 text-rose-600" />;
       default:
         return <Bell className="h-4.5 w-4.5 text-blue-600" />;
     }
   };
 
-  const getThemeClasses = (type: string, isRead: boolean) => {
+  const getThemeClasses = (type: string, isRead: boolean, action?: string) => {
     if (isRead) return 'bg-card/75 text-muted-foreground shadow-100 hover:shadow-200 border-r-4 border-r-slate-300';
-    switch (type) {
+    const checkType = action || type;
+    switch (checkType) {
       case 'new_user':
         return 'bg-emerald-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-emerald-500';
       case 'task_completed':
         return 'bg-indigo-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-indigo-500';
       case 'new_comment':
+      case 'comment_added':
         return 'bg-violet-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-violet-500';
+      case 'task_deleted':
+        return 'bg-rose-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-rose-500';
       default:
         return 'bg-blue-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-blue-500';
     }
   };
 
-  const getIconBg = (type: string, isRead: boolean) => {
+  const getIconBg = (type: string, isRead: boolean, action?: string) => {
     if (isRead) return 'bg-slate-100';
-    switch (type) {
+    const checkType = action || type;
+    switch (checkType) {
       case 'new_user':
         return 'bg-emerald-50';
       case 'task_completed':
         return 'bg-indigo-50';
       case 'new_comment':
+      case 'comment_added':
         return 'bg-violet-50';
+      case 'task_deleted':
+        return 'bg-rose-50';
       default:
         return 'bg-blue-50';
     }
@@ -142,8 +158,8 @@ export default function AdminNotificationsPage() {
           className="space-y-3.5"
         >
           {notifications.map((notification) => {
-            const theme = getThemeClasses(notification.type, notification.isRead);
-            const iconBg = getIconBg(notification.type, notification.isRead);
+            const theme = getThemeClasses(notification.type, notification.isRead, notification.action);
+            const iconBg = getIconBg(notification.type, notification.isRead, notification.action);
 
             return (
               <motion.div
@@ -157,7 +173,7 @@ export default function AdminNotificationsPage() {
                 <div className="flex items-center gap-4">
                   {/* Visual Icon Box */}
                   <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-100 transition-colors ${iconBg}`}>
-                    {getIcon(notification.type)}
+                    {getIcon(notification.type, notification.action)}
                   </div>
                   
                   {/* Msg text */}
