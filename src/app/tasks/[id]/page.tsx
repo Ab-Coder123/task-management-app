@@ -14,6 +14,7 @@ import { User, TaskStatus } from '@/lib/types';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 const pageVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -81,10 +82,19 @@ export default function TaskDetailsPage() {
   const showChecklist = currentUser?.role !== 'admin';
 
   const handleComplete = async () => {
+    const loadingToast = toast.loading('جاري تحديث حالة المهمة...');
     try {
-      await completeTask({ id: task._id, username: currentUser?.username || 'User' });
+      await completeTask({ 
+        id: task._id, 
+        username: currentUser?.username || 'User',
+        isAdmin: currentUser?.role === 'admin' 
+      });
+      toast.dismiss(loadingToast);
+      toast.success('تم إنجاز المهمة بنجاح!');
     } catch (err) {
       console.error('Task complete update failed', err);
+      toast.dismiss(loadingToast);
+      toast.error('حدث خطأ أثناء تحديث حالة المهمة.');
     }
   };
 

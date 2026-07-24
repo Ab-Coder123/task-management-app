@@ -24,13 +24,13 @@ export default function Sidebar() {
   const navItems = role === 'admin' ? ADMIN_NAV_ITEMS : USER_NAV_ITEMS;
 
   return (
-    <aside className="fixed inset-y-0 right-0 z-30 hidden w-64 lg:flex flex-col text-right bg-card shadow-300">
+    <aside className="fixed inset-y-0 right-0 z-30 hidden w-64 lg:flex flex-col text-right bg-white dark:bg-[#0b1120] border-l border-border/80 shadow-300 opacity-100">
       
       {/* Logo */}
       <div className="flex h-16 items-center px-6">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 shadow-200">
-            <Icons.Trello className="h-5 w-5 text-white" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 dark:bg-gradient-to-tr dark:from-blue-600 dark:to-indigo-500 border border-primary/20 dark:border-transparent text-primary dark:text-white shadow-200 transition-colors">
+            <Icons.Trello className="h-5 w-5" />
           </div>
           <span className="text-base font-bold text-foreground tracking-tight">مدير المهام</span>
         </Link>

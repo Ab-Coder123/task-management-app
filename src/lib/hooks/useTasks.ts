@@ -43,15 +43,20 @@ export function useTasks() {
   });
 
   const completeTaskMutation = useMutation({
-    mutationFn: ({ id, username }: { id: string; username: string }) =>
-      tasksApi.editTask(id, { personalStatus: 'completed' } as any),
+    mutationFn: async ({ id, username, isAdmin }: { id: string; username: string; isAdmin?: boolean }) => {
+      const payload = isAdmin 
+        ? { status: 'completed' as any } 
+        : { personalStatus: 'completed' as any };
+      return tasksApi.editTask(id, payload);
+    },
     onSuccess: (completedTask, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      // Play a success sound
       playSuccessSound();
-      // Notifications are now handled securely by the backend
     },
+    onError: (error) => {
+      console.error('completeTask error:', error);
+    }
   });
 
   // Private Checklist Mutations (Phase 11)

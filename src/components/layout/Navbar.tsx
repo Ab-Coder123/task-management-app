@@ -18,9 +18,8 @@ interface NavbarProps {
 export default function Navbar({ onMenuClick, role }: NavbarProps) {
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<'profile' | 'theme' | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -31,18 +30,19 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
   const profileHref = role === 'admin' ? '/admin/profile' : '/dashboard/profile';
 
   const handleProfileToggle = () => {
-    if (!dropdownOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setDropdownPos({
-        top: rect.bottom + 10,
-        left: rect.left,
-      });
-    }
-    setDropdownOpen(prev => !prev);
+    setActiveDropdown(prev => prev === 'profile' ? null : 'profile');
+  };
+
+  const handleThemeToggle = () => {
+    setActiveDropdown(prev => prev === 'theme' ? null : 'theme');
+  };
+
+  const handleCloseAll = () => {
+    setActiveDropdown(null);
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md shadow-100">
+    <header className="sticky top-0 z-40 w-full bg-white dark:bg-[#0b1120] border-b border-border/80 shadow-100 opacity-100">
       <div className="flex h-16 items-center justify-between px-6">
 
         {/* Right side (RTL): Badge + Mobile menu */}
@@ -69,7 +69,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
               <button
                 ref={buttonRef}
                 onClick={handleProfileToggle}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-1.5 hover:bg-muted/60 transition-all border border-transparent"
+                className="flex items-center gap-2.5 rounded-xl px-3 py-1.5 hover:bg-muted/60 transition-all border border-transparent cursor-pointer"
               >
                 {user.avatar ? (
                   <img
@@ -86,15 +86,19 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
                   <p className="text-sm font-bold text-foreground leading-none">{user.username}</p>
                   <p className="text-[10px] text-muted-foreground font-semibold mt-0.5">{user.role === 'admin' ? 'مدير النظام' : 'عضو فريق'}</p>
                 </div>
-                <ChevronDown className="hidden h-3.5 w-3.5 text-muted-foreground md:block" />
+                <ChevronDown className={`hidden h-3.5 w-3.5 text-muted-foreground md:block transition-transform duration-200 ${activeDropdown === 'profile' ? 'rotate-180 text-primary' : ''}`} />
               </button>
             ) : (
               <div className="h-8 w-24 bg-muted rounded-xl animate-pulse" />
             )}
           </div>
 
-          {/* Theme Toggle */}
-          <ThemeToggle />
+          {/* Theme Toggle — Controlled by Navbar state for mutual exclusivity */}
+          <ThemeToggle
+            isOpen={activeDropdown === 'theme'}
+            onToggle={handleThemeToggle}
+            onClose={handleCloseAll}
+          />
 
           {/* Notification Bell */}
           <Link
@@ -111,24 +115,26 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
         </div>
       </div>
 
-      {/* Profile Dropdown — Portal rendered on document.body */}
+      {/* Profile Dropdown — Portal centered on screen below Navbar */}
       {mounted && user && createPortal(
         <>
-          {dropdownOpen && (
+          {activeDropdown === 'profile' && (
             <>
               <div
                 className="fixed inset-0"
-                onClick={() => setDropdownOpen(false)}
+                style={{ zIndex: 99998 }}
+                onClick={handleCloseAll}
               />
               <div
                 style={{
                   position: 'fixed',
-                  top: dropdownPos.top,
-                  left: dropdownPos.left,
-                  zIndex: 9999,
-                  minWidth: '14rem',
+                  top: '72px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  zIndex: 99999,
+                  minWidth: '15rem',
                 }}
-                className="w-56 rounded-2xl p-2 shadow-400 text-right bg-white border border-border animate-in fade-in slide-in-from-top-2 duration-200"
+                className="w-60 rounded-2xl p-2 shadow-600 text-right bg-white dark:bg-[#101828] border border-border opacity-100 z-[99999] animate-in fade-in slide-in-from-top-2 duration-200"
                 dir="rtl"
               >
                 <div className="px-3.5 py-3 mb-2 bg-muted/40 rounded-xl border border-border/50">
@@ -138,7 +144,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
 
                 <Link
                   href={profileHref}
-                  onClick={() => setDropdownOpen(false)}
+                  onClick={handleCloseAll}
                   className="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs font-extrabold text-foreground hover:bg-muted hover:text-primary transition-all duration-200"
                 >
                   <User className="h-4 w-4 text-muted-foreground" />
@@ -146,7 +152,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
                 </Link>
 
                 <button
-                  onClick={() => { setDropdownOpen(false); logout(); }}
+                  onClick={() => { handleCloseAll(); logout(); }}
                   className="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs font-extrabold text-rose-600 hover:bg-rose-500/10 transition-all duration-200 mt-1 border-t border-border pt-2 cursor-pointer"
                 >
                   <LogOut className="h-4 w-4" />

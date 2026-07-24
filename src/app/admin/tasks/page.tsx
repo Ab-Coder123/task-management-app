@@ -211,9 +211,13 @@ export default function AdminTasksPage() {
       <TaskTable
         tasks={filteredTasks}
         onDelete={(id) => setDeleteTargetId(id)}
-        onComplete={(id) => {
-          completeTask({ id, username: 'Admin' });
-          toast.success('تم وضع علامة اكتمال على المهمة بنجاح!');
+        onComplete={async (id) => {
+          try {
+            await completeTask({ id, username: 'Admin', isAdmin: true });
+            toast.success('تم وضع علامة اكتمال على المهمة بنجاح!');
+          } catch (err) {
+            toast.error('فشلت عملية تحديث حالة المهمة.');
+          }
         }}
       />
 
@@ -233,8 +237,8 @@ export default function AdminTasksPage() {
       <AnimatePresence>
         {isCreateModalOpen && (
           <div className="fixed inset-0 z-[9999] flex items-start justify-center p-4 sm:p-6 md:py-10 overflow-y-auto">
-            {/* Dark blur overlay */}
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-md" onClick={() => { setIsCreateModalOpen(false); setIsUserDropdownOpen(false); }} />
+            {/* White translucent blur overlay in Light mode / Dark overlay in Dark mode */}
+            <div className="fixed inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-md transition-colors" onClick={() => { setIsCreateModalOpen(false); setIsUserDropdownOpen(false); }} />
 
             {/* Modal Dialog Content - Wide Two-Column layout (max-w-4xl) */}
             <motion.div

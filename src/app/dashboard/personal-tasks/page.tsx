@@ -96,7 +96,11 @@ export default function PersonalTasksPage() {
 
   const handleCompleteTask = async (id: string) => {
     try {
-      await completeTask({ id, username: user?.username || 'User' });
+      await completeTask({ 
+        id, 
+        username: user?.username || 'User',
+        isAdmin: user?.role === 'admin'
+      });
       toast.success('تم إكمال المهمة الخاصة بنجاح!');
     } catch (err) {
       console.error('Failed to complete task:', err);
@@ -264,28 +268,36 @@ export default function PersonalTasksPage() {
       {/* Edit Task Modal */}
       <AnimatePresence>
         {editingTask && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4"
-          >
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+            {/* Backdrop Blur & Translucent Whiteness Overlay in Light Mode / Dark Overlay in Dark Mode */}
             <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="bg-card border border-border rounded-3xl p-6 w-full max-w-lg space-y-4 shadow-2xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setEditingTask(null)}
+              className="fixed inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-md transition-colors"
+            />
+
+            {/* Modal Content Box - Solid White in Light mode, Solid Sidebar Dark (#0b1120) in Dark mode */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ type: 'spring', duration: 0.35, bounce: 0.15 }}
+              className="relative z-10 w-full max-w-lg bg-white dark:bg-[#0b1120] border border-border/80 rounded-3xl p-6 md:p-8 space-y-5 shadow-2xl opacity-100 text-right"
               dir="rtl"
             >
-              <div className="flex items-center justify-between border-b border-border/40 pb-3">
-                <h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
-                  <Edit2 className="h-5 w-5 text-primary" />
+              <div className="flex items-center justify-between border-b border-border/40 pb-4">
+                <h3 className="text-base font-extrabold text-foreground flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-primary/10 text-primary border border-primary/20">
+                    <Edit2 className="h-4.5 w-4.5" />
+                  </div>
                   <span>تعديل المهمة الشخصية</span>
                 </h3>
                 <button
                   type="button"
                   onClick={() => setEditingTask(null)}
-                  className="p-1 rounded-lg text-muted-foreground hover:bg-muted transition-all"
+                  className="p-1.5 rounded-xl text-muted-foreground hover:bg-muted transition-all cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -299,7 +311,7 @@ export default function PersonalTasksPage() {
                     required
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-muted/20 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-right transition-all"
                   />
                 </div>
 
@@ -309,7 +321,7 @@ export default function PersonalTasksPage() {
                     rows={3}
                     value={editDesc}
                     onChange={(e) => setEditDesc(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-muted/20 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-right resize-none transition-all"
                   />
                 </div>
 
@@ -319,11 +331,11 @@ export default function PersonalTasksPage() {
                     <select
                       value={editStatus}
                       onChange={(e) => setEditStatus(e.target.value as TaskStatus)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-muted/20 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right"
+                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right cursor-pointer transition-all"
                     >
-                      <option value="pending">معلقة</option>
-                      <option value="in_progress">قيد التنفيذ</option>
-                      <option value="completed">مكتملة</option>
+                      <option value="pending" className="bg-white dark:bg-[#0b1120]">معلقة</option>
+                      <option value="in_progress" className="bg-white dark:bg-[#0b1120]">قيد التنفيذ</option>
+                      <option value="completed" className="bg-white dark:bg-[#0b1120]">مكتملة</option>
                     </select>
                   </div>
 
@@ -333,30 +345,30 @@ export default function PersonalTasksPage() {
                       type="date"
                       value={editDueDate}
                       onChange={(e) => setEditDueDate(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-muted/20 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 text-right transition-all"
                     />
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-2.5 pt-3 border-t border-border/40">
+                <div className="flex justify-end gap-2.5 pt-4 border-t border-border/40">
                   <button
                     type="button"
                     onClick={() => setEditingTask(null)}
-                    className="px-5 py-2.5 rounded-xl text-xs font-bold bg-muted hover:bg-muted/80 text-muted-foreground transition-all"
+                    className="px-5 py-2.5 rounded-xl text-xs font-bold bg-muted hover:bg-muted/80 text-muted-foreground transition-all cursor-pointer"
                   >
                     إلغاء
                   </button>
                   <button
                     type="submit"
                     disabled={isEditing}
-                    className="px-6 py-2.5 rounded-xl text-xs font-extrabold bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md"
+                    className="px-6 py-2.5 rounded-xl text-xs font-extrabold bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-md active:scale-98 cursor-pointer disabled:opacity-50"
                   >
                     {isEditing ? 'جاري الحفظ...' : 'حفظ التعديلات'}
                   </button>
                 </div>
               </form>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 

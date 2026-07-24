@@ -31,7 +31,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60"
           />
 
           {/* Drawer Content - Slides from the RIGHT to match desktop sidebar layout */}
@@ -40,14 +40,14 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="absolute inset-y-0 right-0 w-72 border-l border-border/80 bg-card p-6 shadow-2xl flex flex-col justify-between text-right"
+            className="absolute inset-y-0 right-0 w-72 border-l border-border/80 bg-white dark:bg-[#0b1120] p-6 shadow-2xl flex flex-col justify-between text-right opacity-100"
           >
             <div>
               {/* Header with Close Button */}
               <div className="flex items-center justify-between pb-6 border-b border-border/40 mb-6">
                 <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-violet-500 shadow-200">
-                    <Icons.Trello className="h-5 w-5 text-white" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 dark:bg-gradient-to-tr dark:from-primary dark:to-violet-500 border border-primary/20 dark:border-transparent text-primary dark:text-white shadow-200 transition-colors">
+                    <Icons.Trello className="h-5 w-5" />
                   </div>
                   <span className="text-lg font-bold tracking-tight text-foreground">
                     مدير المهام

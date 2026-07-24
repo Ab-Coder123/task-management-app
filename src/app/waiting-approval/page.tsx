@@ -58,7 +58,7 @@ export default function WelcomeWaitingApprovalPage() {
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-lg p-8 md:p-10 rounded-3xl glass-panel border border-border/80 shadow-600 z-10 relative bg-card/90 backdrop-blur-xl"
+        className="w-full max-w-lg p-8 md:p-10 rounded-3xl border border-border/80 shadow-600 z-10 relative bg-card opacity-100"
       >
         
         {/* Verification Icon Box */}
