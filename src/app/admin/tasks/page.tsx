@@ -236,7 +236,7 @@ export default function AdminTasksPage() {
       {/* Create Task Popup Modal */}
       <AnimatePresence>
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-[9999] flex items-start justify-center p-4 sm:p-6 md:py-10 overflow-y-auto">
+          <div className=" fixed inset-0 top-10 md:top-10 right-0 md:right-40 bottom-20 md:bottom-0 overflow-y-auto z-[9999] flex items-center justify-center p-4 sm:p-6 md:py-10 ">
             {/* White translucent blur overlay in Light mode / Dark overlay in Dark mode */}
             <div className="fixed inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-md transition-colors" onClick={() => { setIsCreateModalOpen(false); setIsUserDropdownOpen(false); }} />
 
