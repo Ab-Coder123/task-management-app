@@ -25,7 +25,7 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed inset-y-0 right-0 z-30 hidden w-64 lg:flex flex-col text-right bg-card dark:bg-[#0b1120] border-l border-border/80 shadow-300 opacity-100">
-      
+
       {/* Logo */}
       <div className="flex h-16 items-center px-6">
         <Link href="/" className="flex items-center gap-3">
@@ -58,11 +58,10 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 ${
-                  isActive
+                className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 ${isActive
                     ? 'bg-primary/10 text-primary shadow-100'
                     : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-                }`}
+                  }`}
               >
                 {IconComponent && (
                   <IconComponent className={`h-4.5 w-4.5 shrink-0 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
@@ -100,7 +99,7 @@ export default function Sidebar() {
         ) : (
           <div className="h-12 bg-muted rounded-xl animate-pulse mb-1.5 w-full" />
         )}
-        
+
         <button
           onClick={logout}
           className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 transition-all duration-200"

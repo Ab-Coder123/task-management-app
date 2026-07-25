@@ -8,8 +8,8 @@
     --background: 219 28% 97%;         /* #f3f5f9 soft premium light slate-gray */
     --foreground: 222 47% 11%;         /* #0f172a dark slate */
 
-    --card: 0 0% 100%;                 /* #ffffff pure white card */
-    --card-foreground: 222 47% 11%;    /* #0f172a */
+    --card: #ffffff;                 /* #ffffff pure white card */
+    --card-foreground: #ffffff;    /* #0f172a */
 
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
@@ -29,9 +29,9 @@
     --destructive: 0 84% 60%;          /* #ef4444 red */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 93%;             /* very soft light gray */
-    --input: 220 14% 93%;
-    --ring: 221 83% 53%;
+    --border: #e2e8f0;             /* very soft light gray */
+    --input: #e2e8f0; 
+    --ring: #e2e8f0;
 
     --radius: 0.75rem;
   }
