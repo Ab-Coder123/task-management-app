@@ -104,14 +104,14 @@ export default function UserDashboardPage() {
   const getStatusBadgeColor = (status: TaskStatus) => {
     switch (status) {
       case 'completed': 
-        return 'text-emerald-600 bg-emerald-50 border-emerald-100';
+        return 'text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
       case 'in_progress': 
-        return 'text-amber-600 bg-amber-50 border-amber-100';
+        return 'text-amber-700 dark:text-amber-400 bg-amber-500/10 border-amber-500/20';
       case 'overdue': 
-        return 'text-rose-600 bg-rose-50 border-rose-100';
+        return 'text-rose-700 dark:text-rose-400 bg-rose-500/10 border-rose-500/20';
       case 'pending':
       default: 
-        return 'text-blue-600 bg-blue-50 border-blue-100';
+        return 'text-blue-700 dark:text-blue-400 bg-blue-500/10 border-blue-500/20';
     }
   };
 
@@ -190,7 +190,7 @@ export default function UserDashboardPage() {
         <div className="rounded-xl bg-card p-5 shadow-200 hover:shadow-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">المهام الموكلة</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
               <CheckSquare className="h-4.5 w-4.5" />
             </div>
           </div>
@@ -204,7 +204,7 @@ export default function UserDashboardPage() {
         <div className="rounded-xl bg-card p-5 shadow-200 hover:shadow-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">قيد العمل</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
               <Clock className="h-4.5 w-4.5" />
             </div>
           </div>
@@ -218,7 +218,7 @@ export default function UserDashboardPage() {
         <div className="rounded-xl bg-card p-5 shadow-200 hover:shadow-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">المهام المكتملة</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
               <FolderCheck className="h-4.5 w-4.5" />
             </div>
           </div>
@@ -234,7 +234,7 @@ export default function UserDashboardPage() {
         <div className="rounded-xl bg-card p-5 shadow-200 hover:shadow-300 hover:-translate-y-1.5 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">متأخرة</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
               <AlertCircle className="h-4.5 w-4.5" />
             </div>
           </div>

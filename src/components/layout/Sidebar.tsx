@@ -24,7 +24,7 @@ export default function Sidebar() {
   const navItems = role === 'admin' ? ADMIN_NAV_ITEMS : USER_NAV_ITEMS;
 
   return (
-    <aside className="fixed inset-y-0 right-0 z-30 hidden w-64 lg:flex flex-col text-right bg-white dark:bg-[#0b1120] border-l border-border/80 shadow-300 opacity-100">
+    <aside className="fixed inset-y-0 right-0 z-30 hidden w-64 lg:flex flex-col text-right bg-card dark:bg-[#0b1120] border-l border-border/80 shadow-300 opacity-100">
       
       {/* Logo */}
       <div className="flex h-16 items-center px-6">
@@ -103,7 +103,7 @@ export default function Sidebar() {
         
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all duration-200"
+          className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 transition-all duration-200"
         >
           <LogOut className="h-4 w-4 shrink-0" />
           <span>تسجيل الخروج</span>

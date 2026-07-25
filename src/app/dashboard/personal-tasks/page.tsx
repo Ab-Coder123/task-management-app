@@ -172,14 +172,14 @@ export default function PersonalTasksPage() {
   const getStatusBadgeColor = (status: TaskStatus) => {
     switch (status) {
       case 'completed': 
-        return 'text-emerald-600 bg-emerald-50 border-emerald-100';
+        return 'text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
       case 'in_progress': 
-        return 'text-amber-600 bg-amber-50 border-amber-100';
+        return 'text-amber-700 dark:text-amber-400 bg-amber-500/10 border-amber-500/20';
       case 'overdue': 
-        return 'text-rose-600 bg-rose-50 border-rose-100';
+        return 'text-rose-700 dark:text-rose-400 bg-rose-500/10 border-rose-500/20';
       case 'pending':
       default: 
-        return 'text-blue-600 bg-blue-50 border-blue-100';
+        return 'text-blue-700 dark:text-blue-400 bg-blue-500/10 border-blue-500/20';
     }
   };
 
@@ -222,7 +222,7 @@ export default function PersonalTasksPage() {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <form onSubmit={handleCreatePersonalTask} className="p-5 bg-white border border-slate-200 rounded-2xl space-y-3.5 shadow-sm">
+            <form onSubmit={handleCreatePersonalTask} className="p-5 bg-card border border-border dark:border-slate-800 rounded-2xl space-y-3.5 shadow-sm">
               <h3 className="text-sm font-bold text-foreground">إنشاء مهمة خاصة جديدة</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -232,7 +232,7 @@ export default function PersonalTasksPage() {
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
                   placeholder="عنوان المهمة..."
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right shadow-sm"
+                  className="w-full px-3.5 py-2 rounded-xl bg-background dark:bg-slate-900/60 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right shadow-sm"
                 />
                 
                 <input
@@ -240,7 +240,7 @@ export default function PersonalTasksPage() {
                   value={newTaskDesc}
                   onChange={(e) => setNewTaskDesc(e.target.value)}
                   placeholder="وصف المهمة (اختياري)..."
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-250 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right shadow-sm"
+                  className="w-full px-3.5 py-2 rounded-xl bg-background dark:bg-slate-900/60 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right shadow-sm"
                 />
               </div>
 
@@ -284,7 +284,7 @@ export default function PersonalTasksPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: 'spring', duration: 0.35, bounce: 0.15 }}
-              className="relative z-10 w-full max-w-lg bg-white dark:bg-[#0b1120] border border-border/80 rounded-3xl p-6 md:p-8 space-y-5 shadow-2xl opacity-100 text-right"
+              className="relative z-10 w-full max-w-lg bg-card dark:bg-[#101828] border border-border/80 dark:border-slate-800 rounded-3xl p-6 md:p-8 space-y-5 shadow-2xl opacity-100 text-right"
               dir="rtl"
             >
               <div className="flex items-center justify-between border-b border-border/40 pb-4">
@@ -378,7 +378,7 @@ export default function PersonalTasksPage() {
         <div className="rounded-xl bg-card p-5 shadow-200 hover:shadow-300 hover:-translate-y-1.5 transition-all duration-350 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">إجمالي المهام</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
               <CheckSquare className="h-4.5 w-4.5" />
             </div>
           </div>
@@ -392,7 +392,7 @@ export default function PersonalTasksPage() {
         <div className="rounded-xl bg-card p-5 shadow-200 hover:shadow-300 hover:-translate-y-1.5 transition-all duration-350 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">قيد الإنجاز</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
               <Clock className="h-4.5 w-4.5" />
             </div>
           </div>
@@ -406,7 +406,7 @@ export default function PersonalTasksPage() {
         <div className="rounded-xl bg-card p-5 shadow-200 hover:shadow-300 hover:-translate-y-1.5 transition-all duration-350 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">المهام المكتملة</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
               <FolderCheck className="h-4.5 w-4.5" />
             </div>
           </div>
@@ -422,7 +422,7 @@ export default function PersonalTasksPage() {
         <div className="rounded-xl bg-card p-5 shadow-200 hover:shadow-300 hover:-translate-y-1.5 transition-all duration-350 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">مهام متأخرة</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
               <AlertCircle className="h-4.5 w-4.5" />
             </div>
           </div>
@@ -477,7 +477,7 @@ export default function PersonalTasksPage() {
               <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${getStatusBadgeColor(task.status)}`}>
                 • {getStatusArabicLabel(task.status)}
               </span>
-              <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-100 flex items-center gap-1">
+              <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center gap-1">
                 <Lock className="h-3 w-3" />
                 خاصة
               </span>
@@ -507,7 +507,7 @@ export default function PersonalTasksPage() {
 
                 <button
                   onClick={() => handleDeleteTask(task._id, task.title)}
-                  className="p-1.5 rounded-lg border border-border bg-card hover:bg-rose-50 text-rose-600 transition-all shrink-0"
+                  className="p-1.5 rounded-lg border border-border bg-card hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 transition-all shrink-0"
                   title="حذف المهمة"
                 >
                   <Trash2 className="h-3.5 w-3.5" />

@@ -7,9 +7,9 @@ interface UserStatusBadgeProps {
 
 export default function UserStatusBadge({ status }: UserStatusBadgeProps) {
   const styles = {
-    pending: 'bg-amber-50 text-amber-700 border-amber-100',
-    approved: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-    rejected: 'bg-rose-50 text-rose-700 border-rose-100',
+    pending: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20',
+    approved: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20',
+    rejected: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20',
   };
 
   const dots = {

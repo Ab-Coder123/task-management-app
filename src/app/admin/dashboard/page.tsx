@@ -131,11 +131,11 @@ export default function AdminDashboardPage() {
     ({ completed: 'مكتملة', in_progress: 'قيد التنفيذ', overdue: 'متأخرة', pending: 'جديدة' }[s] ?? 'جديدة');
 
   const statusStyle = (s: TaskStatus) => ({
-    completed:  { dot: '#10b981', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-    in_progress:{ dot: '#f59e0b', badge: 'bg-amber-50 text-amber-700 border-amber-200' },
-    overdue:    { dot: '#ef4444', badge: 'bg-rose-50 text-rose-700 border-rose-200' },
-    pending:    { dot: '#3b82f6', badge: 'bg-blue-50 text-blue-700 border-blue-200' },
-  }[s] ?? { dot: '#3b82f6', badge: 'bg-blue-50 text-blue-700 border-blue-200' });
+    completed:  { dot: '#10b981', badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20' },
+    in_progress:{ dot: '#f59e0b', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20' },
+    overdue:    { dot: '#ef4444', badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20' },
+    pending:    { dot: '#3b82f6', badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20' },
+  }[s] ?? { dot: '#3b82f6', badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20' });
 
   const relativeTime = (dateStr: string) => {
     if (!dateStr) return 'غير محدد';
@@ -185,10 +185,10 @@ export default function AdminDashboardPage() {
   };
 
   const stats = [
-    { label: 'إجمالي المهام', value: totalTasks,     sub: 'المسجلة في النظام حالياً', Icon: CheckSquare, iconBg: 'bg-blue-50', iconColor: 'text-blue-600' },
-    { label: 'قيد التنفيذ',   value: activeTasks,    sub: 'يعمل عليها الفريق الآن',       Icon: BarChart2,   iconBg: 'bg-amber-50', iconColor: 'text-amber-600' },
-    { label: 'مكتملة',        value: completedTasks, sub: totalTasks > 0 ? `${Math.round(completedTasks/totalTasks*100)}% من المهام الكلية` : 'لا توجد مهام', Icon: FolderCheck, iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
-    { label: 'متأخرة',        value: overdueTasks,   sub: 'تطلب إجراءً فورياً',           Icon: AlertCircle, iconBg: 'bg-rose-50', iconColor: 'text-rose-600', subColor: 'text-rose-500 font-semibold' },
+    { label: 'إجمالي المهام', value: totalTasks,     sub: 'المسجلة في النظام حالياً', Icon: CheckSquare, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-600 dark:text-blue-400' },
+    { label: 'قيد التنفيذ',   value: activeTasks,    sub: 'يعمل عليها الفريق الآن',       Icon: BarChart2,   iconBg: 'bg-amber-500/10', iconColor: 'text-amber-600 dark:text-amber-400' },
+    { label: 'مكتملة',        value: completedTasks, sub: totalTasks > 0 ? `${Math.round(completedTasks/totalTasks*100)}% من المهام الكلية` : 'لا توجد مهام', Icon: FolderCheck, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-600 dark:text-emerald-400' },
+    { label: 'متأخرة',        value: overdueTasks,   sub: 'تطلب إجراءً فورياً',           Icon: AlertCircle, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-600 dark:text-rose-400', subColor: 'text-rose-500 dark:text-rose-400 font-semibold' },
   ];
 
   return (

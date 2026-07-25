@@ -40,7 +40,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="absolute inset-y-0 right-0 w-72 border-l border-border/80 bg-white dark:bg-[#0b1120] p-6 shadow-2xl flex flex-col justify-between text-right opacity-100"
+            className="absolute inset-y-0 right-0 w-72 border-l border-border/80 bg-card dark:bg-[#0b1120] p-6 shadow-2xl flex flex-col justify-between text-right opacity-100"
           >
             <div>
               {/* Header with Close Button */}
@@ -96,7 +96,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   onClose();
                   logout();
                 }}
-                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-rose-600 hover:bg-rose-50 transition-all"
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-all"
               >
                 <LogOut className="h-4.5 w-4.5" />
                 <span>تسجيل الخروج</span>

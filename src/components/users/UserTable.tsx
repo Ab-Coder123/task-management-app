@@ -119,8 +119,8 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
                 {/* Role */}
                 <td className="px-6 py-4">
                   <span className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border shadow-100 ${user.role === 'admin'
-                    ? 'bg-violet-50 text-violet-700 border-violet-100'
-                    : 'bg-slate-50 text-slate-600 border-slate-100'
+                    ? 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/20'
+                    : 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20'
                     }`}>
                     {user.role === 'admin' ? 'مدير النظام' : 'عضو فريق'}
                   </span>
@@ -138,14 +138,14 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
                       <>
                         <button
                           onClick={() => onApprove(user._id)}
-                          className="p-2 rounded-xl text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-all shadow-100"
+                          className="p-2 rounded-xl text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all shadow-100"
                           title="موافقة"
                         >
                           <Check className="h-4.5 w-4.5" />
                         </button>
                         <button
                           onClick={() => onReject(user._id)}
-                          className="p-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 transition-all shadow-100"
+                          className="p-2 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all shadow-100"
                           title="رفض"
                         >
                           <X className="h-4.5 w-4.5" />
@@ -155,7 +155,7 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
                     {user.role !== 'admin' && (
                       <button
                         onClick={() => onDelete(user._id)}
-                        className="p-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 transition-all shadow-100"
+                        className="p-2 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all shadow-100"
                         title="حذف المستخدم"
                       >
                         <Trash2 className="h-3 w-3" />

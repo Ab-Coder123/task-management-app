@@ -1,0 +1,37 @@
+# DARK MODE UI COLOR HANDLER BRIEF
+
+## Objective
+Harmonize, optimize, and enforce consistent, high-contrast, premium Dark Mode color handling across ALL pages and components in the Next.js Task Management app.
+
+## Aesthetic Guidance (from Frontend Design Principles)
+- **Palette**: Deep slate/navy tones (`#0b1120` base background, `#101828` / `#1e293b` elevated surfaces and cards, `#3b82f6` primary accent blue).
+- **Typography & Contrast**: Ensure readable high-contrast foreground text (`#f8fafc` text-slate-50 / text-foreground) with soft muted labels (`text-slate-400` / `text-muted-foreground`).
+- **Surface Elevation**: Cards, modals, inputs, and dropdowns must use dynamic semantically mapped classes or proper `dark:` modifier pairs (`bg-white dark:bg-card` or `bg-slate-50 dark:bg-slate-900/60`). Eliminate all hardcoded pure white backgrounds that break in dark mode or create stark unstyled white boxes.
+- **Form Controls**: Select options, input fields, and modal containers must explicitly handle dark mode background and border colors (`border-border dark:border-slate-800`).
+
+## Target Files to Audit & Refine
+Check and update dark mode styling across the entire project, paying special attention to:
+1. `src/app/globals.css` - Ensure CSS variables and utility classes (.glass-card, .glass-panel, shadow classes) maintain rich dark mode contrast.
+2. `src/app/admin/dashboard/page.tsx`
+3. `src/app/admin/tasks/page.tsx`
+4. `src/app/admin/notifications/page.tsx`
+5. `src/app/admin/reports/page.tsx`
+6. `src/app/dashboard/page.tsx`
+7. `src/app/dashboard/personal-tasks/page.tsx`
+8. `src/components/shared/ProfilePageContent.tsx`
+9. `src/components/tasks/TaskForm.tsx`
+10. `src/components/tasks/TaskTable.tsx`
+11. `src/components/users/UserTable.tsx`
+12. `src/components/layout/Navbar.tsx`
+13. `src/components/layout/Sidebar.tsx`
+14. `src/components/layout/MobileSidebar.tsx`
+15. `src/components/layout/BottomNav.tsx`
+
+## Gate Commands
+- Verification Build: `npm run build`
+- Type Check: `npx tsc --noEmit`
+
+## Instructions
+- Do NOT commit changes to Git (the orchestrator will review and commit).
+- Make sure all hardcoded light-only colors (e.g. static `bg-white`, `bg-slate-100`, `text-slate-900` without `dark:` equivalents) are converted to use theme-aware Tailwind classes (`dark:...`) or CSS variable tokens.
+- Return a summary of all modified files and key color adjustments.

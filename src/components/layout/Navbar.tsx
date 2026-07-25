@@ -42,7 +42,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white dark:bg-[#0b1120] border-b border-border/80 shadow-100 opacity-100">
+    <header className="sticky top-0 z-40 w-full bg-white dark:bg-[#0b1120] border-b border-border ">
       <div className="flex h-16 items-center justify-between px-6">
 
         {/* Right side (RTL): Badge + Mobile menu */}
@@ -134,7 +134,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
                   zIndex: 99999,
                   minWidth: '15rem',
                 }}
-                className="w-60 rounded-2xl p-2 shadow-600 text-right bg-white dark:bg-[#101828] border border-border opacity-100 z-[99999] animate-in fade-in slide-in-from-top-2 duration-200"
+                className="w-60 rounded-2xl p-2 shadow-600 text-right bg-white dark:bg-[#101828] border border-border z-[99999] animate-in fade-in slide-in-from-top-2 duration-200"
                 dir="rtl"
               >
                 <div className="px-3.5 py-3 mb-2 bg-muted/40 rounded-xl border border-border/50">

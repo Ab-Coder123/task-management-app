@@ -81,6 +81,12 @@
       radial-gradient(ellipse at 80% 100%, rgba(99, 102, 241, 0.02) 0px, transparent 50%);
     background-attachment: fixed;
   }
+
+  .dark body {
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 48%),
+      radial-gradient(ellipse at 80% 100%, rgba(30, 41, 59, 0.18) 0px, transparent 52%);
+  }
 }
 
 /* Premium scrollbar */
@@ -94,18 +100,20 @@
 
 /* Solid Panels & Cards (No Transparency / No Glassmorphism) */
 .glass-panel {
-  background: #ffffff;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 0.55);
   box-shadow: 0 10px 30px -10px rgba(75, 85, 99, 0.1);
 }
 
 .glass-card {
-  background: #ffffff;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 0.55);
   box-shadow: 0 4px 12px rgba(75, 85, 99, 0.06);
   transition: all 0.25s ease;
 }
 
 .glass-card:hover {
-  background: #ffffff;
+  background: hsl(var(--card));
   box-shadow: 0 10px 30px -10px rgba(75, 85, 99, 0.15);
 }
 
@@ -168,16 +176,18 @@
 /* Solid Dark Theme Panels & Cards */
 .dark .glass-panel {
   background: #101828;
+  border-color: rgba(51, 65, 85, 0.8);
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 
 .dark .glass-card {
   background: #101828;
+  border-color: rgba(51, 65, 85, 0.75);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 .dark .glass-card:hover {
-  background: #101828;
+  background: #1e293b;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
 }
 
@@ -189,5 +199,4 @@
 .dark .bg-card:hover {
   box-shadow: 0 8px 26px -4px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
 }
-
 

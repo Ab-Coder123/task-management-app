@@ -180,12 +180,12 @@ export default function ProfilePageContent() {
           <div className="flex flex-wrap justify-center gap-2 w-full mt-2 border-t border-border/20 pt-4">
             <span className={`px-3 py-1 rounded-full text-[10px] font-bold shadow-100 border ${
               user.role === 'admin' 
-                ? 'bg-rose-50 text-rose-700 border-rose-100' 
-                : 'bg-blue-50 text-blue-700 border-blue-100'
+                ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20' 
+                : 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20'
             }`}>
               {user.role === 'admin' ? 'مدير النظام' : 'عضو فريق'}
             </span>
-            <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-100">
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 shadow-100">
               حساب موثق
             </span>
           </div>
@@ -210,7 +210,7 @@ export default function ProfilePageContent() {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900/60 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
                   />
                 </div>
                 <div>
@@ -220,7 +220,7 @@ export default function ProfilePageContent() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900/60 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
                   />
                   {email.trim() !== user.email && !currentPassword && (
                     <p className="text-[10px] text-amber-600 font-bold mt-1.5 flex items-center gap-1">
@@ -251,7 +251,7 @@ export default function ProfilePageContent() {
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     placeholder="مطلوبة لتعديل كلمة المرور أو البريد"
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm focus:border-primary/80"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900/60 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm focus:border-primary/80"
                   />
                 </div>
 
@@ -268,7 +268,7 @@ export default function ProfilePageContent() {
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={!currentPassword}
                     placeholder={currentPassword ? "اتركها فارغة إذا لم تود تغييرها" : "🔒 أدخل كلمة المرور الحالية للفتح"}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white disabled:bg-slate-50 disabled:text-muted-foreground/50 border border-slate-200 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900/60 disabled:bg-muted/60 dark:disabled:bg-slate-950/60 disabled:text-muted-foreground/50 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
                   />
                 </div>
 
@@ -285,7 +285,7 @@ export default function ProfilePageContent() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={!currentPassword}
                     placeholder={currentPassword ? "أدخل كلمة المرور مجدداً للتأكيد" : "🔒 أدخل كلمة المرور الحالية للفتح"}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white disabled:bg-slate-50 disabled:text-muted-foreground/50 border border-slate-200 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900/60 disabled:bg-muted/60 dark:disabled:bg-slate-950/60 disabled:text-muted-foreground/50 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
                   />
                 </div>
               </div>

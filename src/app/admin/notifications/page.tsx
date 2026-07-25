@@ -61,38 +61,38 @@ export default function AdminNotificationsPage() {
   };
 
   const getThemeClasses = (type: string, isRead: boolean, action?: string) => {
-    if (isRead) return 'bg-card/75 text-muted-foreground shadow-100 hover:shadow-200 border-r-4 border-r-slate-300';
+    if (isRead) return 'bg-card/75 text-muted-foreground shadow-100 hover:shadow-200 border-r-4 border-r-slate-300 dark:border-r-slate-700';
     const checkType = action || type;
     switch (checkType) {
       case 'new_user':
-        return 'bg-emerald-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-emerald-500';
+        return 'bg-emerald-500/10 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-emerald-500';
       case 'task_completed':
-        return 'bg-indigo-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-indigo-500';
+        return 'bg-indigo-500/10 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-indigo-500';
       case 'new_comment':
       case 'comment_added':
-        return 'bg-violet-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-violet-500';
+        return 'bg-violet-500/10 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-violet-500';
       case 'task_deleted':
-        return 'bg-rose-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-rose-500';
+        return 'bg-rose-500/10 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-rose-500';
       default:
-        return 'bg-blue-50/30 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-blue-500';
+        return 'bg-blue-500/10 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-blue-500';
     }
   };
 
   const getIconBg = (type: string, isRead: boolean, action?: string) => {
-    if (isRead) return 'bg-slate-100';
+    if (isRead) return 'bg-muted text-muted-foreground';
     const checkType = action || type;
     switch (checkType) {
       case 'new_user':
-        return 'bg-emerald-50';
+        return 'bg-emerald-500/10';
       case 'task_completed':
-        return 'bg-indigo-50';
+        return 'bg-indigo-500/10';
       case 'new_comment':
       case 'comment_added':
-        return 'bg-violet-50';
+        return 'bg-violet-500/10';
       case 'task_deleted':
-        return 'bg-rose-50';
+        return 'bg-rose-500/10';
       default:
-        return 'bg-blue-50';
+        return 'bg-blue-500/10';
     }
   };
 
@@ -140,7 +140,7 @@ export default function AdminNotificationsPage() {
         }
       />
 
-      <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-blue-50/60 border border-blue-100 text-blue-800 text-xs font-semibold shadow-100">
+      <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-800 dark:text-blue-300 text-xs font-semibold shadow-100">
         <Bell className="h-4 w-4 text-blue-600 shrink-0" />
         <span>تنبيه للنظام: يتم حفظ وعرض الإشعارات الخاصة بآخر يومين (48 ساعة) فقط، ويقوم السيرفر بحذف الإشعارات الأقدم تلقائياً للحفاظ على سرعة وكفاءة قاعدة البيانات.</span>
       </div>
