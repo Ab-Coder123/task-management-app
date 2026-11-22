@@ -8,6 +8,8 @@ export interface User {
   email: string;
   role: UserRole;
   status: UserStatus;
+  team?: string;
+  jobTitle?: string;
   createdAt: string;
   avatar?: string;
   isVerified?: boolean;

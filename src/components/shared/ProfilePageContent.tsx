@@ -7,7 +7,8 @@ import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { getAvatarFallback } from '@/lib/utils';
 import { playSuccessSound } from '@/lib/utils/sound';
-import { Camera, Mail, KeyRound, User2, Save, Unlock, Lock } from 'lucide-react';
+import { Camera, Mail, KeyRound, User2, Save, Unlock, Lock, Briefcase, Users } from 'lucide-react';
+import { COMPANY_TEAMS } from '@/lib/constants/departments';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -23,6 +24,8 @@ export default function ProfilePageContent() {
   // Form states
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [team, setTeam] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [avatar, setAvatar] = useState('');
@@ -37,6 +40,8 @@ export default function ProfilePageContent() {
     if (user) {
       setUsername(user.username || '');
       setEmail(user.email || '');
+      setTeam(user.team || (user.role === 'admin' ? 'الإدارة العامة' : ''));
+      setJobTitle(user.jobTitle || (user.role === 'admin' ? 'مدير النظام' : ''));
       setAvatar(user.avatar || '');
     }
   }, [user]);
@@ -104,6 +109,8 @@ export default function ProfilePageContent() {
       const updateData: any = {
         username: username.trim(),
         email: email.trim(),
+        team: team.trim(),
+        jobTitle: jobTitle.trim(),
         avatar: avatar
       };
 
@@ -188,6 +195,18 @@ export default function ProfilePageContent() {
             <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 shadow-100">
               حساب موثق
             </span>
+            {(team || user.team) && (
+              <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 shadow-100 flex items-center gap-1">
+                <Users className="h-3 w-3" />
+                {team || user.team}
+              </span>
+            )}
+            {(jobTitle || user.jobTitle) && (
+              <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-violet-500/10 text-violet-700 dark:text-violet-400 border border-violet-500/20 shadow-100 flex items-center gap-1">
+                <Briefcase className="h-3 w-3" />
+                {jobTitle || user.jobTitle}
+              </span>
+            )}
           </div>
         </div>
 
@@ -227,6 +246,43 @@ export default function ProfilePageContent() {
                       <span>* يجب إدخال كلمة المرور الحالية لتأكيد حفظ البريد الجديد.</span>
                     </p>
                   )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground mb-2">القسم / الفريق</label>
+                  <select
+                    value={team}
+                    onChange={(e) => setTeam(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900/60 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
+                  >
+                    <option value="">اختر القسم / الفريق</option>
+                    {user.role === 'admin' && <option value="الإدارة العامة">الإدارة العامة</option>}
+                    {COMPANY_TEAMS.map((t) => (
+                      <option key={t.id} value={t.name}>
+                        {t.name}
+                      </option>
+                    ))}
+                    {team && !COMPANY_TEAMS.some((t) => t.name === team) && team !== 'الإدارة العامة' && (
+                      <option value={team}>{team}</option>
+                    )}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground mb-2">المسمى الوظيفي</label>
+                  <input
+                    type="text"
+                    list="profile-job-suggestions"
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    placeholder="مثال: Frontend Developer"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900/60 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
+                  />
+                  <datalist id="profile-job-suggestions">
+                    {(COMPANY_TEAMS.find((t) => t.name === team)?.jobs || []).map((j) => (
+                      <option key={j} value={j} />
+                    ))}
+                  </datalist>
                 </div>
               </div>
             </div>

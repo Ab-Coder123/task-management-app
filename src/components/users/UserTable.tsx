@@ -69,10 +69,11 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
 
   return (
     <div className="w-full overflow-x-auto rounded-2xl bg-card dark:bg-[#0f172a] dark:border-transparent shadow-300 dark:shadow-2xl">
-      <table className="w-full min-w-[700px] text-right border-collapse">
+      <table className="w-full min-w-[820px] text-right border-collapse">
         <thead>
           <tr className="bg-muted/30 text-xs font-bold text-muted-foreground/80 uppercase tracking-wider">
             <th className="px-6 py-4">المستخدم</th>
+            <th className="px-6 py-4">القسم / الوظيفة</th>
             <th className="px-6 py-4">تاريخ التسجيل</th>
             <th className="px-6 py-4">الصلاحية</th>
             <th className="px-6 py-4">الحالة</th>
@@ -87,6 +88,8 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
         >
           {users.map((user) => {
             const ac = avatarColor(user.username || 'غ م');
+            const displayTeam = user.team || (user.role === 'admin' ? 'الإدارة العامة' : 'غير محدد');
+            const displayJob = user.jobTitle || (user.role === 'admin' ? 'مدير النظام' : 'غير محدد');
 
             return (
               <motion.tr
@@ -108,6 +111,14 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
                       <p className="font-bold text-foreground">{user.username}</p>
                       <p className="text-xs text-muted-foreground font-semibold mt-0.5">{user.email}</p>
                     </div>
+                  </div>
+                </td>
+
+                {/* Team & Job Title */}
+                <td className="px-6 py-4">
+                  <div>
+                    <p className="text-xs font-bold text-foreground">{displayTeam}</p>
+                    <p className="text-[11px] text-primary font-semibold mt-0.5">{displayJob}</p>
                   </div>
                 </td>
 
