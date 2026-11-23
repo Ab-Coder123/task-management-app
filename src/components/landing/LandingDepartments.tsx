@@ -11,7 +11,8 @@ const TEAM_PLAYBOOKS = [
     teamId: 'engineering',
     tag: 'التطوير والبرمجة',
     title: 'توزيع المهام البرمجية وتقدم كل مطور',
-    image: '/images/landing/dashboard-dark.jpg',
+    image: '/images/landing/dashboard-dark.png',
+    isPortrait: false,
     frameBg: 'from-slate-900 via-slate-800 to-blue-950',
     icon: Code2,
     bullets: [
@@ -25,6 +26,7 @@ const TEAM_PLAYBOOKS = [
     tag: 'التصميم و UI/UX',
     title: 'تنظيم مسودات التصميم والمهام الشخصية',
     image: '/images/landing/personal-tasks-light.png',
+    isPortrait: false,
     frameBg: 'from-amber-500 via-orange-600 to-rose-600',
     icon: Palette,
     bullets: [
@@ -38,6 +40,7 @@ const TEAM_PLAYBOOKS = [
     tag: 'إدارة المنتجات',
     title: 'رؤية شاملة للأولويات وحركة التنقل',
     image: '/images/landing/sidebar-dark.png',
+    isPortrait: true,
     frameBg: 'from-violet-700 via-purple-700 to-indigo-900',
     icon: Kanban,
     bullets: [
@@ -50,7 +53,8 @@ const TEAM_PLAYBOOKS = [
     teamId: 'marketing',
     tag: 'التسويق والنمو',
     title: 'تنسيق الحملات والمحتوى دون تشتت',
-    image: '/images/landing/dashboard-dark.jpg',
+    image: '/images/landing/dashboard-dark.png',
+    isPortrait: false,
     frameBg: 'from-emerald-600 via-teal-700 to-cyan-800',
     icon: Megaphone,
     bullets: [
@@ -115,12 +119,16 @@ export default function LandingDepartments() {
                 {/* Inner Solid App Card */}
                 <div className="rounded-2xl bg-white dark:bg-[#0f172a] p-4 shadow-500 space-y-3 flex-1 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-900 shadow-100">
+                    <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-[#0b1120] shadow-100">
                       <Image
                         src={card.image}
                         alt={card.title}
                         fill
-                        className="object-cover object-top group-hover:scale-[1.03] transition-transform duration-300"
+                        quality={100}
+                        unoptimized
+                        className={`${
+                          card.isPortrait ? 'object-contain' : 'object-cover object-top'
+                        } group-hover:scale-[1.03] transition-transform duration-300`}
                       />
                     </div>
 

@@ -19,7 +19,7 @@ const SHOWCASE_VIEWS = [
     id: 'dashboard',
     label: 'لوحة المهام (ليلي)',
     url: 'tasksaas.app/dashboard',
-    image: '/images/landing/dashboard-dark.jpg',
+    image: '/images/landing/dashboard-dark.png',
     alt: 'لوحة المهام الرئيسية في الوضع الليلي',
     icon: LayoutDashboard,
     backdrop: 'from-slate-900 via-blue-950 to-indigo-950',
@@ -167,15 +167,19 @@ export default function LandingHero() {
                         src="/images/landing/sidebar-dark.png"
                         alt="القائمة الجانبية للتنقل بين المهام"
                         fill
-                        className="object-cover object-top"
+                        quality={100}
+                        unoptimized
+                        className="object-contain object-top"
                         priority
                       />
                     </div>
                     <div className="col-span-8 sm:col-span-9 relative aspect-[16/10] sm:min-h-[380px]">
                       <Image
-                        src="/images/landing/dashboard-dark.jpg"
+                        src="/images/landing/dashboard-dark.png"
                         alt="لوحة المهام الرئيسية في الوضع الليلي"
                         fill
+                        quality={100}
+                        unoptimized
                         className="object-cover object-top"
                         priority
                       />
@@ -194,6 +198,8 @@ export default function LandingHero() {
                       src={currentView.image}
                       alt={currentView.alt}
                       fill
+                      quality={100}
+                      unoptimized
                       className="object-cover object-top"
                       priority
                     />

@@ -84,6 +84,8 @@ export default function LandingHowItWorks() {
                 src="/images/landing/personal-tasks-light.png"
                 alt="شاشة المهام الشخصية الخاصة في التطبيق"
                 fill
+                quality={100}
+                unoptimized
                 className="object-cover object-top"
               />
             </div>
