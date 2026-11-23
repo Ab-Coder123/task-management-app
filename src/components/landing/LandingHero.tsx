@@ -7,9 +7,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   ShieldCheck,
-  Users,
-  Lock,
-  Bell,
   ListChecks,
   LayoutDashboard,
 } from 'lucide-react';
@@ -133,113 +130,94 @@ export default function LandingHero() {
           </div>
         </motion.div>
 
-        {/* Left Column (RTL): Interactive Dashboard Preview Card */}
+        {/* Left Column (RTL): Clean, Scannable Workspace Preview Card */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1, ease: 'easeOut' }}
           className="lg:col-span-6"
         >
-          <div className="rounded-3xl bg-white dark:bg-[#101828] border border-border/90 dark:border-slate-800 shadow-500 p-4 sm:p-6 space-y-4">
-            {/* Mockup Top Bar */}
-            <div className="flex items-center justify-between pb-3 border-b border-border/60 dark:border-slate-800">
-              <div className="flex items-center gap-2">
+          <div className="rounded-3xl bg-white dark:bg-[#101828] border border-border/60 dark:border-transparent shadow-400 p-6 sm:p-8 space-y-6">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                <span className="text-xs font-extrabold text-foreground">
-                  معاينة حيّة لمساحة عمل الفريق
+                <span className="text-sm font-extrabold text-foreground">
+                  مساحة عمل الفريق
                 </span>
               </div>
-              <span className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[10px] font-bold">
-                تتبع مستقل لكل عضو
+              <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-extrabold">
+                50% مكتمل
               </span>
             </div>
 
-            {/* Mock Shared Task Card */}
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-border/70 dark:border-slate-800 space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[10px] font-bold border border-rose-500/20">
-                    أولوية عالية
-                  </span>
-                  <span className="px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold border border-amber-500/20">
-                    قيد التنفيذ (50%)
-                  </span>
-                </div>
-                <span className="text-[11px] font-semibold text-muted-foreground">
+            {/* Task Title & Progress */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-2 text-xs">
+                <span className="font-semibold text-muted-foreground">
                   فريق التطوير والبرمجة
                 </span>
+                <span className="px-2.5 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold">
+                  أولوية عالية
+                </span>
               </div>
 
-              <div>
-                <h3 className="text-sm font-extrabold text-foreground">
-                  إطلاق بوابة تسجيل الموظفين متعددة الخطوات
-                </h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  ربط اختيار القسم والمسمى الوظيفي مع لوحة اعتماد الإدارة.
-                </p>
-              </div>
+              <h3 className="text-base sm:text-lg font-extrabold text-foreground leading-snug">
+                إطلاق بوابة تسجيل الموظفين الجديدة
+              </h3>
 
-              {/* Per-Assignee Progress Preview */}
-              <div className="space-y-2 pt-2 border-t border-border/50 dark:border-slate-800">
-                <div className="flex items-center justify-between text-xs bg-white dark:bg-[#0b1120] p-2.5 rounded-xl border border-border/60 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-[10px] font-bold">
-                      أح
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground leading-none">أحمد محمد</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">
-                        Backend Developer
-                      </p>
-                    </div>
-                  </div>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
-                    <CheckCircle2 className="h-3 w-3" />
-                    مكتملة لديه
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between text-xs bg-white dark:bg-[#0b1120] p-2.5 rounded-xl border border-border/60 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold">
-                      سا
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground leading-none">سارة علي</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">
-                        Frontend Developer
-                      </p>
-                    </div>
-                  </div>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-bold">
-                    <ListChecks className="h-3 w-3" />
-                    3 / 4 مهام فرعية
-                  </span>
-                </div>
+              <div className="h-2 w-full rounded-full bg-muted dark:bg-slate-800 overflow-hidden">
+                <div className="h-full w-1/2 rounded-full bg-primary transition-all" />
               </div>
             </div>
 
-            {/* Bottom Mini Feature Strip */}
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-border/60 dark:border-slate-800">
-                <Users className="h-4 w-4 text-primary mx-auto mb-1" />
-                <p className="text-[10px] font-bold text-foreground">توزيع حسب القسم</p>
+            {/* Clean Assignee Progress Rows */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3 bg-slate-50 dark:bg-[#0b1120] p-3.5 rounded-2xl border border-border/50 dark:border-transparent shadow-100">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-extrabold shrink-0">
+                    أح
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground leading-none">
+                      أحمد محمد
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-1">
+                      Backend Developer
+                    </p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold shrink-0">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <span>مكتملة</span>
+                </span>
               </div>
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-border/60 dark:border-slate-800">
-                <Lock className="h-4 w-4 text-emerald-500 mx-auto mb-1" />
-                <p className="text-[10px] font-bold text-foreground">مهام خاصة محمية</p>
-              </div>
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-border/60 dark:border-slate-800">
-                <Bell className="h-4 w-4 text-amber-500 mx-auto mb-1" />
-                <p className="text-[10px] font-bold text-foreground">تنبيهات فورية</p>
+
+              <div className="flex items-center justify-between gap-3 bg-slate-50 dark:bg-[#0b1120] p-3.5 rounded-2xl border border-border/50 dark:border-transparent shadow-100">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-extrabold shrink-0">
+                    سا
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground leading-none">
+                      سارة علي
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-1">
+                      Frontend Developer
+                    </p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold shrink-0">
+                  <ListChecks className="h-3.5 w-3.5" />
+                  <span>3 / 4 مهام</span>
+                </span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4" />
-                <span>المهمة تكتمل كلياً عند إنهاء كل الأعضاء أدوارهم</span>
-              </span>
+            {/* Simple Footer Note */}
+            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground pt-1">
+              <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0" />
+              <span>تكتمل المهمة كلياً عند إنهاء كل الأعضاء لأدوارهم</span>
             </div>
           </div>
         </motion.div>
