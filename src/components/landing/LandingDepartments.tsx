@@ -11,8 +11,7 @@ const TEAM_PLAYBOOKS = [
     teamId: 'engineering',
     tag: 'التطوير والبرمجة',
     title: 'توزيع المهام البرمجية وتقدم كل مطور',
-    image: '/images/landing/dashboard-dark.png',
-    isPortrait: false,
+    image: '/images/landing/teams/engineering.png',
     frameBg: 'from-slate-900 via-slate-800 to-blue-950',
     icon: Code2,
     bullets: [
@@ -25,8 +24,7 @@ const TEAM_PLAYBOOKS = [
     teamId: 'design',
     tag: 'التصميم و UI/UX',
     title: 'تنظيم مسودات التصميم والمهام الشخصية',
-    image: '/images/landing/personal-tasks-light.png',
-    isPortrait: false,
+    image: '/images/landing/teams/design.png',
     frameBg: 'from-amber-500 via-orange-600 to-rose-600',
     icon: Palette,
     bullets: [
@@ -39,8 +37,7 @@ const TEAM_PLAYBOOKS = [
     teamId: 'product',
     tag: 'إدارة المنتجات',
     title: 'رؤية شاملة للأولويات وحركة التنقل',
-    image: '/images/landing/sidebar-dark.png',
-    isPortrait: true,
+    image: '/images/landing/teams/product.png',
     frameBg: 'from-violet-700 via-purple-700 to-indigo-900',
     icon: Kanban,
     bullets: [
@@ -53,8 +50,7 @@ const TEAM_PLAYBOOKS = [
     teamId: 'marketing',
     tag: 'التسويق والنمو',
     title: 'تنسيق الحملات والمحتوى دون تشتت',
-    image: '/images/landing/dashboard-dark.png',
-    isPortrait: false,
+    image: '/images/landing/teams/marketing.png',
     frameBg: 'from-emerald-600 via-teal-700 to-cyan-800',
     icon: Megaphone,
     bullets: [
@@ -126,9 +122,7 @@ export default function LandingDepartments() {
                         fill
                         quality={100}
                         unoptimized
-                        className={`${
-                          card.isPortrait ? 'object-contain' : 'object-cover object-top'
-                        } group-hover:scale-[1.03] transition-transform duration-300`}
+                        className="object-cover object-center group-hover:scale-[1.04] transition-transform duration-300"
                       />
                     </div>
 
