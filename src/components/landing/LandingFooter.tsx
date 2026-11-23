@@ -7,67 +7,138 @@ import { ArrowLeft } from 'lucide-react';
 export default function LandingFooter() {
   return (
     <footer
-      className="bg-white dark:bg-[#0b1120] border-t border-border/80 dark:border-slate-800 pt-14 pb-8 px-4 sm:px-6 lg:px-8"
+      className="bg-white dark:bg-[#0b1120] border-t border-border/80 dark:border-transparent pt-16 pb-10 px-4 sm:px-6 lg:px-8"
       dir="rtl"
     >
-      <div className="max-w-7xl mx-auto space-y-12">
-        {/* Final CTA Banner */}
-        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-l from-blue-600 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 text-white shadow-500 flex flex-col lg:flex-row items-center justify-between gap-6 text-right">
-          <div className="space-y-2 max-w-2xl">
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              جاهز لتنظيم مهام شركتك بطريقة احترافية؟
-            </h2>
-            <p className="text-xs sm:text-sm text-blue-50 leading-relaxed">
-              ابدأ الآن باختيار قسمك ومسمّاك الوظيفي في 3 خطوات سريعة، أو سجّل الدخول لمتابعة مشاريع فريقك.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto shrink-0">
+      <div className="max-w-6xl mx-auto space-y-16">
+        {/* Notion-Style Clean Centered Final CTA */}
+        <div className="text-center max-w-2xl mx-auto space-y-5">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+            انضم للطريقة الحديثة في إدارة عملك.
+          </h2>
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            ابدأ في تنظيم فريقك الآن خلال دقائق: اختر قسمك ومسمّاك الوظيفي في 3 خطوات
+            سريعة واستمتع ببيئة عمل واضحة وآمنة.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-blue-700 font-extrabold text-sm hover:bg-slate-100 transition-all shadow-lg"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-foreground dark:bg-primary text-background dark:text-white font-extrabold text-sm hover:opacity-95 transition-all shadow-lg"
             >
               <span>إنشاء حساب جديد</span>
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-blue-800/60 hover:bg-blue-800/80 border border-white/25 dark:border-transparent text-white font-bold text-sm transition-all shadow-md"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl bg-slate-100 dark:bg-[#101828] border border-border/70 dark:border-transparent text-foreground font-bold text-sm hover:text-primary transition-all shadow-100 dark:shadow-300"
             >
               تسجيل الدخول
             </Link>
           </div>
         </div>
 
-        {/* Bottom Footer Row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/60 dark:border-slate-800 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 dark:bg-slate-800/90 shadow-100">
-              <span className="text-base leading-none select-none" aria-hidden="true">
-                ✔️
-              </span>
+        {/* Multi-Column Notion-Style Footer */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-8 pt-10 border-t border-border/60 dark:border-transparent text-right">
+          {/* Brand Column */}
+          <div className="col-span-2 sm:col-span-4 lg:col-span-2 space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 dark:bg-slate-800/90 shadow-100">
+                <span className="text-lg leading-none select-none" aria-hidden="true">
+                  ✔️
+                </span>
+              </div>
+              <div>
+                <span className="text-base font-extrabold text-foreground block leading-none">
+                  مدير المهام
+                </span>
+                <span className="text-[10px] font-bold text-primary">TaskSaaS</span>
+              </div>
             </div>
-            <span className="font-extrabold text-foreground">مدير المهام — TaskSaaS</span>
+            <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
+              منصة عربية لإدارة مهام الفِرق والشركات بخصوصية عالية وتتبع تقدم مستقل لكل عضو.
+            </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-5 font-semibold">
-            <a href="#how-it-works" className="hover:text-primary transition-colors">
-              كيف يعمل
-            </a>
-            <a href="#features" className="hover:text-primary transition-colors">
-              المميزات
-            </a>
-            <a href="#departments" className="hover:text-primary transition-colors">
-              الأقسام
-            </a>
-            <Link href="/login" className="hover:text-primary transition-colors">
-              تسجيل الدخول
-            </Link>
-            <Link href="/register" className="hover:text-primary transition-colors">
-              التسجيل
-            </Link>
+          {/* Column 1 */}
+          <div className="space-y-2.5">
+            <p className="text-xs font-extrabold text-foreground">المنصة</p>
+            <ul className="space-y-2 text-xs text-muted-foreground font-medium">
+              <li>
+                <a href="#showcase" className="hover:text-primary transition-colors">
+                  معاينة التطبيق
+                </a>
+              </li>
+              <li>
+                <a href="#how-it-works" className="hover:text-primary transition-colors">
+                  كيف يعمل النظام
+                </a>
+              </li>
+              <li>
+                <a href="#features" className="hover:text-primary transition-colors">
+                  المميزات الهندسية
+                </a>
+              </li>
+              <li>
+                <a href="#faq" className="hover:text-primary transition-colors">
+                  الأسئلة الشائعة
+                </a>
+              </li>
+            </ul>
           </div>
 
-          <p className="font-medium">جميع الحقوق محفوظة &copy; 2026</p>
+          {/* Column 2 */}
+          <div className="space-y-2.5">
+            <p className="text-xs font-extrabold text-foreground">الأقسام</p>
+            <ul className="space-y-2 text-xs text-muted-foreground font-medium">
+              <li>
+                <Link href="/register?team=engineering" className="hover:text-primary transition-colors">
+                  التطوير والبرمجة
+                </Link>
+              </li>
+              <li>
+                <Link href="/register?team=design" className="hover:text-primary transition-colors">
+                  التصميم و UI/UX
+                </Link>
+              </li>
+              <li>
+                <Link href="/register?team=product" className="hover:text-primary transition-colors">
+                  إدارة المنتجات
+                </Link>
+              </li>
+              <li>
+                <Link href="/register?team=marketing" className="hover:text-primary transition-colors">
+                  التسويق والنمو
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3 */}
+          <div className="space-y-2.5">
+            <p className="text-xs font-extrabold text-foreground">الحساب</p>
+            <ul className="space-y-2 text-xs text-muted-foreground font-medium">
+              <li>
+                <Link href="/register" className="hover:text-primary transition-colors">
+                  إنشاء حساب جديد
+                </Link>
+              </li>
+              <li>
+                <Link href="/login" className="hover:text-primary transition-colors">
+                  تسجيل الدخول
+                </Link>
+              </li>
+              <li>
+                <a href="#roles" className="hover:text-primary transition-colors">
+                  مقارنة الصلاحيات
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-6 border-t border-border/50 dark:border-transparent flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-muted-foreground">
+          <p className="font-semibold">TaskSaaS — منصة إدارة المهام الاحترافية</p>
+          <p>جميع الحقوق محفوظة &copy; 2026</p>
         </div>
       </div>
     </footer>

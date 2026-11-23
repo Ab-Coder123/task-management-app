@@ -1,41 +1,28 @@
 'use client';
 
 import React from 'react';
-import { UserPlus, ShieldCheck, ListChecks, BarChart3 } from 'lucide-react';
+import Image from 'next/image';
+import { CheckCircle2, UserPlus, ShieldCheck, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const JOURNEY_STEPS = [
+const THREE_COLUMNS = [
   {
-    step: '01',
-    title: 'تحديد الفريق والمسمى الوظيفي',
+    title: 'كل موظف يبدأ من مكانه الصحيح',
     description:
-      'يمر العضو الجديد برحلة تسجيل من 3 خطوات يختار فيها قسمه داخل الشركة ومسمّاه الوظيفي الدقيق قبل ملء بيانات الحساب.',
+      'يمر العضو الجديد برحلة من 3 خطوات لاختيار القسم والمسمى الوظيفي قبل اعتماد حسابه من الإدارة.',
     icon: UserPlus,
-    accent: 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20',
   },
   {
-    step: '02',
-    title: 'مراجعة واعتماد الإدارة',
+    title: 'مهمة واحدة، وتقدم مستقل لكل عضو',
     description:
-      'يصل إشعار فوري لبريد المدير بتفاصيل المتقدم (القسم + الوظيفة). وبمجرد الاعتماد تتحدث شاشة المستخدم تلقائياً ويدخل لوحته.',
-    icon: ShieldCheck,
-    accent: 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-  },
-  {
-    step: '03',
-    title: 'توزيع المهام والتقدم المستقل',
-    description:
-      'يعمل كل عضو على جزئيته من المهمة المشتركة مع قائمة تحقق (Checklist) خاصة به، أو يدير مهامه الشخصية المعزولة تماماً.',
+      'ينفذ كل فرد مهامه الفرعية ويحدد حالته الخاصة، ولا تكتمل المهمة كلياً إلا بإنهاء الجميع أدوارهم.',
     icon: ListChecks,
-    accent: 'text-violet-600 dark:text-violet-400 bg-violet-500/10 border-violet-500/20',
   },
   {
-    step: '04',
-    title: 'التنبيهات والمرفقات والتقارير',
+    title: 'مساحة شخصية محمية عن الفريق',
     description:
-      'نقاشات حية بالتعليقات، مشاركة ملفات بروابط مشفرة مؤقتة، وتقارير فورية للإدارة لقياس سرعة الإنجاز وجودة التسليم.',
-    icon: BarChart3,
-    accent: 'text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20',
+      'يعمل الموظف على مهامه الخاصة وقوائم تحققه السرية في صفحة مستقلة لا يراها أي شخص آخر.',
+    icon: ShieldCheck,
   },
 ];
 
@@ -43,52 +30,86 @@ export default function LandingHowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0b1120] border-y border-border/60 dark:border-slate-800/80"
+      className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0b1120] border-y border-border/60 dark:border-transparent"
       dir="rtl"
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-          <span className="inline-block px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-extrabold">
-            رحلة العميل داخل المنصة
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
-            كيف يعمل نظام إدارة المهام في 4 خطوات واضحة؟
+      <div className="max-w-5xl mx-auto space-y-12">
+        {/* Notion-Style Centered Section Heading */}
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+            نظام يعرف تفاصيل شغل كل فريق.
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            من لحظة دخول الموظف للرابط وحتى تسليم المشاريع واعتمادها من الإدارة — كل خطوة مصممة لتكون واضحة وآمنة.
+            بدل اللخبطة بين القوائم المتداخلة، المنصة تفصل بوضوح بين المهام المشتركة
+            للشركة والمهام الخاصة بكل عضو.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {JOURNEY_STEPS.map((item, idx) => {
-            const Icon = item.icon;
+        {/* Centered Notion-Style Spotlight Card (Inspired by Acme HQ) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.45 }}
+          className="max-w-2xl mx-auto rounded-3xl bg-background dark:bg-[#101828] border border-border/80 dark:border-transparent shadow-400 overflow-hidden"
+        >
+          {/* Atmospheric Cover Header */}
+          <div className="h-24 sm:h-28 bg-gradient-to-l from-blue-600 via-indigo-600 to-teal-500 relative p-5 flex items-end justify-between">
+            <div className="flex items-center gap-2 text-white">
+              <span className="px-3 py-1 rounded-full bg-white/20 text-[11px] font-bold backdrop-blur-sm">
+                مهامي الشخصية (الخاصة)
+              </span>
+            </div>
+            <span className="px-2.5 py-1 rounded-lg bg-slate-950/40 text-white text-[10px] font-bold">
+              الوضع المضيء والليلي
+            </span>
+          </div>
+
+          {/* Embedded Real App Screenshot Preview */}
+          <div className="p-4 sm:p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                <span className="text-sm font-extrabold text-foreground">
+                  مقر العمل الشخصي — الخصوصية الكاملة
+                </span>
+              </div>
+              <span className="text-[11px] font-semibold text-muted-foreground">
+                لقطة حقيقية من التطبيق
+              </span>
+            </div>
+
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-border/70 dark:border-transparent shadow-200 bg-white">
+              <Image
+                src="/images/landing/personal-tasks-light.png"
+                alt="شاشة المهام الشخصية الخاصة في التطبيق"
+                fill
+                className="object-cover object-top"
+              />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Clean 3-Column Feature Strip Below */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
+          {THREE_COLUMNS.map((col, idx) => {
+            const Icon = col.icon;
             return (
               <motion.div
-                key={item.step}
-                initial={{ opacity: 0, y: 16 }}
+                key={col.title}
+                initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.35, delay: idx * 0.08 }}
-                className="relative p-6 rounded-2xl bg-background dark:bg-[#101828] border border-border/80 dark:border-slate-800 shadow-200 flex flex-col justify-between text-right"
+                className="text-right space-y-2"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <div
-                      className={`h-11 w-11 rounded-xl border flex items-center justify-center ${item.accent}`}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <span className="text-2xl font-black text-muted-foreground/25 select-none">
-                      {item.step}
-                    </span>
-                  </div>
-                  <h3 className="text-base font-extrabold text-foreground mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {item.description}
-                  </p>
+                <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary mb-1">
+                  <Icon className="h-4.5 w-4.5" />
                 </div>
+                <h3 className="text-base font-extrabold text-foreground">{col.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  {col.description}
+                </p>
               </motion.div>
             );
           })}
