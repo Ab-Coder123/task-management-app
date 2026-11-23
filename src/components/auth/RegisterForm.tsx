@@ -36,10 +36,51 @@ const TEAM_ICONS: Record<CompanyTeam['iconName'], React.ComponentType<{ classNam
   Settings2,
 };
 
+const smoothEase = [0.22, 1, 0.36, 1] as const;
+
 const stepVariants = {
-  initial: { opacity: 0, x: -16 },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.28, ease: 'easeOut' } },
-  exit: { opacity: 0, x: 16, transition: { duration: 0.2, ease: 'easeIn' } },
+  initial: (dir: number) => ({
+    opacity: 0,
+    x: dir > 0 ? -24 : 24,
+    scale: 0.985,
+  }),
+  animate: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      duration: 0.36,
+      ease: smoothEase,
+      when: 'beforeChildren',
+      staggerChildren: 0.045,
+    },
+  },
+  exit: (dir: number) => ({
+    opacity: 0,
+    x: dir > 0 ? 24 : -24,
+    scale: 0.985,
+    transition: { duration: 0.22, ease: 'easeIn' },
+  }),
+};
+
+const staggerGridVariants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.04,
+    },
+  },
+};
+
+const itemVariants = {
+  initial: { opacity: 0, y: 12, scale: 0.98 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.32, ease: smoothEase },
+  },
 };
 
 export default function RegisterForm() {
@@ -50,6 +91,7 @@ export default function RegisterForm() {
 
   // Wizard state
   const [step, setStep] = useState<1 | 2 | 3>(validInitialTeam ? 2 : 1);
+  const [direction, setDirection] = useState<1 | -1>(1);
   const [role, setRole] = useState<UserRole>('user');
   const [selectedTeamId, setSelectedTeamId] = useState<string>(validInitialTeam?.id || '');
   const [selectedJob, setSelectedJob] = useState<string>('');
@@ -102,17 +144,22 @@ export default function RegisterForm() {
     }
   };
 
+  const goToStep = (nextStep: 1 | 2 | 3) => {
+    setDirection(nextStep >= step ? 1 : -1);
+    setStep(nextStep);
+  };
+
   const handleNextFromStep1 = () => {
     setErrorMsg('');
     if (role === 'admin') {
-      setStep(3);
+      goToStep(3);
       return;
     }
     if (!selectedTeam) {
       setErrorMsg('يرجى اختيار القسم أو الفريق الذي تنتمي إليه للمتابعة.');
       return;
     }
-    setStep(2);
+    goToStep(2);
   };
 
   const handleNextFromStep2 = () => {
@@ -126,15 +173,15 @@ export default function RegisterForm() {
       setErrorMsg('يرجى اختيار المسمى الوظيفي للمتابعة.');
       return;
     }
-    setStep(3);
+    goToStep(3);
   };
 
   const handleBackFromStep3 = () => {
     setErrorMsg('');
     if (role === 'admin') {
-      setStep(1);
+      goToStep(1);
     } else {
-      setStep(2);
+      goToStep(2);
     }
   };
 
@@ -184,8 +231,12 @@ export default function RegisterForm() {
   ];
 
   return (
-    <div
-      className="w-full max-w-2xl p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0f172a] border border-border/80 dark:border-slate-800 shadow-xl animate-fade-in text-right relative z-10"
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: smoothEase }}
+      className="w-full max-w-2xl p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0f172a] border border-border/80 dark:border-transparent shadow-xl dark:shadow-500 text-right relative z-10 overflow-hidden"
       dir="rtl"
     >
       {/* Header */}
@@ -210,14 +261,14 @@ export default function RegisterForm() {
             return (
               <div
                 key={item.num}
-                className={`flex items-center justify-center gap-1.5 py-2.5 px-2 sm:px-3 rounded-xl border text-xs font-bold transition-all ${
+                className={`flex items-center justify-center gap-1.5 py-2.5 px-2 sm:px-3 rounded-xl border text-xs font-bold transition-all duration-300 ${
                   isActive
-                    ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 scale-[1.02]'
                     : isCompleted
                     ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
                     : isSkipped
                     ? 'bg-muted/40 text-muted-foreground/50 border-border/40 line-through'
-                    : 'bg-muted/60 dark:bg-slate-800/60 text-muted-foreground border-border/60 dark:border-slate-700/60'
+                    : 'bg-muted/60 dark:bg-slate-800/60 text-muted-foreground border-border/60 dark:border-transparent'
                 }`}
               >
                 {isCompleted && !isSkipped && <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />}
@@ -228,17 +279,28 @@ export default function RegisterForm() {
         </div>
       </div>
 
-      {errorMsg && (
-        <div className="mb-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs font-semibold text-rose-600 dark:text-rose-400">
-          {errorMsg}
-        </div>
-      )}
+      <AnimatePresence>
+        {errorMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, height: 0, marginBottom: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto', marginBottom: 20 }}
+            exit={{ opacity: 0, y: -8, height: 0, marginBottom: 0 }}
+            transition={{ duration: 0.25, ease: smoothEase }}
+            className="overflow-hidden"
+          >
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs font-semibold text-rose-600 dark:text-rose-400">
+              {errorMsg}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" custom={direction}>
         {/* STEP 1: Role & Team Selection */}
         {step === 1 && (
           <motion.div
             key="step-1"
+            custom={direction}
             variants={stepVariants}
             initial="initial"
             animate="animate"
@@ -246,25 +308,27 @@ export default function RegisterForm() {
             className="space-y-6"
           >
             {/* Account Role Switcher */}
-            <div>
+            <motion.div variants={itemVariants}>
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5">
                 نوع الحساب المطلوب
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button
+                <motion.button
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.985 }}
                   type="button"
                   onClick={() => handleSelectRole('user')}
                   className={`flex items-center gap-3 p-3.5 rounded-xl border text-right transition-all ${
                     role === 'user'
                       ? 'bg-primary/10 border-primary ring-2 ring-primary/20 text-foreground'
-                      : 'bg-muted/40 dark:bg-slate-800/50 border-border/70 dark:border-slate-700 text-muted-foreground hover:bg-muted/70'
+                      : 'bg-muted/40 dark:bg-slate-800/50 border-border/70 dark:border-transparent text-muted-foreground hover:bg-muted/70'
                   }`}
                 >
                   <div
-                    className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
                       role === 'user'
                         ? 'bg-primary text-primary-foreground'
-                        : 'bg-background dark:bg-slate-900 text-muted-foreground border border-border/60'
+                        : 'bg-background dark:bg-slate-900 text-muted-foreground border border-border/60 dark:border-transparent'
                     }`}
                   >
                     <Users className="h-5 w-5" />
@@ -275,22 +339,24 @@ export default function RegisterForm() {
                       يتطلب تحديد القسم والمسمى الوظيفي
                     </p>
                   </div>
-                </button>
+                </motion.button>
 
-                <button
+                <motion.button
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.985 }}
                   type="button"
                   onClick={() => handleSelectRole('admin')}
                   className={`flex items-center gap-3 p-3.5 rounded-xl border text-right transition-all ${
                     role === 'admin'
                       ? 'bg-primary/10 border-primary ring-2 ring-primary/20 text-foreground'
-                      : 'bg-muted/40 dark:bg-slate-800/50 border-border/70 dark:border-slate-700 text-muted-foreground hover:bg-muted/70'
+                      : 'bg-muted/40 dark:bg-slate-800/50 border-border/70 dark:border-transparent text-muted-foreground hover:bg-muted/70'
                   }`}
                 >
                   <div
-                    className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
                       role === 'admin'
                         ? 'bg-primary text-primary-foreground'
-                        : 'bg-background dark:bg-slate-900 text-muted-foreground border border-border/60'
+                        : 'bg-background dark:bg-slate-900 text-muted-foreground border border-border/60 dark:border-transparent'
                     }`}
                   >
                     <ShieldCheck className="h-5 w-5" />
@@ -301,75 +367,95 @@ export default function RegisterForm() {
                       إدارة شاملة للفِرق والمهام والاعتمادات
                     </p>
                   </div>
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
 
-            {role === 'admin' ? (
-              <div className="p-5 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-right space-y-2">
-                <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-bold text-sm">
-                  <Sparkles className="h-4 w-4" />
-                  <span>حساب مسؤول النظام (Admin)</span>
-                </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  بصفتك مسؤول النظام، سيتم تسجيل حسابك تلقائياً ضمن <strong>الإدارة العامة</strong> بمسمى <strong>مدير النظام</strong> مع صلاحيات متابعة جميع الأقسام والمشاريع. يمكنك المتابعة مباشرة لإدخال بيانات حسابك.
-                </p>
-              </div>
-            ) : (
-              <div>
-                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5">
-                  اختر القسم / الفريق الذي تعمل به
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {COMPANY_TEAMS.map((team) => {
-                    const IconComponent = TEAM_ICONS[team.iconName];
-                    const isSelected = selectedTeamId === team.id;
+            <AnimatePresence mode="wait">
+              {role === 'admin' ? (
+                <motion.div
+                  key="admin-info"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25, ease: smoothEase }}
+                  className="p-5 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-right space-y-2"
+                >
+                  <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-bold text-sm">
+                    <Sparkles className="h-4 w-4" />
+                    <span>حساب مسؤول النظام (Admin)</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    بصفتك مسؤول النظام، سيتم تسجيل حسابك تلقائياً ضمن <strong>الإدارة العامة</strong> بمسمى <strong>مدير النظام</strong> مع صلاحيات متابعة جميع الأقسام والمشاريع. يمكنك المتابعة مباشرة لإدخال بيانات حسابك.
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="team-grid"
+                  variants={staggerGridVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit={{ opacity: 0, y: -8, transition: { duration: 0.18 } }}
+                >
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5">
+                    اختر القسم / الفريق الذي تعمل به
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {COMPANY_TEAMS.map((team) => {
+                      const IconComponent = TEAM_ICONS[team.iconName];
+                      const isSelected = selectedTeamId === team.id;
 
-                    return (
-                      <button
-                        key={team.id}
-                        type="button"
-                        onClick={() => handleSelectTeam(team.id)}
-                        className={`relative flex items-start gap-3 p-4 rounded-xl border text-right transition-all ${
-                          isSelected
-                            ? 'bg-primary/10 border-primary ring-2 ring-primary/25 shadow-sm'
-                            : 'bg-slate-50 dark:bg-slate-800/60 border-border/70 dark:border-slate-700/80 hover:border-primary/40 hover:bg-slate-100/80 dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        <div
-                          className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                      return (
+                        <motion.button
+                          key={team.id}
+                          variants={itemVariants}
+                          whileHover={{ y: -2 }}
+                          whileTap={{ scale: 0.985 }}
+                          type="button"
+                          onClick={() => handleSelectTeam(team.id)}
+                          className={`relative flex items-start gap-3 p-4 rounded-xl border text-right transition-colors ${
                             isSelected
-                              ? 'bg-primary text-primary-foreground'
-                              : 'bg-white dark:bg-slate-900 text-primary border border-border/60 dark:border-slate-700'
+                              ? 'bg-primary/10 border-primary ring-2 ring-primary/25 shadow-sm'
+                              : 'bg-slate-50 dark:bg-slate-800/60 border-border/70 dark:border-transparent hover:border-primary/40 hover:bg-slate-100/80 dark:hover:bg-slate-800'
                           }`}
                         >
-                          <IconComponent className="h-5 w-5" />
-                        </div>
-                        <div className="min-w-0 flex-1 pl-4">
-                          <h3 className="text-sm font-bold text-foreground leading-snug">
-                            {team.name}
-                          </h3>
-                          <p className="text-[11px] font-semibold text-primary/80 mt-0.5">
-                            {team.nameEn}
-                          </p>
-                          <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-                            {team.description}
-                          </p>
-                        </div>
-                        {isSelected && (
-                          <CheckCircle2 className="h-4 w-4 text-primary absolute top-3 left-3" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+                          <div
+                            className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                              isSelected
+                                ? 'bg-primary text-primary-foreground'
+                                : 'bg-white dark:bg-slate-900 text-primary border border-border/60 dark:border-transparent'
+                            }`}
+                          >
+                            <IconComponent className="h-5 w-5" />
+                          </div>
+                          <div className="min-w-0 flex-1 pl-4">
+                            <h3 className="text-sm font-bold text-foreground leading-snug">
+                              {team.name}
+                            </h3>
+                            <p className="text-[11px] font-semibold text-primary/80 mt-0.5">
+                              {team.nameEn}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                              {team.description}
+                            </p>
+                          </div>
+                          {isSelected && (
+                            <CheckCircle2 className="h-4 w-4 text-primary absolute top-3 left-3" />
+                          )}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            <button
+            <motion.button
+              variants={itemVariants}
+              whileTap={{ scale: 0.99 }}
               type="button"
               onClick={handleNextFromStep1}
-              className="w-full py-3 px-4 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/95 active:scale-[0.99] transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/95 transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2"
             >
               <span>
                 {role === 'admin'
@@ -377,7 +463,7 @@ export default function RegisterForm() {
                   : 'الخطوة التالية: اختيار الوظيفة'}
               </span>
               <ArrowLeft className="h-4 w-4" />
-            </button>
+            </motion.button>
           </motion.div>
         )}
 
@@ -385,6 +471,7 @@ export default function RegisterForm() {
         {step === 2 && selectedTeam && (
           <motion.div
             key="step-2"
+            custom={direction}
             variants={stepVariants}
             initial="initial"
             animate="animate"
@@ -392,7 +479,10 @@ export default function RegisterForm() {
             className="space-y-6"
           >
             {/* Selected Team Summary Banner */}
-            <div className="flex flex-wrap items-center justify-between gap-2 p-3.5 rounded-xl bg-primary/10 border border-primary/20">
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-wrap items-center justify-between gap-2 p-3.5 rounded-xl bg-primary/10 border border-primary/20"
+            >
               <div className="flex items-center gap-2.5">
                 {(() => {
                   const IconComp = TEAM_ICONS[selectedTeam.iconName];
@@ -411,17 +501,17 @@ export default function RegisterForm() {
                 type="button"
                 onClick={() => {
                   setErrorMsg('');
-                  setStep(1);
+                  goToStep(1);
                 }}
                 className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
               >
                 <Edit3 className="h-3.5 w-3.5" />
                 <span>تغيير الفريق</span>
               </button>
-            </div>
+            </motion.div>
 
             {/* Job Title Options */}
-            <div>
+            <motion.div variants={staggerGridVariants} initial="initial" animate="animate">
               <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5">
                 اختر مسمّاك الوظيفي داخل {selectedTeam.name}
               </label>
@@ -429,38 +519,44 @@ export default function RegisterForm() {
                 {selectedTeam.jobs.map((job) => {
                   const isSelected = !isCustomJob && selectedJob === job;
                   return (
-                    <button
+                    <motion.button
                       key={job}
+                      variants={itemVariants}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.985 }}
                       type="button"
                       onClick={() => {
                         setErrorMsg('');
                         setIsCustomJob(false);
                         setSelectedJob(job);
                       }}
-                      className={`flex items-center justify-between p-3.5 rounded-xl border text-right transition-all ${
+                      className={`flex items-center justify-between p-3.5 rounded-xl border text-right transition-colors ${
                         isSelected
                           ? 'bg-primary/10 border-primary ring-2 ring-primary/25 text-foreground font-bold'
-                          : 'bg-slate-50 dark:bg-slate-800/60 border-border/70 dark:border-slate-700/80 text-foreground/90 hover:border-primary/40 hover:bg-slate-100/80 dark:hover:bg-slate-800 font-medium'
+                          : 'bg-slate-50 dark:bg-slate-800/60 border-border/70 dark:border-transparent text-foreground/90 hover:border-primary/40 hover:bg-slate-100/80 dark:hover:bg-slate-800 font-medium'
                       }`}
                     >
                       <span className="text-sm">{job}</span>
                       {isSelected && <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />}
-                    </button>
+                    </motion.button>
                   );
                 })}
 
                 {/* Custom Job Title Option */}
-                <button
+                <motion.button
+                  variants={itemVariants}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.985 }}
                   type="button"
                   onClick={() => {
                     setErrorMsg('');
                     setIsCustomJob(true);
                     setSelectedJob('');
                   }}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border text-right transition-all sm:col-span-2 ${
+                  className={`flex items-center justify-between p-3.5 rounded-xl border text-right transition-colors sm:col-span-2 ${
                     isCustomJob
                       ? 'bg-primary/10 border-primary ring-2 ring-primary/25 text-foreground font-bold'
-                      : 'bg-slate-50 dark:bg-slate-800/60 border-dashed border-border dark:border-slate-600 text-muted-foreground hover:border-primary/40 font-semibold'
+                      : 'bg-slate-50 dark:bg-slate-800/60 border-dashed border-border dark:border-transparent text-muted-foreground hover:border-primary/40 font-semibold'
                   }`}
                 >
                   <span className="text-sm flex items-center gap-2">
@@ -468,32 +564,40 @@ export default function RegisterForm() {
                     <span>مسمى وظيفي آخر (إدخال يدوي)</span>
                   </span>
                   {isCustomJob && <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />}
-                </button>
+                </motion.button>
               </div>
 
-              {isCustomJob && (
-                <div className="mt-3">
-                  <label className="block text-xs font-bold text-muted-foreground mb-1.5">
-                    أدخل المسمى الوظيفي
-                  </label>
-                  <input
-                    type="text"
-                    value={customJobTitle}
-                    onChange={(e) => setCustomJobTitle(e.target.value)}
-                    placeholder="مثال: Senior Tech Lead أو System Architect"
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-border/80 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
-                    autoFocus
-                  />
-                </div>
-              )}
-            </div>
+              <AnimatePresence>
+                {isCustomJob && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: 'auto' }}
+                    exit={{ opacity: 0, y: -6, height: 0 }}
+                    transition={{ duration: 0.25, ease: smoothEase }}
+                    className="mt-3 overflow-hidden"
+                  >
+                    <label className="block text-xs font-bold text-muted-foreground mb-1.5">
+                      أدخل المسمى الوظيفي
+                    </label>
+                    <input
+                      type="text"
+                      value={customJobTitle}
+                      onChange={(e) => setCustomJobTitle(e.target.value)}
+                      placeholder="مثال: Senior Tech Lead أو System Architect"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-border/80 dark:border-transparent text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
+                      autoFocus
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
 
-            <div className="flex items-center gap-3 pt-1">
+            <motion.div variants={itemVariants} className="flex items-center gap-3 pt-1">
               <button
                 type="button"
                 onClick={() => {
                   setErrorMsg('');
-                  setStep(1);
+                  goToStep(1);
                 }}
                 className="py-3 px-5 rounded-xl bg-muted hover:bg-muted/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground font-semibold text-sm transition-all flex items-center justify-center gap-1.5"
               >
@@ -509,7 +613,7 @@ export default function RegisterForm() {
                 <span>الخطوة التالية: بيانات الحساب</span>
                 <ArrowLeft className="h-4 w-4" />
               </button>
-            </div>
+            </motion.div>
           </motion.div>
         )}
 
@@ -517,6 +621,7 @@ export default function RegisterForm() {
         {step === 3 && (
           <motion.div
             key="step-3"
+            custom={direction}
             variants={stepVariants}
             initial="initial"
             animate="animate"
@@ -524,7 +629,10 @@ export default function RegisterForm() {
             className="space-y-5"
           >
             {/* Selection Summary Banner */}
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/70 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
+            <motion.div
+              variants={itemVariants}
+              className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/70 dark:border-transparent flex flex-wrap items-center justify-between gap-3"
+            >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-primary/10 text-primary border border-primary/20 text-xs font-bold">
                   <Briefcase className="h-3.5 w-3.5" />
@@ -539,17 +647,23 @@ export default function RegisterForm() {
                 type="button"
                 onClick={() => {
                   setErrorMsg('');
-                  setStep(1);
+                  goToStep(1);
                 }}
                 className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
               >
                 <Edit3 className="h-3.5 w-3.5" />
                 <span>تعديل</span>
               </button>
-            </div>
+            </motion.div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
+            <motion.form
+              variants={staggerGridVariants}
+              initial="initial"
+              animate="animate"
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
+              <motion.div variants={itemVariants}>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
                   اسم المستخدم
                 </label>
@@ -559,7 +673,7 @@ export default function RegisterForm() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     disabled={isLoading}
-                    className="w-full pl-4 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/80 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
+                    className="w-full pl-4 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/80 dark:border-transparent text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
                     placeholder="اسمك الكامل"
                     required
                   />
@@ -567,9 +681,9 @@ export default function RegisterForm() {
                     <User className="h-4 w-4" />
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div>
+              <motion.div variants={itemVariants}>
                 <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
                   البريد الإلكتروني
                 </label>
@@ -579,7 +693,7 @@ export default function RegisterForm() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
-                    className="w-full pl-4 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/80 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
+                    className="w-full pl-4 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/80 dark:border-transparent text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
                     placeholder="name@company.com"
                     required
                   />
@@ -587,9 +701,9 @@ export default function RegisterForm() {
                     <Mail className="h-4 w-4" />
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
                     كلمة المرور
@@ -600,7 +714,7 @@ export default function RegisterForm() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       disabled={isLoading}
-                      className="w-full pl-4 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/80 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
+                      className="w-full pl-4 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/80 dark:border-transparent text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
                       placeholder="••••••••"
                       required
                     />
@@ -620,7 +734,7 @@ export default function RegisterForm() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       disabled={isLoading}
-                      className="w-full pl-4 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/80 dark:border-slate-700 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
+                      className="w-full pl-4 pr-10 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-border/80 dark:border-transparent text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-right"
                       placeholder="••••••••"
                       required
                     />
@@ -629,9 +743,9 @@ export default function RegisterForm() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="flex items-center gap-3 pt-2">
+              <motion.div variants={itemVariants} className="flex items-center gap-3 pt-2">
                 <button
                   type="button"
                   onClick={handleBackFromStep3}
@@ -649,13 +763,13 @@ export default function RegisterForm() {
                 >
                   {isLoading ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب الآن'}
                 </button>
-              </div>
-            </form>
+              </motion.div>
+            </motion.form>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="text-center mt-6 pt-4 border-t border-border/40 dark:border-slate-800 space-y-2">
+      <div className="text-center mt-6 pt-4 border-t border-border/40 dark:border-transparent space-y-2">
         <p className="text-sm text-muted-foreground">
           لديك حساب بالفعل؟{' '}
           <Link href="/login" className="font-semibold text-primary hover:underline">
@@ -668,6 +782,6 @@ export default function RegisterForm() {
           </Link>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
