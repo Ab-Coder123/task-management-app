@@ -22,5 +22,9 @@ node_modules
 out
 dist
 build
+!desktop/build/
+!desktop/build/*
+/desktop/node_modules
+/desktop/dist
 *.tsbuildinfo
 

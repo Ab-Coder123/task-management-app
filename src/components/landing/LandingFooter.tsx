@@ -64,24 +64,29 @@ export default function LandingFooter() {
             <p className="text-xs font-extrabold text-foreground">المنصة</p>
             <ul className="space-y-2 text-xs text-muted-foreground font-medium">
               <li>
-                <a href="#showcase" className="hover:text-primary transition-colors">
+                <a href="/#showcase" className="hover:text-primary transition-colors">
                   معاينة التطبيق
                 </a>
               </li>
               <li>
-                <a href="#how-it-works" className="hover:text-primary transition-colors">
+                <a href="/#how-it-works" className="hover:text-primary transition-colors">
                   كيف يعمل النظام
                 </a>
               </li>
               <li>
-                <a href="#features" className="hover:text-primary transition-colors">
+                <a href="/#features" className="hover:text-primary transition-colors">
                   المميزات الهندسية
                 </a>
               </li>
               <li>
-                <a href="#faq" className="hover:text-primary transition-colors">
+                <a href="/#faq" className="hover:text-primary transition-colors">
                   الأسئلة الشائعة
                 </a>
+              </li>
+              <li>
+                <Link href="/download" className="hover:text-primary transition-colors">
+                  تحميل التطبيق (Desktop & PWA)
+                </Link>
               </li>
             </ul>
           </div>
@@ -128,7 +133,7 @@ export default function LandingFooter() {
                 </Link>
               </li>
               <li>
-                <a href="#roles" className="hover:text-primary transition-colors">
+                <a href="/#roles" className="hover:text-primary transition-colors">
                   مقارنة الصلاحيات
                 </a>
               </li>

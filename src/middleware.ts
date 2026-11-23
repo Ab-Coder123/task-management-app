@@ -9,7 +9,10 @@ export function middleware(request: NextRequest) {
   const role = request.cookies.get('user-role')?.value;
   const status = request.cookies.get('user-status')?.value;
 
-  const isPublicPage = pathname === '/';
+  const isPublicPage =
+    pathname === '/' ||
+    pathname.startsWith('/download') ||
+    pathname.startsWith('/offline');
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
   const isWaitingPage = pathname.startsWith('/waiting-approval');
   const isAdminPage = pathname.startsWith('/admin');
@@ -67,6 +70,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|manifest\\.json|sw\\.js|robots\\.txt|sitemap\\.xml|icons|images).*)',
   ],
 };

@@ -16,10 +16,11 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
-  { href: '#how-it-works', label: 'كيف يعمل النظام' },
-  { href: '#features', label: 'المميزات' },
-  { href: '#departments', label: 'أقسام الشركة' },
-  { href: '#faq', label: 'الأسئلة الشائعة' },
+  { href: '/#how-it-works', label: 'كيف يعمل النظام' },
+  { href: '/#features', label: 'المميزات' },
+  { href: '/#departments', label: 'أقسام الشركة' },
+  { href: '/#faq', label: 'الأسئلة الشائعة' },
+  { href: '/download', label: 'تحميل التطبيق' },
 ];
 
 export default function LandingNavbar() {
