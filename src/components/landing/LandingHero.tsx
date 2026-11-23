@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   ShieldCheck,
-  Sparkles,
   Users,
   Lock,
   Bell,
@@ -15,6 +14,29 @@ import {
   LayoutDashboard,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+const HERO_STATS = [
+  {
+    value: '6 أقسام',
+    label: 'هيكل تنظيمي جاهز',
+    color: 'text-primary',
+  },
+  {
+    value: 'تقدم مستقل',
+    label: 'لكل عضو في المهمة',
+    color: 'text-emerald-600 dark:text-emerald-400',
+  },
+  {
+    value: '15 دقيقة',
+    label: 'روابط مرفقات مشفرة',
+    color: 'text-violet-600 dark:text-violet-400',
+  },
+  {
+    value: '48 ساعة',
+    label: 'تنظيف ذاتي للتنبيهات',
+    color: 'text-amber-600 dark:text-amber-400',
+  },
+];
 
 export default function LandingHero() {
   const { user, isAuthenticated } = useAuthStore();
@@ -53,11 +75,6 @@ export default function LandingHero() {
           transition={{ duration: 0.45, ease: 'easeOut' }}
           className="lg:col-span-6 text-right space-y-6"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-extrabold">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>منصة TaskSaaS لإدارة مهام الفرق والشركات</span>
-          </div>
-
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-[1.25] tracking-tight">
             نظّم شغل شركتك، وتابع إنجاز{' '}
             <span className="text-primary">كل فرد في فريقك</span> بدقة ووضوح
@@ -84,44 +101,35 @@ export default function LandingHero() {
 
             <a
               href="#how-it-works"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white dark:bg-[#101828] border border-border dark:border-slate-700 text-foreground text-sm font-bold hover:border-primary/50 hover:text-primary transition-all shadow-100"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white dark:bg-[#101828] border border-border dark:border-transparent text-foreground text-sm font-bold hover:border-primary/50 hover:text-primary transition-all shadow-100 dark:shadow-300"
             >
               <span>شاهد مراحل العمل</span>
             </a>
           </div>
 
-          {/* Trust & Capability Highlights */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-border/60 dark:border-slate-800">
-            <div className="p-3 rounded-xl bg-white dark:bg-[#101828] border border-border/60 dark:border-slate-800 shadow-100">
-              <p className="text-lg font-extrabold text-primary">6 أقسام</p>
-              <p className="text-[11px] font-semibold text-muted-foreground mt-0.5">
-                هيكل تنظيمي جاهز
-              </p>
-            </div>
-            <div className="p-3 rounded-xl bg-white dark:bg-[#101828] border border-border/60 dark:border-slate-800 shadow-100">
-              <p className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
-                تقدم مستقل
-              </p>
-              <p className="text-[11px] font-semibold text-muted-foreground mt-0.5">
-                لكل عضو في المهمة
-              </p>
-            </div>
-            <div className="p-3 rounded-xl bg-white dark:bg-[#101828] border border-border/60 dark:border-slate-800 shadow-100">
-              <p className="text-lg font-extrabold text-violet-600 dark:text-violet-400">
-                15 دقيقة
-              </p>
-              <p className="text-[11px] font-semibold text-muted-foreground mt-0.5">
-                روابط مرفقات مشفرة
-              </p>
-            </div>
-            <div className="p-3 rounded-xl bg-white dark:bg-[#101828] border border-border/60 dark:border-slate-800 shadow-100">
-              <p className="text-lg font-extrabold text-amber-600 dark:text-amber-400">
-                48 ساعة
-              </p>
-              <p className="text-[11px] font-semibold text-muted-foreground mt-0.5">
-                تنظيف ذاتي للتنبيهات
-              </p>
-            </div>
+          {/* Trust & Capability Highlights (Compact + Floating Animation) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-4 border-t border-border/60 dark:border-transparent">
+            {HERO_STATS.map((stat, idx) => (
+              <motion.div
+                key={stat.value}
+                animate={{ y: [0, -5, 0] }}
+                transition={{
+                  duration: 3.2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: idx * 0.4,
+                }}
+                whileHover={{ y: -4, scale: 1.03 }}
+                className="p-2.5 rounded-xl bg-white dark:bg-[#101828] border border-border/60 dark:border-transparent shadow-100 dark:shadow-300 text-center sm:text-right cursor-default"
+              >
+                <p className={`text-sm sm:text-base font-extrabold ${stat.color} leading-tight`}>
+                  {stat.value}
+                </p>
+                <p className="text-[10px] font-semibold text-muted-foreground mt-0.5 leading-snug">
+                  {stat.label}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
 

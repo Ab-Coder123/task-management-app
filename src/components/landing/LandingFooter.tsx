@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Trello, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export default function LandingFooter() {
   return (
@@ -41,8 +41,10 @@ export default function LandingFooter() {
         {/* Bottom Footer Row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/60 dark:border-slate-800 text-xs text-muted-foreground">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Trello className="h-4 w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 dark:bg-slate-800/90 shadow-100">
+              <span className="text-base leading-none select-none" aria-hidden="true">
+                ✔️
+              </span>
             </div>
             <span className="font-extrabold text-foreground">مدير المهام — TaskSaaS</span>
           </div>

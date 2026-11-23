@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useAuthStore } from '@/lib/store/authStore';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import {
-  Trello,
   ArrowLeft,
   Menu,
   X,
@@ -47,10 +46,12 @@ export default function LandingNavbar() {
       dir="rtl"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
-        {/* Brand Logo */}
+        {/* Brand Logo (Matches Browser Tab Icon ✔️) */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 dark:bg-gradient-to-tr dark:from-blue-600 dark:to-indigo-500 border border-primary/20 dark:border-transparent text-primary dark:text-white shadow-100">
-            <Trello className="h-5 w-5" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 dark:bg-slate-800/90 border border-primary/20 dark:border-transparent shadow-100 dark:shadow-200">
+            <span className="text-lg leading-none select-none" aria-hidden="true">
+              ✔️
+            </span>
           </div>
           <div className="text-right">
             <span className="text-base font-extrabold text-foreground tracking-tight block leading-none">
