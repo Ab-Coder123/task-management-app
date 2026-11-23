@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import Link from 'next/link';
 import {
@@ -43,14 +44,25 @@ const stepVariants = {
 
 export default function RegisterForm() {
   const { register, isLoading } = useAuth();
+  const searchParams = useSearchParams();
+  const initialTeamParam = searchParams.get('team');
+  const validInitialTeam = COMPANY_TEAMS.find((t) => t.id === initialTeamParam);
 
   // Wizard state
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(validInitialTeam ? 2 : 1);
   const [role, setRole] = useState<UserRole>('user');
-  const [selectedTeamId, setSelectedTeamId] = useState<string>('');
+  const [selectedTeamId, setSelectedTeamId] = useState<string>(validInitialTeam?.id || '');
   const [selectedJob, setSelectedJob] = useState<string>('');
   const [isCustomJob, setIsCustomJob] = useState(false);
   const [customJobTitle, setCustomJobTitle] = useState('');
+
+  useEffect(() => {
+    if (validInitialTeam) {
+      setRole('user');
+      setSelectedTeamId(validInitialTeam.id);
+      setStep((prev) => (prev === 1 ? 2 : prev));
+    }
+  }, [validInitialTeam]);
 
   // Form fields state (Step 3)
   const [username, setUsername] = useState('');
@@ -643,11 +655,16 @@ export default function RegisterForm() {
         )}
       </AnimatePresence>
 
-      <div className="text-center mt-6 pt-4 border-t border-border/40 dark:border-slate-800">
+      <div className="text-center mt-6 pt-4 border-t border-border/40 dark:border-slate-800 space-y-2">
         <p className="text-sm text-muted-foreground">
           لديك حساب بالفعل؟{' '}
           <Link href="/login" className="font-semibold text-primary hover:underline">
             تسجيل الدخول
+          </Link>
+        </p>
+        <p className="text-xs text-muted-foreground">
+          <Link href="/" className="hover:text-primary transition-colors font-semibold">
+            العودة إلى الصفحة الرئيسية
           </Link>
         </p>
       </div>

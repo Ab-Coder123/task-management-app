@@ -9,6 +9,7 @@ export function middleware(request: NextRequest) {
   const role = request.cookies.get('user-role')?.value;
   const status = request.cookies.get('user-status')?.value;
 
+  const isPublicPage = pathname === '/';
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
   const isWaitingPage = pathname.startsWith('/waiting-approval');
   const isAdminPage = pathname.startsWith('/admin');
@@ -16,15 +17,33 @@ export function middleware(request: NextRequest) {
 
   // 1. Not Authenticated
   if (!token) {
-    // Redirect all protected pages to login
+    // Redirect all protected pages to login; public landing & auth pages remain accessible
     if (isAdminPage || isUserPage || isWaitingPage) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
     return NextResponse.next();
   }
 
-  // 2. Authenticated (Pending or Approved)
-  if (status === 'pending' || status === 'approved' || !status || status !== 'rejected') {
+  // 2. Rejected User — clear stale cookies; only redirect if trying to enter protected areas
+  if (status === 'rejected') {
+    if (isAdminPage || isUserPage || isWaitingPage) {
+      const response = NextResponse.redirect(new URL('/login', request.url));
+      response.cookies.delete('auth-token');
+      response.cookies.delete('user-role');
+      response.cookies.delete('user-status');
+      return response;
+    }
+    if (isPublicPage || isAuthPage) {
+      const response = NextResponse.next();
+      response.cookies.delete('auth-token');
+      response.cookies.delete('user-role');
+      response.cookies.delete('user-status');
+      return response;
+    }
+  }
+
+  // 3. Authenticated (Pending or Approved)
+  if (status === 'pending' || status === 'approved' || !status) {
     // Auth pages redirection
     if (isAuthPage) {
       if (role === 'admin') {
@@ -40,18 +59,6 @@ export function middleware(request: NextRequest) {
 
     if (isUserPage && role !== 'user') {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
-    }
-  }
-
-  // 4. Rejected User
-  if (status === 'rejected') {
-    // Redirect to login (or a custom screen, but login is fine for rejected)
-    if (!isAuthPage) {
-      const response = NextResponse.redirect(new URL('/login', request.url));
-      response.cookies.delete('auth-token');
-      response.cookies.delete('user-role');
-      response.cookies.delete('user-status');
-      return response;
     }
   }
 

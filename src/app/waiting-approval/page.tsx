@@ -5,7 +5,9 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/authStore';
 import { usersApi } from '@/lib/api/users';
-import { Mail, LogOut, Loader2, ShieldCheck, Clock, UserCheck } from 'lucide-react';
+import { LogOut, Loader2, Clock, UserCheck, Briefcase, Users, RefreshCw, Home } from 'lucide-react';
+import Link from 'next/link';
+import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
 export default function WelcomeWaitingApprovalPage() {
@@ -13,6 +15,7 @@ export default function WelcomeWaitingApprovalPage() {
   const { updateUser } = useAuthStore();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -44,6 +47,27 @@ export default function WelcomeWaitingApprovalPage() {
       clearInterval(interval);
     };
   }, [user?._id, updateUser, router]);
+
+  const handleManualCheck = async () => {
+    if (!user?._id || isChecking) return;
+    setIsChecking(true);
+    try {
+      const freshUser = await usersApi.getUser(user._id);
+      if (freshUser && freshUser.isVerified) {
+        updateUser({ isVerified: true });
+        toast.success('تم اعتماد حسابك! جاري تحويلك إلى لوحة التحكم...');
+        const dest = freshUser.role === 'admin' ? '/admin/dashboard' : '/dashboard';
+        router.replace(dest);
+      } else {
+        toast.info('الحساب ما زال قيد مراجعة الإدارة.');
+      }
+    } catch (err) {
+      console.error('Manual verification check error:', err);
+      toast.error('تعذر التحقق من الحالة حالياً، يرجى المحاولة بعد قليل.');
+    } finally {
+      setIsChecking(false);
+    }
+  };
 
   if (!mounted) return null;
 
@@ -120,36 +144,74 @@ export default function WelcomeWaitingApprovalPage() {
         </div>
 
         {/* Live status check loading indicator */}
-        <div className="p-3.5 rounded-2xl bg-blue-50/50 border border-blue-100/60 flex items-center justify-center gap-2.5 text-xs text-blue-800 font-bold mb-8 shadow-sm">
-          <Loader2 className="h-4 w-4 animate-spin text-blue-600 shrink-0" />
+        <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center gap-2.5 text-xs text-blue-700 dark:text-blue-300 font-bold mb-6 shadow-sm">
+          <Loader2 className="h-4 w-4 animate-spin text-blue-600 dark:text-blue-400 shrink-0" />
           <span>في انتظار موافقة المدير... نقوم بالتحقق من حالة الحساب تلقائياً</span>
         </div>
 
         {/* User Account Info Card */}
-        <div className="bg-muted/40 border border-border/60 rounded-2xl p-4 mb-6 space-y-2.5 shadow-inner">
-          <div className="flex items-center justify-between text-xs border-b border-border/30 pb-2">
+        <div className="bg-muted/40 dark:bg-slate-900/70 border border-border/60 dark:border-slate-800 rounded-2xl p-4 mb-6 space-y-2.5 shadow-inner">
+          <div className="flex items-center justify-between text-xs border-b border-border/30 dark:border-slate-800 pb-2">
             <span className="text-muted-foreground font-bold flex items-center gap-1.5">
               <UserCheck className="h-4 w-4 text-primary" />
               الاسم المسجل:
             </span>
-            <span className="text-foreground font-extrabold">{user?.username}</span>
+            <span className="text-foreground font-extrabold">{user?.username || '—'}</span>
+          </div>
+          <div className="flex items-center justify-between text-xs border-b border-border/30 dark:border-slate-800 pb-2">
+            <span className="text-muted-foreground font-bold">البريد الإلكتروني:</span>
+            <span className="text-foreground font-semibold font-mono">{user?.email || '—'}</span>
+          </div>
+          <div className="flex items-center justify-between text-xs border-b border-border/30 dark:border-slate-800 pb-2">
+            <span className="text-muted-foreground font-bold flex items-center gap-1.5">
+              <Users className="h-4 w-4 text-primary" />
+              القسم / الفريق:
+            </span>
+            <span className="text-foreground font-bold">
+              {user?.team || (user?.role === 'admin' ? 'الإدارة العامة' : 'غير محدد')}
+            </span>
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-muted-foreground font-bold">البريد الإلكتروني:</span>
-            <span className="text-foreground font-semibold font-mono">{user?.email}</span>
+            <span className="text-muted-foreground font-bold flex items-center gap-1.5">
+              <Briefcase className="h-4 w-4 text-emerald-500" />
+              المسمى الوظيفي:
+            </span>
+            <span className="text-foreground font-bold">
+              {user?.jobTitle || (user?.role === 'admin' ? 'مدير النظام' : 'غير محدد')}
+            </span>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="space-y-3">
           <button
-            onClick={logout}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center space-x-2 space-x-reverse py-3 px-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 font-extrabold text-xs hover:bg-rose-100 hover:text-rose-700 transition-all cursor-pointer shadow-sm active:scale-98"
+            type="button"
+            onClick={handleManualCheck}
+            disabled={isChecking || isLoading}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-primary text-primary-foreground font-extrabold text-xs hover:bg-primary/95 transition-all cursor-pointer shadow-md shadow-primary/20 disabled:opacity-50"
           >
-            <LogOut className="h-4 w-4" />
-            <span>تسجيل الخروج / الدخول بحساب آخر</span>
+            <RefreshCw className={`h-4 w-4 ${isChecking ? 'animate-spin' : ''}`} />
+            <span>{isChecking ? 'جاري التحقق من حالة الحساب...' : 'تحديث حالة الحساب الآن'}</span>
           </button>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <Link
+              href="/"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-muted/60 dark:bg-slate-800 border border-border/70 dark:border-slate-700 text-foreground font-bold text-xs hover:bg-muted transition-all"
+            >
+              <Home className="h-4 w-4" />
+              <span>الصفحة الرئيسية</span>
+            </Link>
+
+            <button
+              onClick={logout}
+              disabled={isLoading}
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 font-extrabold text-xs hover:bg-rose-500/20 transition-all cursor-pointer"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>تسجيل الخروج</span>
+            </button>
+          </div>
         </div>
 
       </motion.div>
