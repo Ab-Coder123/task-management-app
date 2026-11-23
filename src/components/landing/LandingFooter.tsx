@@ -12,26 +12,26 @@ export default function LandingFooter() {
     >
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Final CTA Banner */}
-        <div className="p-8 sm:p-10 rounded-3xl bg-primary text-primary-foreground shadow-400 flex flex-col lg:flex-row items-center justify-between gap-6 text-right">
+        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-l from-blue-600 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 text-white shadow-500 flex flex-col lg:flex-row items-center justify-between gap-6 text-right">
           <div className="space-y-2 max-w-2xl">
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
               جاهز لتنظيم مهام شركتك بطريقة احترافية؟
             </h2>
-            <p className="text-xs sm:text-sm text-primary-foreground/85 leading-relaxed">
+            <p className="text-xs sm:text-sm text-blue-50 leading-relaxed">
               ابدأ الآن باختيار قسمك ومسمّاك الوظيفي في 3 خطوات سريعة، أو سجّل الدخول لمتابعة مشاريع فريقك.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto shrink-0">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-primary font-extrabold text-sm hover:bg-slate-100 transition-all shadow-md"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-blue-700 font-extrabold text-sm hover:bg-slate-100 transition-all shadow-lg"
             >
               <span>إنشاء حساب جديد</span>
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary-foreground/15 border border-primary-foreground/30 text-white font-bold text-sm hover:bg-primary-foreground/25 transition-all"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-blue-800/60 hover:bg-blue-800/80 border border-white/25 dark:border-transparent text-white font-bold text-sm transition-all shadow-md"
             >
               تسجيل الدخول
             </Link>

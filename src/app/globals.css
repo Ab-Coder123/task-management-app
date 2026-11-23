@@ -8,8 +8,8 @@
     --background: 219 28% 97%;         /* #f3f5f9 soft premium light slate-gray */
     --foreground: 222 47% 11%;         /* #0f172a dark slate */
 
-    --card: #ffffff;                 /* #ffffff pure white card */
-    --card-foreground: #ffffff;    /* #0f172a */
+    --card: 0 0% 100%;               /* #ffffff pure white card */
+    --card-foreground: 222 47% 11%;  /* #0f172a */
 
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
@@ -29,9 +29,9 @@
     --destructive: 0 84% 60%;          /* #ef4444 red */
     --destructive-foreground: 0 0% 100%;
 
-    --border: #e2e8f0;             /* very soft light gray */
-    --input: #e2e8f0; 
-    --ring: #e2e8f0;
+    --border: 214 32% 91%;             /* #e2e8f0 very soft light gray */
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
 
     --radius: 0.75rem;
   }
@@ -176,27 +176,53 @@
 /* Solid Dark Theme Panels & Cards */
 .dark .glass-panel {
   background: #101828;
-  border-color: rgba(51, 65, 85, 0.8);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  border-color: transparent;
+  box-shadow: 0 14px 36px -8px rgba(0, 0, 0, 0.75), 0 4px 14px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.055);
 }
 
 .dark .glass-card {
   background: #101828;
-  border-color: rgba(51, 65, 85, 0.75);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  border-color: transparent;
+  box-shadow: 0 10px 26px -6px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 .dark .glass-card:hover {
   background: #1e293b;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
+  border-color: transparent;
+  box-shadow: 0 16px 34px -8px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.085);
 }
 
 /* Make all dark mode cards have an ultra-sleek subtle top rim light and rich depth */
 .dark .bg-card {
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.045);
+  box-shadow: 0 10px 28px -6px rgba(0, 0, 0, 0.58), 0 4px 12px -2px rgba(0, 0, 0, 0.42), inset 0 1px 0 0 rgba(255, 255, 255, 0.045);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .dark .bg-card:hover {
-  box-shadow: 0 8px 26px -4px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+  box-shadow: 0 14px 34px -6px rgba(0, 0, 0, 0.72), 0 6px 16px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Dark Mode Global: Remove white/neutral borders everywhere and elevate with clean dark shadows */
+.dark :is(.border, .border-t, .border-b, .border-l, .border-r, .border-y, .border-x, [class*="border-border"], [class*="border-slate-"], [class*="border-gray-"], [class*="border-white"]):not([class*="border-primary"]):not([class*="border-emerald"]):not([class*="border-rose"]):not([class*="border-amber"]):not([class*="border-blue"]):not([class*="border-violet"]):not([class*="border-indigo"]):not(:hover):not(:focus):not(:focus-within) {
+  border-color: transparent;
+}
+
+.dark [class*="divide-border"] > :not([hidden]) ~ :not([hidden]),
+.dark [class*="divide-slate-"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark :is(.rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl)[class*="border"]:not([class*="border-primary"]):not([class*="border-emerald"]):not([class*="border-rose"]):not([class*="border-amber"]):not([class*="border-blue"]):not([class*="border-violet"]):not([class*="border-indigo"]) {
+  box-shadow: 0 10px 28px -6px rgba(0, 0, 0, 0.62), 0 4px 12px -2px rgba(0, 0, 0, 0.44), inset 0 1px 0 0 rgba(255, 255, 255, 0.045);
+}
+
+.dark :is(input, select, textarea) {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+}
+
+.dark header,
+.dark aside,
+.dark footer {
+  border-color: transparent;
+  box-shadow: 0 8px 28px -6px rgba(0, 0, 0, 0.65);
 }
 
