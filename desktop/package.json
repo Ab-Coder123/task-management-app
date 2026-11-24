@@ -85,7 +85,7 @@
     "linux": {
       "artifactName": "TaskSaaS-Linux.${ext}",
       "maintainer": "TaskSaaS <support@tasksaas.app>",
-      "target": ["AppImage", "deb"],
+      "target": ["AppImage"],
       "category": "Office",
       "icon": "build/icon.png"
     }

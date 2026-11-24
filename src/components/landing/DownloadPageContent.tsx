@@ -64,12 +64,10 @@ const DESKTOP_PLATFORMS: PlatformCard[] = [
   {
     id: 'linux',
     name: 'Linux',
-    subtitle: 'تشغيل فوري عبر AppImage أو حزمة Debian (.deb)',
+    subtitle: 'نسخة AppImage الموحدة للتشغيل الفوري على جميع التوزيعات',
     badge: 'Ubuntu / Fedora / Arch',
     fileHint: 'تحميل مباشر (.AppImage)',
     downloadHref: '/api/download/linux',
-    secondaryLabel: 'أو تحميل حزمة Ubuntu / Debian (.deb)',
-    secondaryHref: '/api/download/linux?type=deb',
     accentClass: 'text-emerald-600 dark:text-emerald-400',
     iconBg: 'bg-emerald-50 dark:bg-emerald-950/60',
     icon: Terminal,

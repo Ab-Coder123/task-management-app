@@ -48,12 +48,6 @@ function getPlatformTarget(platform: string, type: string | null): PlatformTarge
       };
 
     case 'linux':
-      if (type === 'deb') {
-        return {
-          exactName: 'TaskSaaS-Linux.deb',
-          extension: '.deb',
-        };
-      }
       return {
         exactName: 'TaskSaaS-Linux.AppImage',
         extension: '.appimage',
