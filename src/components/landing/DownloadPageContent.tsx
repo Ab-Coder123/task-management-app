@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   RefreshCw,
   ArrowUpLeft,
+  Download,
   Sparkles,
   CheckCircle2,
 } from 'lucide-react';
@@ -19,15 +20,15 @@ import { InstallAppButton } from '@/components/shared/InstallAppButton';
 
 type DetectedOS = 'windows' | 'macos' | 'linux' | 'mobile' | 'unknown';
 
-const GITHUB_RELEASES_URL =
-  'https://github.com/Ab-Coder123/task-management-app/releases/latest';
-
 interface PlatformCard {
   id: DetectedOS;
   name: string;
   subtitle: string;
   badge: string;
   fileHint: string;
+  downloadHref: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
   accentClass: string;
   iconBg: string;
   icon: typeof Monitor;
@@ -37,9 +38,12 @@ const DESKTOP_PLATFORMS: PlatformCard[] = [
   {
     id: 'windows',
     name: 'Windows',
-    subtitle: 'مثبت ويندوز التفاعلي + نسخة محمولة Portable',
+    subtitle: 'مثبت ويندوز المباشر جاهز للتشغيل الفوري على جهازك',
     badge: 'Windows 10 / 11 (x64)',
-    fileHint: 'ملف التثبيت (.exe)',
+    fileHint: 'ملف التثبيت المباشر (.exe)',
+    downloadHref: '/api/download/windows',
+    secondaryLabel: 'أو تحميل النسخة المحمولة Portable بدون تثبيت',
+    secondaryHref: '/api/download/windows?type=portable',
     accentClass: 'text-blue-600 dark:text-blue-400',
     iconBg: 'bg-blue-50 dark:bg-blue-950/60',
     icon: Monitor,
@@ -47,9 +51,12 @@ const DESKTOP_PLATFORMS: PlatformCard[] = [
   {
     id: 'macos',
     name: 'macOS',
-    subtitle: 'حزمة DMG أصلية متوافقة مع Apple Silicon و Intel',
-    badge: 'macOS 12+ (Universal)',
-    fileHint: 'ملف التثبيت (.dmg)',
+    subtitle: 'حزمة DMG أصلية متوافقة مع أجهزة Mac الحديثة',
+    badge: 'macOS 12+',
+    fileHint: 'ملف التثبيت المباشر (.dmg)',
+    downloadHref: '/api/download/macos',
+    secondaryLabel: 'أو تحميل أرشيف مضغوط (.zip)',
+    secondaryHref: '/api/download/macos?type=zip',
     accentClass: 'text-violet-600 dark:text-violet-400',
     iconBg: 'bg-violet-50 dark:bg-violet-950/60',
     icon: Apple,
@@ -59,7 +66,10 @@ const DESKTOP_PLATFORMS: PlatformCard[] = [
     name: 'Linux',
     subtitle: 'تشغيل فوري عبر AppImage أو حزمة Debian (.deb)',
     badge: 'Ubuntu / Fedora / Arch',
-    fileHint: 'حزمة (.AppImage / .deb)',
+    fileHint: 'تحميل مباشر (.AppImage)',
+    downloadHref: '/api/download/linux',
+    secondaryLabel: 'أو تحميل حزمة Ubuntu / Debian (.deb)',
+    secondaryHref: '/api/download/linux?type=deb',
     accentClass: 'text-emerald-600 dark:text-emerald-400',
     iconBg: 'bg-emerald-50 dark:bg-emerald-950/60',
     icon: Terminal,
@@ -173,10 +183,10 @@ export function DownloadPageContent() {
         <div className="mb-6 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-              إصدارات سطح المكتب الأصلية (Electron)
+              تطبيقات سطح المكتب الرسمية
             </h2>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-              اختر نظام التشغيل الخاص بك لتحميل أحدث إصدار من صفحة الإصدارات الرسمية.
+              اختر نظام التشغيل الخاص بك ليبدأ تحميل التطبيق مباشرة على جهازك بنقرة واحدة.
             </p>
           </div>
           <Link
@@ -234,18 +244,24 @@ export function DownloadPageContent() {
                     {platform.fileHint}
                   </div>
                   <a
-                    href={GITHUB_RELEASES_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={platform.downloadHref}
                     className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
                       isRecommended
                         ? 'bg-blue-600 text-white hover:bg-blue-700'
                         : 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700'
                     }`}
                   >
+                    <Download className="h-4 w-4" />
                     <span>تحميل لنظام {platform.name}</span>
-                    <ArrowUpLeft className="h-4 w-4" />
                   </a>
+                  {platform.secondaryHref && platform.secondaryLabel && (
+                    <a
+                      href={platform.secondaryHref}
+                      className="mt-2.5 block text-center text-xs font-medium text-slate-500 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+                    >
+                      {platform.secondaryLabel}
+                    </a>
+                  )}
                 </div>
               </div>
             );

@@ -3,15 +3,53 @@ name: Desktop App Release
 on:
   push:
     tags:
+      - 'v*'
       - 'desktop-v*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.0.0)'
+        required: false
+        default: 'v1.0.0'
 
 permissions:
   contents: write
 
 jobs:
+  prepare-release:
+    name: Prepare GitHub Release
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.resolve_tag.outputs.tag_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve release tag
+        id: resolve_tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag || 'v1.0.0' }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "tag_name=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure published GitHub Release exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.resolve_tag.outputs.tag_name }}
+        run: |
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --title "TaskSaaS Desktop $TAG" \
+              --notes "Official TaskSaaS Desktop installers for Windows, macOS, and Linux." \
+              --latest
+          fi
+
   build-desktop:
     name: Build TaskSaaS Desktop (${{ matrix.os }})
+    needs: prepare-release
     strategy:
       fail-fast: false
       matrix:
@@ -49,4 +87,5 @@ jobs:
         working-directory: desktop
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: pnpm exec electron-builder --${{ matrix.platform }} --publish always

@@ -2,7 +2,10 @@
   "name": "tasksaas-desktop",
   "version": "1.0.0",
   "description": "TaskSaaS Native Desktop Application for Teams and Companies",
-  "author": "TaskSaaS",
+  "author": {
+    "name": "TaskSaaS",
+    "email": "support@tasksaas.app"
+  },
   "license": "MIT",
   "main": "main.js",
   "scripts": {
@@ -45,7 +48,8 @@
       {
         "provider": "github",
         "owner": "Ab-Coder123",
-        "repo": "task-management-app"
+        "repo": "task-management-app",
+        "releaseType": "release"
       }
     ],
     "win": {
@@ -62,18 +66,25 @@
       "icon": "build/icon.ico"
     },
     "nsis": {
+      "artifactName": "TaskSaaS-Setup-Win-x64.${ext}",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "TaskSaaS"
     },
+    "portable": {
+      "artifactName": "TaskSaaS-Portable-Win-x64.${ext}"
+    },
     "mac": {
+      "artifactName": "TaskSaaS-macOS.${ext}",
       "target": ["dmg", "zip"],
       "category": "public.app-category.productivity",
       "icon": "build/icon.png"
     },
     "linux": {
+      "artifactName": "TaskSaaS-Linux.${ext}",
+      "maintainer": "TaskSaaS <support@tasksaas.app>",
       "target": ["AppImage", "deb"],
       "category": "Office",
       "icon": "build/icon.png"
