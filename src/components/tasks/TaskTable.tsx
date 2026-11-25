@@ -218,9 +218,28 @@ export default function TaskTable({ tasks, onDelete, onComplete }: TaskTableProp
 
                 {/* Status badge */}
                 <td className="px-6 py-4">
-                  <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full border shadow-sm ${getStatusColor(task.status)}`}>
-                    {getStatusLabelArabic(task.status)}
-                  </span>
+                  <div className="flex flex-col items-start gap-1">
+                    <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full border shadow-sm ${getStatusColor(task.status)}`}>
+                      {getStatusLabelArabic(task.status)}
+                    </span>
+                    {assignedUsers.length > 0 && task.assigneeProgress && task.assigneeProgress.length > 0 && (() => {
+                      const doneCount = assignedUsers.filter((u) => {
+                        const p = task.assigneeProgress?.find((item) => {
+                          const pid = typeof item.userId === 'object' ? (item.userId as User)._id : item.userId;
+                          return pid?.toString() === u._id?.toString();
+                        });
+                        return p?.status === 'completed';
+                      }).length;
+                      if (doneCount > 0 && doneCount < assignedUsers.length) {
+                        return (
+                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                            أنجزها {doneCount} من {assignedUsers.length}
+                          </span>
+                        );
+                      }
+                      return null;
+                    })()}
+                  </div>
                 </td>
 
                 {/* Action buttons */}

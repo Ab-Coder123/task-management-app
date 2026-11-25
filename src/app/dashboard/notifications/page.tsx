@@ -14,7 +14,8 @@ import {
   Filter,
   Sparkles,
   Trash2,
-  FileText
+  FileText,
+  Megaphone
 } from 'lucide-react';
 import { useNotifications } from '@/lib/hooks/useNotifications';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -104,6 +105,8 @@ export default function UserNotificationsPage() {
   const getNotifIcon = (type: string, action?: string) => {
     const checkType = action || type;
     switch (checkType) {
+      case 'team_message':
+        return <Megaphone className="h-5 w-5 text-sky-600 dark:text-sky-400" />;
       case 'new_user':
         return <UserCheck className="h-5 w-5 text-emerald-600" />;
       case 'task_completed':
@@ -149,7 +152,7 @@ export default function UserNotificationsPage() {
               )}
             </div>
             <p className="text-xs md:text-sm text-muted-foreground mt-1">
-              تابع أحدث التنبيهات، والمهام المنسوبة إليك، وتعليقات وتوجيهات المدير في مكان واحد مستقل.
+              تابع أحدث التنبيهات، والمهام المنسوبة إليك، وتعليقات وتوجيهات قائد الفريق في مكان واحد مستقل.
             </p>
           </div>
         </div>
@@ -246,6 +249,11 @@ export default function UserNotificationsPage() {
                     {getNotifIcon(n.type, n.action)}
                   </div>
                   <div>
+                    {(n.action === 'team_message' || n.type === 'team_message') && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/15 px-2.5 py-0.5 text-[10px] font-bold text-sky-600 dark:text-sky-300 mb-1.5">
+                        رسالة من {typeof n.sender === 'object' ? n.sender?.username : (n.metadata?.senderName || n.metadata?.username || 'قائد الفريق')}
+                      </span>
+                    )}
                     <p className="text-sm font-bold text-foreground leading-relaxed">
                       {n.message}
                     </p>
@@ -262,7 +270,7 @@ export default function UserNotificationsPage() {
                     onClick={() => !isRead && markAsRead(n._id)}
                     className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-extrabold text-xs hover:bg-primary/95 flex items-center justify-center gap-2 transition-all shadow-md shrink-0 group cursor-pointer"
                   >
-                    <span>عرض المهمة ومراسلة المدير</span>
+                    <span>عرض المهمة ومراسلة قائد الفريق</span>
                     <ChevronLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-200" />
                   </Link>
                 )}

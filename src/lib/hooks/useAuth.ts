@@ -16,9 +16,9 @@ export function useAuth() {
 
       // Redirect based on role
       if (data.user.role === 'admin') {
-        router.push('/admin/dashboard');
+        router.replace('/admin/dashboard');
       } else {
-        router.push('/dashboard');
+        router.replace('/dashboard');
       }
     },
   });
@@ -27,7 +27,7 @@ export function useAuth() {
     mutationFn: authApi.register,
     onSuccess: (data: AuthResponse) => {
       setAuth(data.user, data.token);
-      router.push('/waiting-approval');
+      router.replace('/waiting-approval');
     },
   });
 
@@ -42,7 +42,7 @@ export function useAuth() {
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.replace('/login');
   };
 
   return {

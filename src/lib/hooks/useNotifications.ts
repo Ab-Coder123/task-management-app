@@ -23,11 +23,13 @@ export function useNotifications() {
         import('../utils/sound').then(({ playNotificationSound }) => {
           playNotificationSound();
         }).catch((err) => console.error('Failed to play notification sound', err));
+        queryClient.invalidateQueries({ queryKey: ['tasks'] });
+        queryClient.invalidateQueries({ queryKey: ['admin-comments'] });
       }
       isFirstLoad.current = false;
       setNotifications(notificationsQuery.data);
     }
-  }, [notificationsQuery.data, setNotifications, unreadCount]);
+  }, [notificationsQuery.data, setNotifications, unreadCount, queryClient]);
 
   const markReadMutation = useMutation({
     mutationFn: notificationsApi.markAsRead,

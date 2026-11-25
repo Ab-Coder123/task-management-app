@@ -49,7 +49,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
         <div className="flex items-center gap-3">
           <div className="hidden lg:block">
             <span className="text-xs font-bold text-primary bg-primary/10 px-3.5 py-1.5 rounded-full shadow-100">
-              {role === 'admin' ? 'بوابة مدير النظام' : 'مساحة العمل'}
+              {role === 'admin' ? 'بوابة قائد الفريق' : 'مساحة العمل'}
             </span>
           </div>
           <button
@@ -84,7 +84,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
                 )}
                 <div className="hidden text-right md:block">
                   <p className="text-sm font-bold text-foreground leading-none">{user.username}</p>
-                  <p className="text-[10px] text-muted-foreground font-semibold mt-0.5">{user.role === 'admin' ? 'مدير النظام' : 'عضو فريق'}</p>
+                  <p className="text-[10px] text-muted-foreground font-semibold mt-0.5">{user.role === 'admin' ? 'قائد فريق' : 'عضو فريق'}</p>
                 </div>
                 <ChevronDown className={`hidden h-3.5 w-3.5 text-muted-foreground md:block transition-transform duration-200 ${activeDropdown === 'profile' ? 'rotate-180 text-primary' : ''}`} />
               </button>

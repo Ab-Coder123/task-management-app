@@ -374,7 +374,7 @@ export default function UserDashboardPage() {
                     </span>
                     {task.createdBy && typeof task.createdBy === 'object' && (
                       <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full border border-border/40 shadow-sm">
-                        <span>المدير:</span>
+                        <span>قائد الفريق:</span>
                         {(task.createdBy as any).avatar ? (
                           <img src={(task.createdBy as any).avatar} className="h-4 w-4 rounded-full object-cover shrink-0" />
                         ) : (
@@ -453,7 +453,7 @@ export default function UserDashboardPage() {
                     href={`/tasks/${task._id}`}
                     className="w-full mt-3.5 py-2.5 px-3 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground transition-all duration-200 text-xs font-extrabold flex items-center justify-center gap-2 shadow-sm group cursor-pointer"
                   >
-                    <span>عرض التفاصيل ومراسلة المدير</span>
+                    <span>عرض التفاصيل ومراسلة قائد الفريق</span>
                     <MessageSquare className="h-3.5 w-3.5 group-hover:scale-110 transition-transform" />
                   </Link>
                 </div>

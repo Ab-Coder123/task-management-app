@@ -9,8 +9,8 @@ export function middleware(request: NextRequest) {
   const role = request.cookies.get('user-role')?.value;
   const status = request.cookies.get('user-status')?.value;
 
-  const isPublicPage =
-    pathname === '/' ||
+  const isLandingPage = pathname === '/';
+  const isPublicUtilityPage =
     pathname.startsWith('/download') ||
     pathname.startsWith('/offline');
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
@@ -36,7 +36,7 @@ export function middleware(request: NextRequest) {
       response.cookies.delete('user-status');
       return response;
     }
-    if (isPublicPage || isAuthPage) {
+    if (isLandingPage || isPublicUtilityPage || isAuthPage) {
       const response = NextResponse.next();
       response.cookies.delete('auth-token');
       response.cookies.delete('user-role');
@@ -47,8 +47,8 @@ export function middleware(request: NextRequest) {
 
   // 3. Authenticated (Pending or Approved)
   if (status === 'pending' || status === 'approved' || !status) {
-    // Auth pages redirection
-    if (isAuthPage) {
+    // Redirect signed-in users away from landing, login, and register pages
+    if (isAuthPage || isLandingPage) {
       if (role === 'admin') {
         return NextResponse.redirect(new URL('/admin/dashboard', request.url));
       }

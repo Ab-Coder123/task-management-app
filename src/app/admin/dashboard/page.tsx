@@ -63,6 +63,7 @@ export default function AdminDashboardPage() {
   }, []);
 
   const [announcementText, setAnnouncementText] = useState('');
+  const [selectedRecipient, setSelectedRecipient] = useState<string>('all_team');
   const [isSendingAnnouncement, setIsSendingAnnouncement] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | TaskStatus>('all');
@@ -77,24 +78,55 @@ export default function AdminDashboardPage() {
   const activeTasks    = sharedTasks.filter(t => t.status === 'in_progress').length;
   const overdueTasks   = sharedTasks.filter(t => t.status === 'overdue').length;
 
+  const isLeaderScopedTeam = Boolean(currentUser?.team && currentUser.team !== 'الإدارة العامة');
+  const otherUsers = users.filter((u) => u._id && u._id !== currentUser?._id);
+  const scopedMembers = isLeaderScopedTeam
+    ? otherUsers.filter((u) => u.team === currentUser?.team)
+    : otherUsers;
+
+  const groupedLegacyUsers = !isLeaderScopedTeam
+    ? otherUsers.reduce<Record<string, User[]>>((acc, u) => {
+        const key = u.team || 'أعضاء بدون قسم';
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(u);
+        return acc;
+      }, {})
+    : {};
+
   const handleSendAnnouncement = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!announcementText.trim()) return;
+    if (!announcementText.trim() || scopedMembers.length === 0) return;
+
+    const targetIds =
+      selectedRecipient === 'all_team'
+        ? scopedMembers.map((u) => u._id)
+        : [selectedRecipient];
+
+    if (targetIds.length === 0) return;
+
     setIsSendingAnnouncement(true);
     try {
-      await notificationsApi.addNotification({
-        type: 'new_user',
+      await notificationsApi.sendTeamMessage({
+        recipients: targetIds,
         message: announcementText.trim(),
-        metadata: { username: currentUser?.username || 'مدير النظام' }
+        metadata: {
+          username: currentUser?.username || 'قائد الفريق',
+          team: currentUser?.team || '',
+        },
       });
-      
+
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      toast.success('تم إرسال الرسالة العامة لجميع الأعضاء!');
+      if (selectedRecipient === 'all_team') {
+        toast.success(`تم إرسال الرسالة إلى أعضاء فريقك (${targetIds.length}) بنجاح!`);
+      } else {
+        const targetUser = scopedMembers.find((u) => u._id === selectedRecipient);
+        toast.success(`تم إرسال الرسالة إلى ${targetUser?.username || 'العضو المحدد'} بنجاح!`);
+      }
       playSuccessSound();
       setAnnouncementText('');
-    } catch (err) { 
-      console.error(err); 
-      toast.error('فشلت عملية إرسال الرسالة العامة.');
+    } catch (err) {
+      console.error(err);
+      toast.error('فشلت عملية إرسال الرسالة.');
     } finally {
       setIsSendingAnnouncement(false);
     }
@@ -201,14 +233,21 @@ export default function AdminDashboardPage() {
     >
 
       {/* ── Header ── */}
-      <div>
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2.5">
-          <Sparkles className="h-6 w-6 text-primary" />
-          لوحة تحكم المسؤول
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          مرحباً بك، استعرض حالة المهام والتقارير وأضف تحديثات جديدة لفريقك.
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2.5">
+            <Sparkles className="h-6 w-6 text-primary" />
+            لوحة تحكم قائد الفريق
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            مرحباً بك، استعرض حالة المهام والتقارير وتواصل مع أعضاء فريقك بسهولة.
+          </p>
+        </div>
+        {currentUser?.team && (
+          <span className="inline-flex items-center gap-1.5 rounded-xl bg-primary/10 px-3.5 py-2 text-xs font-extrabold text-primary">
+            فريق: {currentUser.team}
+          </span>
+        )}
       </div>
 
       {/* ── Stats Grid ── */}
@@ -232,7 +271,7 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* ── Quick Add Banner (General Message Broadcast) ── */}
+      {/* ── Quick Targeted Team Messaging Banner ── */}
       <div
         className="rounded-2xl p-6 relative overflow-hidden shadow-300"
         style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #3b82f6 100%)' }}
@@ -240,29 +279,68 @@ export default function AdminDashboardPage() {
         <div className="absolute -left-8 -top-8 h-36 w-36 rounded-full bg-white/5 pointer-events-none" />
         <div className="absolute right-0 bottom-0 h-28 w-28 rounded-full bg-white/5 pointer-events-none translate-x-1/3 translate-y-1/3" />
 
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div>
-            <h2 className="text-lg font-bold text-white">إرسال رسالة عامة للجميع</h2>
-            <p className="text-sm text-white/75 mt-1 max-w-sm">
-              أرسل تنبيهاً أو تحديثاً سريعاً يظهر لجميع أعضاء الفريق في الإشعارات الخاصة بهم.
+            <h2 className="text-lg font-bold text-white">إرسال رسالة وتنبيه لفريقك</h2>
+            <p className="text-sm text-white/80 mt-1 max-w-md">
+              {isLeaderScopedTeam
+                ? `اختر عضواً محدداً من فريق "${currentUser?.team}" أو أرسل لجميع أعضاء فريقك فقط.`
+                : 'اختر العضو المحدد أو فريق العمل لإرسال التنبيه إليه مباشرة في الإشعارات.'}
             </p>
           </div>
-          <form onSubmit={handleSendAnnouncement} className="flex w-full md:w-auto items-center gap-2">
+          <form onSubmit={handleSendAnnouncement} className="flex flex-col sm:flex-row w-full lg:w-auto items-stretch sm:items-center gap-2.5">
+            <select
+              value={selectedRecipient}
+              onChange={(e) => setSelectedRecipient(e.target.value)}
+              disabled={isSendingAnnouncement || scopedMembers.length === 0}
+              aria-label="اختر المستلم"
+              className="sm:w-56 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-white/15 text-white border-0 focus:outline-none focus:ring-2 focus:ring-white/30 text-right cursor-pointer [&>option]:text-slate-900 [&>optgroup]:text-slate-900"
+            >
+              {scopedMembers.length === 0 ? (
+                <option value="">لا يوجد أعضاء في فريقك حالياً</option>
+              ) : (
+                <>
+                  <option value="all_team">
+                    {isLeaderScopedTeam
+                      ? `كل أعضاء فريقي (${scopedMembers.length})`
+                      : `جميع الأعضاء المتاحين (${scopedMembers.length})`}
+                  </option>
+                  {isLeaderScopedTeam
+                    ? scopedMembers.map((member) => (
+                        <option key={member._id} value={member._id}>
+                          {member.username}
+                          {member.jobTitle ? ` — ${member.jobTitle}` : ''}
+                        </option>
+                      ))
+                    : Object.entries(groupedLegacyUsers).map(([teamName, members]) => (
+                        <optgroup key={teamName} label={teamName}>
+                          {members.map((member) => (
+                            <option key={member._id} value={member._id}>
+                              {member.username}
+                              {member.jobTitle ? ` — ${member.jobTitle}` : ''}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                </>
+              )}
+            </select>
+
             <input
-              type="text" 
-              value={announcementText} 
-              disabled={isSendingAnnouncement}
-              onChange={e => setAnnouncementText(e.target.value)}
-              placeholder="اكتب رسالتك العامة هنا..."
-              className="flex-1 md:w-80 px-4 py-2.5 rounded-xl text-sm bg-white/10 text-white placeholder-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-white/25 text-right transition-all shadow-inner"
+              type="text"
+              value={announcementText}
+              disabled={isSendingAnnouncement || scopedMembers.length === 0}
+              onChange={(e) => setAnnouncementText(e.target.value)}
+              placeholder="اكتب رسالتك الموجهة هنا..."
+              className="flex-1 sm:w-64 px-4 py-2.5 rounded-xl text-sm bg-white/10 text-white placeholder-white/60 border-0 focus:outline-none focus:ring-2 focus:ring-white/30 text-right transition-all shadow-inner"
               required
             />
             <button
-              type="submit" 
-              disabled={isSendingAnnouncement || !announcementText.trim()}
-              className="px-5 py-2.5 rounded-xl bg-white text-blue-600 text-sm font-bold hover:bg-white/95 active:scale-95 transition-all disabled:opacity-50 shadow-200 whitespace-nowrap"
+              type="submit"
+              disabled={isSendingAnnouncement || !announcementText.trim() || scopedMembers.length === 0}
+              className="px-5 py-2.5 rounded-xl bg-white text-blue-600 text-sm font-bold hover:bg-white/95 active:scale-95 transition-all disabled:opacity-50 shadow-200 whitespace-nowrap cursor-pointer"
             >
-              {isSendingAnnouncement ? 'جاري الإرسال...' : 'إرسال'}
+              {isSendingAnnouncement ? 'جاري الإرسال...' : 'إرسال الرسالة'}
             </button>
           </form>
         </div>
@@ -334,14 +412,33 @@ export default function AdminDashboardPage() {
               className="rounded-2xl p-5 flex flex-col gap-3.5 group bg-card shadow-200 hover:shadow-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 cursor-default"
             >
               {/* ── Top: badge (right) + icon (left) ── */}
-              <div className="flex items-center justify-between">
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${ss.badge}`}>
-                  <span
-                    className="h-1.5 w-1.5 rounded-full animate-pulse"
-                    style={{ background: ss.dot }}
-                  />
-                  {statusLabel(task.status)}
-                </span>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${ss.badge}`}>
+                    <span
+                      className="h-1.5 w-1.5 rounded-full animate-pulse"
+                      style={{ background: ss.dot }}
+                    />
+                    {statusLabel(task.status)}
+                  </span>
+                  {assignedUsers.length > 0 && task.assigneeProgress && task.assigneeProgress.length > 0 && (() => {
+                    const doneCount = assignedUsers.filter((u) => {
+                      const p = task.assigneeProgress?.find((item) => {
+                        const pid = typeof item.userId === 'object' ? (item.userId as User)._id : item.userId;
+                        return pid?.toString() === u._id?.toString();
+                      });
+                      return p?.status === 'completed';
+                    }).length;
+                    if (doneCount > 0 && doneCount < assignedUsers.length) {
+                      return (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                          أنجزها {doneCount} من {assignedUsers.length}
+                        </span>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
 
                 <div
                   className="h-7 w-7 rounded-lg flex items-center justify-center bg-muted/40 opacity-60 group-hover:opacity-100 transition-all"

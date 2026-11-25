@@ -31,6 +31,8 @@ export default function TaskDetailsPage() {
     tasks, 
     isLoading: tasksLoading, 
     completeTask,
+    updateTaskStatus,
+    isUpdatingStatus,
     addChecklistItem,
     toggleChecklistItem,
     deleteChecklistItem
@@ -75,24 +77,27 @@ export default function TaskDetailsPage() {
 
   const checklistItems = currentUserProgress?.checklist || task.privateChecklist || [];
 
-  const isCompleted = currentUser?.role === 'admin' 
-    ? task.status === 'completed' 
-    : (currentUserProgress?.status ? currentUserProgress.status === 'completed' : (task as any).personalStatus === 'completed');
+  const effectiveStatus: TaskStatus = currentUser?.role === 'admin'
+    ? task.status
+    : ((currentUserProgress?.status || (task as any).personalStatus || task.status) as TaskStatus);
+
+  const isCompleted = effectiveStatus === 'completed';
   
   const showChecklist = currentUser?.role !== 'admin';
 
-  const handleComplete = async () => {
+  const handleStatusChange = async (nextStatus: TaskStatus) => {
+    if (nextStatus === effectiveStatus || isUpdatingStatus) return;
     const loadingToast = toast.loading('جاري تحديث حالة المهمة...');
     try {
-      await completeTask({ 
-        id: task._id, 
-        username: currentUser?.username || 'User',
-        isAdmin: currentUser?.role === 'admin' 
+      await updateTaskStatus({
+        id: task._id,
+        status: nextStatus,
+        isAdmin: currentUser?.role === 'admin',
       });
       toast.dismiss(loadingToast);
-      toast.success('تم إنجاز المهمة بنجاح!');
+      toast.success(`تم تحديث حالة المهمة إلى "${getStatusArabicLabel(nextStatus)}" بنجاح!`);
     } catch (err) {
-      console.error('Task complete update failed', err);
+      console.error('Task status update failed', err);
       toast.dismiss(loadingToast);
       toast.error('حدث خطأ أثناء تحديث حالة المهمة.');
     }
@@ -163,15 +168,31 @@ export default function TaskDetailsPage() {
           <span>العودة إلى لوحة المهام</span>
         </Link>
 
-        {!isCompleted && (
-          <button
-            onClick={handleComplete}
-            className="flex items-center justify-center space-x-1.5 space-x-reverse px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/10 transition-all cursor-pointer w-full sm:w-auto"
-          >
-            <CheckCircle2 className="h-4.5 w-4.5" />
-            <span>تحديد المهمة كمكتملة</span>
-          </button>
-        )}
+        <div className="flex flex-wrap items-center gap-1.5 bg-muted/40 dark:bg-slate-900/70 p-1.5 rounded-xl">
+          {([
+            { value: 'pending' as TaskStatus, label: 'معلقة', activeClass: 'bg-blue-600 text-white shadow-sm' },
+            { value: 'in_progress' as TaskStatus, label: 'قيد التنفيذ', activeClass: 'bg-amber-500 text-white shadow-sm' },
+            { value: 'completed' as TaskStatus, label: 'مكتملة', activeClass: 'bg-emerald-600 text-white shadow-sm' },
+          ]).map((opt) => {
+            const active = effectiveStatus === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                disabled={isUpdatingStatus}
+                onClick={() => handleStatusChange(opt.value)}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all cursor-pointer disabled:opacity-60 ${
+                  active
+                    ? opt.activeClass
+                    : 'text-muted-foreground hover:text-foreground hover:bg-background/60 dark:hover:bg-slate-800'
+                }`}
+              >
+                {opt.value === 'completed' && <CheckCircle2 className="h-3.5 w-3.5" />}
+                <span>{opt.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Task Header Title Box */}
@@ -234,7 +255,7 @@ export default function TaskDetailsPage() {
                 </span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                هذه القائمة سرية وتساعدك على تتبع خطوات العمل الخاصة بك، ولا يمكن للمدير أو الأعضاء الآخرين رؤية عناصرها.
+                هذه القائمة سرية وتساعدك على تتبع خطوات العمل الخاصة بك، ولا يمكن لقائد الفريق أو الأعضاء الآخرين رؤية عناصرها.
               </p>
 
               {/* Add checklist input */}
@@ -327,10 +348,10 @@ export default function TaskDetailsPage() {
               <div className="border-b border-border/40 pb-4 mb-6">
                 <h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-primary" />
-                  <span>المحادثة والتعليقات مع الإدارة</span>
+                  <span>المحادثة والتعليقات مع قائد الفريق</span>
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1">
-                  يمكنك هنا تبادل التعليقات، ورفع التحديثات، والتواصل المباشر مع المدير بخصوص هذه المهمة.
+                  يمكنك هنا تبادل التعليقات، ورفع التحديثات، والتواصل المباشر مع قائد الفريق والأعضاء بخصوص هذه المهمة.
                 </p>
               </div>
               <TaskCommentSection

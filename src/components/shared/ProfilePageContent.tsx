@@ -41,7 +41,7 @@ export default function ProfilePageContent() {
       setUsername(user.username || '');
       setEmail(user.email || '');
       setTeam(user.team || (user.role === 'admin' ? 'الإدارة العامة' : ''));
-      setJobTitle(user.jobTitle || (user.role === 'admin' ? 'مدير النظام' : ''));
+      setJobTitle(user.jobTitle || (user.role === 'admin' ? 'قائد الفريق (Team Leader)' : ''));
       setAvatar(user.avatar || '');
     }
   }, [user]);
@@ -190,7 +190,7 @@ export default function ProfilePageContent() {
                 ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20' 
                 : 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20'
             }`}>
-              {user.role === 'admin' ? 'مدير النظام' : 'عضو فريق'}
+              {user.role === 'admin' ? 'قائد فريق' : 'عضو فريق'}
             </span>
             <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 shadow-100">
               حساب موثق

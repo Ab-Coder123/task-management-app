@@ -88,7 +88,7 @@ export default function LandingRolesFaq() {
               </div>
               <div>
                 <h3 className="text-lg font-extrabold text-foreground">
-                  بوابة مسؤول النظام (Admin)
+                  بوابة قائد الفريق (Team Leader)
                 </h3>
                 <p className="text-xs text-muted-foreground">
                   القيادة، اعتماد الحسابات، توزيع العمل، والتقارير الشاملة

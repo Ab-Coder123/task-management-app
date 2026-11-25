@@ -179,7 +179,7 @@ function toBackendTask(data: Partial<Task>): Record<string, unknown> {
 
 export const tasksApi = {
   getTasks: async (): Promise<Task[]> => {
-    const raw = await apiFetch<any>('/api/tasks/gettasks', { method: 'GET' });
+    const raw = await apiFetch<any>('/api/tasks/gettasks?limit=100', { method: 'GET' });
     const tasksArray = Array.isArray(raw) ? raw : raw.tasks || [];
     return Array.isArray(tasksArray) ? tasksArray.map(mapRawTask) : [];
   },
@@ -193,16 +193,24 @@ export const tasksApi = {
   },
 
   editTask: async (id: string, taskData: Partial<Task>): Promise<Task> => {
-    // If updating status to completed, save completedAt locally as a fallback
-    if (taskData.status === 'completed' || taskData.completedAt) {
-      if (typeof window !== 'undefined') {
-        try {
-          const localCompleted = JSON.parse(localStorage.getItem('task_completed_dates') || '{}');
+    // Sync local completion fallback timestamp on status changes
+    const personalStatus = (taskData as any).personalStatus as TaskStatus | undefined;
+    const hasStatusUpdate = Boolean(taskData.status || personalStatus);
+    const isCompletedUpdate =
+      taskData.status === 'completed' || personalStatus === 'completed' || Boolean(taskData.completedAt);
+
+    if (typeof window !== 'undefined' && (hasStatusUpdate || taskData.completedAt)) {
+      try {
+        const localCompleted = JSON.parse(localStorage.getItem('task_completed_dates') || '{}');
+        if (isCompletedUpdate) {
           localCompleted[id] = taskData.completedAt || new Date().toISOString();
           localStorage.setItem('task_completed_dates', JSON.stringify(localCompleted));
-        } catch (e) {
-          console.error('Error saving local completion date', e);
+        } else if (localCompleted[id]) {
+          delete localCompleted[id];
+          localStorage.setItem('task_completed_dates', JSON.stringify(localCompleted));
         }
+      } catch (e) {
+        console.error('Error syncing local completion date', e);
       }
     }
 

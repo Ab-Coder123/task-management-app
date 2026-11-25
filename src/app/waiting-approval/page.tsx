@@ -177,7 +177,7 @@ export default function WelcomeWaitingApprovalPage() {
               المسمى الوظيفي:
             </span>
             <span className="text-foreground font-bold">
-              {user?.jobTitle || (user?.role === 'admin' ? 'مدير النظام' : 'غير محدد')}
+              {user?.jobTitle || (user?.role === 'admin' ? 'قائد الفريق (Team Leader)' : 'غير محدد')}
             </span>
           </div>
         </div>

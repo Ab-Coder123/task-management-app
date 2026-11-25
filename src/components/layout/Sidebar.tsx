@@ -28,7 +28,7 @@ export default function Sidebar() {
 
       {/* Logo */}
       <div className="flex h-16 items-center px-6">
-        <Link href="/" className="flex items-center gap-3">
+        <Link href={role === 'admin' ? '/admin/dashboard' : '/dashboard'} className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 dark:bg-gradient-to-tr dark:from-blue-600 dark:to-indigo-500 border border-primary/20 dark:border-transparent text-primary dark:text-white shadow-200 transition-colors">
             <Icons.Trello className="h-5 w-5" />
           </div>
@@ -93,7 +93,7 @@ export default function Sidebar() {
             )}
             <div className="min-w-0 text-right">
               <p className="text-sm font-bold text-foreground truncate">{user.username}</p>
-              <p className="text-[10px] text-muted-foreground font-semibold truncate">{role === 'admin' ? 'مدير النظام' : 'عضو فريق'}</p>
+              <p className="text-[10px] text-muted-foreground font-semibold truncate">{role === 'admin' ? 'قائد فريق' : 'عضو فريق'}</p>
             </div>
           </div>
         ) : (

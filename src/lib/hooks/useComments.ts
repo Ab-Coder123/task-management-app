@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { commentsApi } from '../api/comments';
-import { notificationsApi } from '../api/notifications';
 
 export function useComments(taskId?: string) {
   const queryClient = useQueryClient();
@@ -9,28 +8,27 @@ export function useComments(taskId?: string) {
     queryKey: ['comments', taskId],
     queryFn: () => commentsApi.getComments(taskId || ''),
     enabled: !!taskId,
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
   });
-  console.log("commentsQuery.data", commentsQuery.data);
+
   const addCommentMutation = useMutation({
-    mutationFn: ({ taskId, userId, content, username, taskTitle }: { taskId: string; userId: string; content: string; username: string; taskTitle: string }) =>
+    mutationFn: ({ taskId, userId, content }: { taskId: string; userId: string; content: string; username: string; taskTitle: string }) =>
       commentsApi.addComment(taskId, userId, content),
-    onSuccess: (newComment, variables) => {
+    onSuccess: (_newComment, variables) => {
       queryClient.invalidateQueries({ queryKey: ['comments', variables.taskId] });
+      queryClient.invalidateQueries({ queryKey: ['admin-comments'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      // Notify Admin on new comment
-      notificationsApi.addNotification({
-        type: 'new_comment',
-        message: `User "${variables.username}" commented on "${variables.taskTitle}": "${variables.content.substring(0, 30)}..."`,
-        metadata: { taskId: variables.taskId, username: variables.username, taskTitle: variables.taskTitle }
-      });
     },
   });
 
   const updateCommentMutation = useMutation({
     mutationFn: ({ id, content, isReviewed }: { id: string; content?: string; isReviewed?: boolean }) =>
       commentsApi.updateComment(id, { content, isReviewed }),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-comments'] });
       if (taskId) {
         queryClient.invalidateQueries({ queryKey: ['comments', taskId] });
       }
@@ -41,6 +39,8 @@ export function useComments(taskId?: string) {
     mutationFn: commentsApi.deleteComment,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-comments'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
       if (taskId) {
         queryClient.invalidateQueries({ queryKey: ['comments', taskId] });
       }
@@ -61,10 +61,12 @@ export function useComments(taskId?: string) {
 
 export function useAdminComments() {
   const queryClient = useQueryClient();
-  
+
   const commentsQuery = useQuery({
     queryKey: ['admin-comments'],
     queryFn: commentsApi.getAdminComments,
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
   });
 
   const deleteCommentMutation = useMutation({

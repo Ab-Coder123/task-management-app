@@ -83,6 +83,37 @@ export const notificationsApi = {
     return Promise.resolve(newNotif);
   },
 
+  sendTeamMessage: async ({
+    recipients,
+    message,
+    metadata,
+  }: {
+    recipients: string[];
+    message: string;
+    metadata?: Record<string, any>;
+  }): Promise<{ success: boolean; count: number }> => {
+    const res = await apiFetch<{ success?: boolean; count?: number }>(
+      '/api/notifications/addnotification',
+      {
+        method: 'POST',
+        bodyData: {
+          recipients,
+          type: 'team_message',
+          action: 'team_message',
+          message,
+          metadata: metadata || {},
+        },
+      }
+    );
+    if (typeof window !== 'undefined') {
+      playNotificationSound();
+    }
+    return {
+      success: Boolean(res?.success ?? true),
+      count: res?.count ?? recipients.length,
+    };
+  },
+
   markAllAsRead: async (): Promise<{ success: boolean }> => {
     try {
       await apiFetch('/api/notifications/markallread', { method: 'PUT' });

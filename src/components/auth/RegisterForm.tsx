@@ -115,10 +115,10 @@ export default function RegisterForm() {
 
   const selectedTeam = COMPANY_TEAMS.find((t) => t.id === selectedTeamId);
 
-  const finalTeam = role === 'admin' ? 'الإدارة العامة' : selectedTeam?.name || '';
+  const finalTeam = selectedTeam?.name || '';
   const finalJobTitle =
     role === 'admin'
-      ? 'مدير النظام'
+      ? 'قائد الفريق (Team Leader)'
       : isCustomJob
       ? customJobTitle.trim()
       : selectedJob;
@@ -127,7 +127,6 @@ export default function RegisterForm() {
     setErrorMsg('');
     setRole(nextRole);
     if (nextRole === 'admin') {
-      setSelectedTeamId('');
       setSelectedJob('');
       setIsCustomJob(false);
       setCustomJobTitle('');
@@ -151,12 +150,16 @@ export default function RegisterForm() {
 
   const handleNextFromStep1 = () => {
     setErrorMsg('');
-    if (role === 'admin') {
-      goToStep(3);
+    if (!selectedTeam) {
+      setErrorMsg(
+        role === 'admin'
+          ? 'يرجى اختيار القسم أو الفريق الذي ستتولى قيادته للمتابعة.'
+          : 'يرجى اختيار القسم أو الفريق الذي تنتمي إليه للمتابعة.'
+      );
       return;
     }
-    if (!selectedTeam) {
-      setErrorMsg('يرجى اختيار القسم أو الفريق الذي تنتمي إليه للمتابعة.');
+    if (role === 'admin') {
+      goToStep(3);
       return;
     }
     goToStep(2);
@@ -194,7 +197,7 @@ export default function RegisterForm() {
       return;
     }
 
-    if (role === 'user' && (!finalTeam || !finalJobTitle)) {
+    if (!finalTeam || (role === 'user' && !finalJobTitle)) {
       setErrorMsg('يرجى التأكد من اختيار القسم والمسمى الوظيفي.');
       return;
     }
@@ -336,7 +339,7 @@ export default function RegisterForm() {
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-bold text-foreground">عضو فريق (موظف)</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
-                      يتطلب تحديد القسم والمسمى الوظيفي
+                      ينضم إلى فريق محدد لتنفيذ المهام الموكلة إليه
                     </p>
                   </div>
                 </motion.button>
@@ -362,93 +365,94 @@ export default function RegisterForm() {
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-foreground">مسؤول النظام (مدير)</p>
+                    <p className="text-sm font-bold text-foreground">قائد فريق (Team Leader)</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
-                      إدارة شاملة للفِرق والمهام والاعتمادات
+                      يقود فريقاً محدداً ويدير مهامه وأعضاءه
                     </p>
                   </div>
                 </motion.button>
               </div>
             </motion.div>
 
-            <AnimatePresence mode="wait">
-              {role === 'admin' ? (
+            <AnimatePresence>
+              {role === 'admin' && (
                 <motion.div
-                  key="admin-info"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25, ease: smoothEase }}
-                  className="p-5 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-right space-y-2"
+                  key="leader-info"
+                  initial={{ opacity: 0, y: 8, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto' }}
+                  exit={{ opacity: 0, y: -8, height: 0 }}
+                  transition={{ duration: 0.22, ease: smoothEase }}
+                  className="overflow-hidden"
                 >
-                  <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-bold text-sm">
-                    <Sparkles className="h-4 w-4" />
-                    <span>حساب مسؤول النظام (Admin)</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    بصفتك مسؤول النظام، سيتم تسجيل حسابك تلقائياً ضمن <strong>الإدارة العامة</strong> بمسمى <strong>مدير النظام</strong> مع صلاحيات متابعة جميع الأقسام والمشاريع. يمكنك المتابعة مباشرة لإدخال بيانات حسابك.
-                  </p>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="team-grid"
-                  variants={staggerGridVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit={{ opacity: 0, y: -8, transition: { duration: 0.18 } }}
-                >
-                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5">
-                    اختر القسم / الفريق الذي تعمل به
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {COMPANY_TEAMS.map((team) => {
-                      const IconComponent = TEAM_ICONS[team.iconName];
-                      const isSelected = selectedTeamId === team.id;
-
-                      return (
-                        <motion.button
-                          key={team.id}
-                          variants={itemVariants}
-                          whileHover={{ y: -2 }}
-                          whileTap={{ scale: 0.985 }}
-                          type="button"
-                          onClick={() => handleSelectTeam(team.id)}
-                          className={`relative flex items-start gap-3 p-4 rounded-xl border text-right transition-colors ${
-                            isSelected
-                              ? 'bg-primary/10 border-primary ring-2 ring-primary/25 shadow-sm'
-                              : 'bg-slate-50 dark:bg-slate-800/60 border-border/70 dark:border-transparent hover:border-primary/40 hover:bg-slate-100/80 dark:hover:bg-slate-800'
-                          }`}
-                        >
-                          <div
-                            className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                              isSelected
-                                ? 'bg-primary text-primary-foreground'
-                                : 'bg-white dark:bg-slate-900 text-primary border border-border/60 dark:border-transparent'
-                            }`}
-                          >
-                            <IconComponent className="h-5 w-5" />
-                          </div>
-                          <div className="min-w-0 flex-1 pl-4">
-                            <h3 className="text-sm font-bold text-foreground leading-snug">
-                              {team.name}
-                            </h3>
-                            <p className="text-[11px] font-semibold text-primary/80 mt-0.5">
-                              {team.nameEn}
-                            </p>
-                            <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-                              {team.description}
-                            </p>
-                          </div>
-                          {isSelected && (
-                            <CheckCircle2 className="h-4 w-4 text-primary absolute top-3 left-3" />
-                          )}
-                        </motion.button>
-                      );
-                    })}
+                  <div className="p-4 rounded-2xl bg-violet-500/10 border border-violet-500/20 dark:border-transparent text-right space-y-1.5">
+                    <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-bold text-xs sm:text-sm">
+                      <Sparkles className="h-4 w-4 shrink-0" />
+                      <span>حساب قائد فريق (Team Leader)</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      اختر القسم أو الفريق الذي ستتولى قيادته من القائمة أدناه لتسجيلك كـ <strong>قائد الفريق</strong> وإدارة مهام وأعضاء فريقك مباشرة.
+                    </p>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
+
+            <motion.div
+              key="team-grid"
+              variants={staggerGridVariants}
+              initial="initial"
+              animate="animate"
+            >
+              <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5">
+                {role === 'admin' ? 'اختر القسم / الفريق الذي ستتولى قيادته' : 'اختر القسم / الفريق الذي تعمل به'}
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {COMPANY_TEAMS.map((team) => {
+                  const IconComponent = TEAM_ICONS[team.iconName];
+                  const isSelected = selectedTeamId === team.id;
+
+                  return (
+                    <motion.button
+                      key={team.id}
+                      variants={itemVariants}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.985 }}
+                      type="button"
+                      onClick={() => handleSelectTeam(team.id)}
+                      className={`relative flex items-start gap-3 p-4 rounded-xl border text-right transition-colors ${
+                        isSelected
+                          ? 'bg-primary/10 border-primary ring-2 ring-primary/25 shadow-sm'
+                          : 'bg-slate-50 dark:bg-slate-800/60 border-border/70 dark:border-transparent hover:border-primary/40 hover:bg-slate-100/80 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <div
+                        className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-white dark:bg-slate-900 text-primary border border-border/60 dark:border-transparent'
+                        }`}
+                      >
+                        <IconComponent className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0 flex-1 pl-4">
+                        <h3 className="text-sm font-bold text-foreground leading-snug">
+                          {team.name}
+                        </h3>
+                        <p className="text-[11px] font-semibold text-primary/80 mt-0.5">
+                          {team.nameEn}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                          {team.description}
+                        </p>
+                      </div>
+                      {isSelected && (
+                        <CheckCircle2 className="h-4 w-4 text-primary absolute top-3 left-3" />
+                      )}
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </motion.div>
 
             <motion.button
               variants={itemVariants}
@@ -459,7 +463,7 @@ export default function RegisterForm() {
             >
               <span>
                 {role === 'admin'
-                  ? 'المتابعة لإدخال بيانات المدير'
+                  ? 'المتابعة لإدخال بيانات قائد الفريق'
                   : 'الخطوة التالية: اختيار الوظيفة'}
               </span>
               <ArrowLeft className="h-4 w-4" />

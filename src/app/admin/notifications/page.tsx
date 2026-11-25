@@ -5,7 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useNotifications } from '@/lib/hooks/useNotifications';
 import { formatDate } from '@/lib/utils';
-import { Bell, Check, UserCheck, MessageSquare, AlertCircle, Trash2, FileText } from 'lucide-react';
+import { Bell, Check, UserCheck, MessageSquare, AlertCircle, Trash2, FileText, Megaphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const pageVariants = {
@@ -42,6 +42,8 @@ export default function AdminNotificationsPage() {
   const getIcon = (type: string, action?: string) => {
     const checkType = action || type;
     switch (checkType) {
+      case 'team_message':
+        return <Megaphone className="h-4.5 w-4.5 text-sky-600" />;
       case 'new_user':
         return <UserCheck className="h-4.5 w-4.5 text-emerald-600" />;
       case 'task_completed':
@@ -64,6 +66,8 @@ export default function AdminNotificationsPage() {
     if (isRead) return 'bg-card/75 text-muted-foreground shadow-100 hover:shadow-200 border-r-4 border-r-slate-300 dark:border-r-slate-700';
     const checkType = action || type;
     switch (checkType) {
+      case 'team_message':
+        return 'bg-sky-500/10 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-sky-500';
       case 'new_user':
         return 'bg-emerald-500/10 text-foreground shadow-200 hover:shadow-300 border-r-4 border-r-emerald-500';
       case 'task_completed':
@@ -82,6 +86,8 @@ export default function AdminNotificationsPage() {
     if (isRead) return 'bg-muted text-muted-foreground';
     const checkType = action || type;
     switch (checkType) {
+      case 'team_message':
+        return 'bg-sky-500/10';
       case 'new_user':
         return 'bg-emerald-500/10';
       case 'task_completed':

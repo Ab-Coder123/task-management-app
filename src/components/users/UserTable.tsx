@@ -89,7 +89,7 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
           {users.map((user) => {
             const ac = avatarColor(user.username || 'غ م');
             const displayTeam = user.team || (user.role === 'admin' ? 'الإدارة العامة' : 'غير محدد');
-            const displayJob = user.jobTitle || (user.role === 'admin' ? 'مدير النظام' : 'غير محدد');
+            const displayJob = user.jobTitle || (user.role === 'admin' ? 'قائد الفريق (Team Leader)' : 'غير محدد');
 
             return (
               <motion.tr
@@ -133,7 +133,7 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
                     ? 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/20'
                     : 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20'
                     }`}>
-                    {user.role === 'admin' ? 'مدير النظام' : 'عضو فريق'}
+                    {user.role === 'admin' ? 'قائد فريق' : 'عضو فريق'}
                   </span>
                 </td>
 

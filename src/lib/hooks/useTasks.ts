@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tasksApi } from '../api/tasks';
-import { Task } from '../types';
+import { Task, TaskStatus } from '../types';
 import { notificationsApi } from '../api/notifications';
 import { playSuccessSound } from '../utils/sound';
 
@@ -10,6 +10,9 @@ export function useTasks() {
   const tasksQuery = useQuery({
     queryKey: ['tasks'],
     queryFn: tasksApi.getTasks,
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
+    staleTime: 4000,
   });
 
   const createTaskMutation = useMutation({
@@ -59,6 +62,23 @@ export function useTasks() {
     }
   });
 
+  const updateTaskStatusMutation = useMutation({
+    mutationFn: async ({ id, status, isAdmin }: { id: string; status: TaskStatus; isAdmin?: boolean }) => {
+      const payload = isAdmin
+        ? { status }
+        : ({ personalStatus: status } as any);
+      return tasksApi.editTask(id, payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      playSuccessSound();
+    },
+    onError: (error) => {
+      console.error('updateTaskStatus error:', error);
+    }
+  });
+
   // Private Checklist Mutations (Phase 11)
   const addChecklistItemMutation = useMutation({
     mutationFn: ({ taskId, text }: { taskId: string; text: string }) =>
@@ -97,6 +117,8 @@ export function useTasks() {
     isDeleting: deleteTaskMutation.isPending,
     completeTask: completeTaskMutation.mutateAsync,
     isCompleting: completeTaskMutation.isPending,
+    updateTaskStatus: updateTaskStatusMutation.mutateAsync,
+    isUpdatingStatus: updateTaskStatusMutation.isPending,
     
     // Checklist actions
     addChecklistItem: addChecklistItemMutation.mutateAsync,
