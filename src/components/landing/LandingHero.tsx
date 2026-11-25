@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuthStore } from '@/lib/store/authStore';
+import { getHomeRoute } from '@/lib/auth/permissions';
 import {
   ArrowLeft,
   LayoutDashboard,
@@ -64,9 +65,7 @@ export default function LandingHero() {
     mounted && isAuthenticated && user
       ? !user.isVerified
         ? '/waiting-approval'
-        : user.role === 'admin'
-        ? '/admin/dashboard'
-        : '/dashboard'
+        : getHomeRoute(user.role)
       : '/register';
 
   const primaryLabel =

@@ -5,6 +5,7 @@ import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useAdminComments } from '@/lib/hooks/useComments';
 import { getAvatarFallback } from '@/lib/utils';
+import { getRoleLabel, isManager } from '@/lib/auth/permissions';
 import {
   Trash2,
   MessageSquare,
@@ -311,13 +312,13 @@ function AdminCommentsContent() {
                         </span>
                         <span
                           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                            role === 'admin'
+                            isManager(role)
                               ? 'bg-blue-500/15 text-blue-600 dark:text-blue-300'
                               : 'bg-slate-500/10 text-muted-foreground'
                           }`}
                         >
-                          {role === 'admin' && <BadgeCheck className="h-3 w-3" />}
-                          <span>{role === 'admin' ? 'قائد الفريق' : 'عضو فريق'}</span>
+                          {isManager(role) && <BadgeCheck className="h-3 w-3" />}
+                          <span>{getRoleLabel(role)}</span>
                         </span>
                       </div>
                       {userObj?.email && (

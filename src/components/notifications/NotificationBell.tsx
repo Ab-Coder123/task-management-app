@@ -2,15 +2,17 @@
 
 import React from 'react';
 import { useNotifications } from '@/lib/hooks/useNotifications';
+import { isManager } from '@/lib/auth/permissions';
+import { UserRole } from '@/lib/types';
 import { Bell } from 'lucide-react';
 import Link from 'next/link';
 
-export default function NotificationBell({ role }: { role: 'admin' | 'user' }) {
+export default function NotificationBell({ role }: { role: UserRole | string }) {
   const { unreadCount } = useNotifications();
 
   return (
     <Link
-      href={role === 'admin' ? '/admin/notifications' : '/dashboard/notifications'}
+      href={isManager(role) ? '/admin/notifications' : '/dashboard/notifications'}
       className="relative rounded-full p-2 text-muted-foreground hover:bg-muted/40 hover:text-foreground transition-all"
     >
       <Bell className="h-5 w-5" />

@@ -13,6 +13,7 @@ import { Plus, X, Calendar, Edit3, List, Layers, ShieldAlert, Check, BadgeCheck 
 import { toast } from 'sonner';
 import { AnimatePresence, motion } from 'framer-motion';
 import AttachmentUploader from '@/components/attachments/AttachmentUploader';
+import { isManager } from '@/lib/auth/permissions';
 
 const pageVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -410,7 +411,7 @@ export default function AdminTasksPage() {
                                     <div className="flex flex-col grow select-none text-right">
                                       <span className="font-bold text-foreground flex items-center gap-1.5 justify-start">
                                         {user.username}
-                                        {user.role === 'admin' && (
+                                        {isManager(user.role) && (
                                           <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/10 shrink-0" />
                                         )}
                                       </span>

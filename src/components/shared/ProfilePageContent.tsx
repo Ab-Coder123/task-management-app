@@ -9,6 +9,7 @@ import { getAvatarFallback } from '@/lib/utils';
 import { playSuccessSound } from '@/lib/utils/sound';
 import { Camera, Mail, KeyRound, User2, Save, Unlock, Lock, Briefcase, Users } from 'lucide-react';
 import { COMPANY_TEAMS } from '@/lib/constants/departments';
+import { getRoleLabel, isManager, isSuperAdmin } from '@/lib/auth/permissions';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -40,8 +41,8 @@ export default function ProfilePageContent() {
     if (user) {
       setUsername(user.username || '');
       setEmail(user.email || '');
-      setTeam(user.team || (user.role === 'admin' ? 'الإدارة العامة' : ''));
-      setJobTitle(user.jobTitle || (user.role === 'admin' ? 'قائد الفريق (Team Leader)' : ''));
+      setTeam(user.team || (isSuperAdmin(user.role) ? 'الإدارة العامة' : ''));
+      setJobTitle(user.jobTitle || (isManager(user.role) ? getRoleLabel(user.role) : ''));
       setAvatar(user.avatar || '');
     }
   }, [user]);
@@ -186,11 +187,13 @@ export default function ProfilePageContent() {
           {/* User Badges */}
           <div className="flex flex-wrap justify-center gap-2 w-full mt-2 border-t border-border/20 pt-4">
             <span className={`px-3 py-1 rounded-full text-[10px] font-bold shadow-100 border ${
-              user.role === 'admin' 
-                ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20' 
+              isSuperAdmin(user.role)
+                ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30'
+                : isManager(user.role)
+                ? 'bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/20'
                 : 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20'
             }`}>
-              {user.role === 'admin' ? 'قائد فريق' : 'عضو فريق'}
+              {getRoleLabel(user.role)}
             </span>
             <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 shadow-100">
               حساب موثق
@@ -256,7 +259,7 @@ export default function ProfilePageContent() {
                     className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900/60 border border-border dark:border-slate-800 text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 text-right transition-all shadow-sm"
                   >
                     <option value="">اختر القسم / الفريق</option>
-                    {user.role === 'admin' && <option value="الإدارة العامة">الإدارة العامة</option>}
+                    {isManager(user.role) && <option value="الإدارة العامة">الإدارة العامة</option>}
                     {COMPANY_TEAMS.map((t) => (
                       <option key={t.id} value={t.name}>
                         {t.name}

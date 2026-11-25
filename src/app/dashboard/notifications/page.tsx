@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useNotifications } from '@/lib/hooks/useNotifications';
 import { useAuthStore } from '@/lib/store/authStore';
+import { isManager } from '@/lib/auth/permissions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -62,7 +63,7 @@ export default function UserNotificationsPage() {
   // Filter notifications for this user
   const myNotifications = notifications.filter((n: any) => {
     const metaUser = n.metadata?.userId || n.userId || n.recipient;
-    return !metaUser || metaUser === user?._id || metaUser === (user as any)?.id || user?.role === 'admin';
+    return !metaUser || metaUser === user?._id || metaUser === (user as any)?.id || isManager(user?.role);
   });
 
   const filteredNotifications = myNotifications.filter((n: any) => {

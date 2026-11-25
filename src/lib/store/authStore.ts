@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { User } from '../types';
+import { normalizeRole } from '../auth/permissions';
 
 interface AuthState {
   user: User | null;
@@ -24,11 +25,17 @@ export const useAuthStore = create<AuthState>()(
       setAuth: (user, token) => {
         if (!user) return;
         const effectiveStatus = user.status || (user.isVerified ? 'approved' : 'pending');
-        const normalizedUser = { ...user, _id: user._id || (user as any).id, status: effectiveStatus };
+        const canonicalRole = normalizeRole(user.role);
+        const normalizedUser = {
+          ...user,
+          _id: user._id || (user as any).id,
+          role: canonicalRole,
+          status: effectiveStatus,
+        };
         set({ user: normalizedUser, token, isAuthenticated: true, isLoading: false });
         if (typeof window !== 'undefined') {
           document.cookie = `auth-token=${token || ''}; path=/; max-age=604800; SameSite=Lax`;
-          document.cookie = `user-role=${user.role || 'user'}; path=/; max-age=604800; SameSite=Lax`;
+          document.cookie = `user-role=${canonicalRole}; path=/; max-age=604800; SameSite=Lax`;
           document.cookie = `user-status=${effectiveStatus}; path=/; max-age=604800; SameSite=Lax`;
         }
       },
@@ -71,8 +78,9 @@ if (typeof window !== 'undefined') {
   const state = useAuthStore.getState();
   if (state.token && state.user && !document.cookie.split('; ').some((c) => c.startsWith('auth-token='))) {
     const effectiveStatus = state.user.status || (state.user.isVerified ? 'approved' : 'pending');
+    const canonicalRole = normalizeRole(state.user.role);
     document.cookie = `auth-token=${state.token}; path=/; max-age=604800; SameSite=Lax`;
-    document.cookie = `user-role=${state.user.role || 'user'}; path=/; max-age=604800; SameSite=Lax`;
+    document.cookie = `user-role=${canonicalRole}; path=/; max-age=604800; SameSite=Lax`;
     document.cookie = `user-status=${effectiveStatus}; path=/; max-age=604800; SameSite=Lax`;
   }
 }

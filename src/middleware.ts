@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+function isManagerRole(role?: string): boolean {
+  return role === 'super_admin' || role === 'team_leader' || role === 'admin';
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -49,18 +53,18 @@ export function middleware(request: NextRequest) {
   if (status === 'pending' || status === 'approved' || !status) {
     // Redirect signed-in users away from landing, login, and register pages
     if (isAuthPage || isLandingPage) {
-      if (role === 'admin') {
+      if (isManagerRole(role)) {
         return NextResponse.redirect(new URL('/admin/dashboard', request.url));
       }
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
 
     // Role-based protection
-    if (isAdminPage && role !== 'admin') {
+    if (isAdminPage && !isManagerRole(role)) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
 
-    if (isUserPage && role !== 'user') {
+    if (isUserPage && isManagerRole(role)) {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
     }
   }

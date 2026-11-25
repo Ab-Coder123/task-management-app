@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/authStore';
+import { getHomeRoute } from '@/lib/auth/permissions';
 
 export default function LandingAuthRedirect() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function LandingAuthRedirect() {
 
     if ((state.isAuthenticated || isAuthenticated) && activeToken && activeUser) {
       if (activeUser.status === 'rejected') return;
-      router.replace(activeUser.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+      router.replace(getHomeRoute(activeUser.role));
     }
   }, [router, user, token, isAuthenticated]);
 

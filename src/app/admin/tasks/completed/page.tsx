@@ -9,6 +9,7 @@ import { formatDate } from '@/lib/utils';
 import { CheckCircle2, Search, Calendar, BadgeCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getAvatarFallback } from '@/lib/utils';
+import { isManager } from '@/lib/auth/permissions';
 
 const AVATAR_COLORS = [
   { bg: 'rgba(99, 102, 241, 0.1)', border: 'rgba(99, 102, 241, 0.25)', text: '#4f46e5' }, // indigo
@@ -195,7 +196,7 @@ export default function AdminCompletedTasksPage() {
                           )}
                           <span className="font-semibold text-foreground text-xs flex items-center gap-1">
                             {displayName}
-                            {primaryUser.role === 'admin' && (
+                            {isManager(primaryUser.role) && (
                               <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/20" />
                             )}
                           </span>

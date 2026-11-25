@@ -4,14 +4,17 @@ import React from 'react';
 import { User } from '@/lib/types';
 import UserStatusBadge from './UserStatusBadge';
 import { formatDate } from '@/lib/utils';
-import { Check, X, Trash2 } from 'lucide-react';
+import { Check, X, Trash2, ArrowLeftRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { getRoleLabel, isSuperAdmin, isTeamLeader, normalizeRole } from '@/lib/auth/permissions';
 
 interface UserTableProps {
   users: User[];
+  canChangeRoles?: boolean;
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onDelete: (id: string) => void;
+  onToggleRole?: (user: User) => void;
 }
 
 const AVATAR_COLORS = [
@@ -46,7 +49,7 @@ const rowVariants = {
   }
 };
 
-export default function UserTable({ users, onApprove, onReject, onDelete }: UserTableProps) {
+export default function UserTable({ users, canChangeRoles = false, onApprove, onReject, onDelete, onToggleRole }: UserTableProps) {
   if (users.length === 0) {
     return (
       <div className="text-center py-16 rounded-2xl bg-card shadow-200">
@@ -88,8 +91,9 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
         >
           {users.map((user) => {
             const ac = avatarColor(user.username || 'غ م');
-            const displayTeam = user.team || (user.role === 'admin' ? 'الإدارة العامة' : 'غير محدد');
-            const displayJob = user.jobTitle || (user.role === 'admin' ? 'قائد الفريق (Team Leader)' : 'غير محدد');
+            const canonicalRole = normalizeRole(user.role);
+            const displayTeam = user.team || (canonicalRole === 'super_admin' ? 'الإدارة العامة' : 'غير محدد');
+            const displayJob = user.jobTitle || getRoleLabel(user.role);
 
             return (
               <motion.tr
@@ -129,11 +133,14 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
 
                 {/* Role */}
                 <td className="px-6 py-4">
-                  <span className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border shadow-100 ${user.role === 'admin'
-                    ? 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/20'
-                    : 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20'
-                    }`}>
-                    {user.role === 'admin' ? 'قائد فريق' : 'عضو فريق'}
+                  <span className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border shadow-100 ${
+                    canonicalRole === 'super_admin'
+                      ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30'
+                      : canonicalRole === 'team_leader'
+                      ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20'
+                      : 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20'
+                  }`}>
+                    {getRoleLabel(user.role)}
                   </span>
                 </td>
 
@@ -149,24 +156,34 @@ export default function UserTable({ users, onApprove, onReject, onDelete }: User
                       <>
                         <button
                           onClick={() => onApprove(user._id)}
-                          className="p-2 rounded-xl text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all shadow-100"
+                          className="p-2 rounded-xl text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all shadow-100 cursor-pointer"
                           title="موافقة"
                         >
                           <Check className="h-4.5 w-4.5" />
                         </button>
                         <button
                           onClick={() => onReject(user._id)}
-                          className="p-2 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all shadow-100"
+                          className="p-2 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all shadow-100 cursor-pointer"
                           title="رفض"
                         >
                           <X className="h-4.5 w-4.5" />
                         </button>
                       </>
                     )}
-                    {user.role !== 'admin' && (
+                    {canChangeRoles && onToggleRole && !isSuperAdmin(user.role) && (
+                      <button
+                        type="button"
+                        onClick={() => onToggleRole(user)}
+                        className="p-2 rounded-xl text-blue-600 dark:text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 transition-all shadow-100 cursor-pointer"
+                        title={isTeamLeader(user.role) ? 'تحويل لعضو فريق' : 'ترقية لقائد فريق'}
+                      >
+                        <ArrowLeftRight className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                    {!isSuperAdmin(user.role) && (
                       <button
                         onClick={() => onDelete(user._id)}
-                        className="p-2 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all shadow-100"
+                        className="p-2 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all shadow-100 cursor-pointer"
                         title="حذف المستخدم"
                       >
                         <Trash2 className="h-3 w-3" />

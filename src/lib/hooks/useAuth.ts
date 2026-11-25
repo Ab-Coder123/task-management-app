@@ -3,6 +3,7 @@ import { authApi, AuthResponse } from '../api/auth';
 import { usersApi } from '../api/users';
 import { useAuthStore } from '../store/authStore';
 import { User } from '../types';
+import { getHomeRoute } from '../auth/permissions';
 import { useRouter } from 'next/navigation';
 
 export function useAuth() {
@@ -13,13 +14,7 @@ export function useAuth() {
     mutationFn: authApi.login,
     onSuccess: (data: AuthResponse) => {
       setAuth(data.user, data.token);
-
-      // Redirect based on role
-      if (data.user.role === 'admin') {
-        router.replace('/admin/dashboard');
-      } else {
-        router.replace('/dashboard');
-      }
+      router.replace(getHomeRoute(data.user.role));
     },
   });
 

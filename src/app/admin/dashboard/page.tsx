@@ -26,6 +26,7 @@ import { TaskStatus, User } from '@/lib/types';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useQueryClient } from '@tanstack/react-query';
+import { isManager, isSuperAdmin, isTeamLeader } from '@/lib/auth/permissions';
 import { notificationsApi } from '@/lib/api/notifications';
 import { motion } from 'framer-motion';
 import { playSuccessSound } from '@/lib/utils/sound';
@@ -78,15 +79,24 @@ export default function AdminDashboardPage() {
   const activeTasks    = sharedTasks.filter(t => t.status === 'in_progress').length;
   const overdueTasks   = sharedTasks.filter(t => t.status === 'overdue').length;
 
-  const isLeaderScopedTeam = Boolean(currentUser?.team && currentUser.team !== 'الإدارة العامة');
-  const otherUsers = users.filter((u) => u._id && u._id !== currentUser?._id);
+  const superAdminMode = isSuperAdmin(currentUser?.role);
+  const leaderMode = isTeamLeader(currentUser?.role);
+
+  const isLeaderScopedTeam = Boolean(
+    leaderMode && (currentUser?.teamId || (currentUser?.team && currentUser.team !== 'الإدارة العامة'))
+  );
+  const otherUsers = users.filter((u) => u._id && u._id !== currentUser?._id && !isSuperAdmin(u.role));
   const scopedMembers = isLeaderScopedTeam
-    ? otherUsers.filter((u) => u.team === currentUser?.team)
+    ? otherUsers.filter(
+        (u) =>
+          (currentUser?.teamId && u.teamId === currentUser.teamId) ||
+          (currentUser?.team && u.team === currentUser.team)
+      )
     : otherUsers;
 
   const groupedLegacyUsers = !isLeaderScopedTeam
     ? otherUsers.reduce<Record<string, User[]>>((acc, u) => {
-        const key = u.team || 'أعضاء بدون قسم';
+        const key = u.team || 'أعضاء بدون فريق';
         if (!acc[key]) acc[key] = [];
         acc[key].push(u);
         return acc;
@@ -237,10 +247,12 @@ export default function AdminDashboardPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2.5">
             <Sparkles className="h-6 w-6 text-primary" />
-            لوحة تحكم قائد الفريق
+            {superAdminMode ? 'لوحة تحكم مدير المنصة العام (Super Admin)' : 'لوحة تحكم قائد الفريق'}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            مرحباً بك، استعرض حالة المهام والتقارير وتواصل مع أعضاء فريقك بسهولة.
+            {superAdminMode
+              ? 'رؤية شاملة على جميع الفِرق والمهام والقادة وأعضاء المنصة بالكامل.'
+              : 'مرحباً بك، استعرض حالة مهام فريقك والتقارير وتواصل مع أعضاء فريقك بسهولة.'}
           </p>
         </div>
         {currentUser?.team && (
@@ -492,7 +504,7 @@ export default function AdminDashboardPage() {
                   )}
                   <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
                     {displayName}
-                    {primaryUser?.role === 'admin' && (
+                    {isManager(primaryUser?.role) && (
                       <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/20" />
                     )}
                   </span>

@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/authStore';
 import { usersApi } from '@/lib/api/users';
+import { getHomeRoute, getRoleLabel, isSuperAdmin } from '@/lib/auth/permissions';
 import { LogOut, Loader2, Clock, UserCheck, Briefcase, Users, RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -34,7 +35,7 @@ export default function WelcomeWaitingApprovalPage() {
           // Sync changes to local Zustand auth store
           updateUser({ isVerified: true });
           // Redirect user based on role
-          const dest = freshUser.role === 'admin' ? '/admin/dashboard' : '/dashboard';
+          const dest = getHomeRoute(freshUser.role);
           router.replace(dest);
         }
       } catch (err) {
@@ -56,7 +57,7 @@ export default function WelcomeWaitingApprovalPage() {
       if (freshUser && freshUser.isVerified) {
         updateUser({ isVerified: true });
         toast.success('تم اعتماد حسابك! جاري تحويلك إلى لوحة التحكم...');
-        const dest = freshUser.role === 'admin' ? '/admin/dashboard' : '/dashboard';
+        const dest = getHomeRoute(freshUser.role);
         router.replace(dest);
       } else {
         toast.info('الحساب ما زال قيد مراجعة الإدارة.');
@@ -168,7 +169,7 @@ export default function WelcomeWaitingApprovalPage() {
               القسم / الفريق:
             </span>
             <span className="text-foreground font-bold">
-              {user?.team || (user?.role === 'admin' ? 'الإدارة العامة' : 'غير محدد')}
+              {user?.team || (isSuperAdmin(user?.role) ? 'الإدارة العامة' : 'غير محدد')}
             </span>
           </div>
           <div className="flex items-center justify-between text-xs">
@@ -177,7 +178,7 @@ export default function WelcomeWaitingApprovalPage() {
               المسمى الوظيفي:
             </span>
             <span className="text-foreground font-bold">
-              {user?.jobTitle || (user?.role === 'admin' ? 'قائد الفريق (Team Leader)' : 'غير محدد')}
+              {user?.jobTitle || getRoleLabel(user?.role)}
             </span>
           </div>
         </div>

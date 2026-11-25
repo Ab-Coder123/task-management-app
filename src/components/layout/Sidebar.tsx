@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useAuthStore } from '@/lib/store/authStore';
-import { ADMIN_NAV_ITEMS, USER_NAV_ITEMS } from '@/lib/constants';
+import { getHomeRoute, getNavItemsForRole, getRoleLabel, normalizeRole } from '@/lib/auth/permissions';
 import * as Icons from 'lucide-react';
 import { LogOut } from 'lucide-react';
 import { getAvatarFallback } from '@/lib/utils';
@@ -20,15 +20,15 @@ export default function Sidebar() {
     setMounted(true);
   }, []);
 
-  const role = user?.role || 'user';
-  const navItems = role === 'admin' ? ADMIN_NAV_ITEMS : USER_NAV_ITEMS;
+  const role = normalizeRole(user?.role);
+  const navItems = getNavItemsForRole(role);
 
   return (
     <aside className="fixed inset-y-0 right-0 z-30 hidden w-64 lg:flex flex-col text-right bg-card dark:bg-[#0b1120] border-l border-border/80 shadow-300 opacity-100">
 
       {/* Logo */}
       <div className="flex h-16 items-center px-6">
-        <Link href={role === 'admin' ? '/admin/dashboard' : '/dashboard'} className="flex items-center gap-3">
+        <Link href={getHomeRoute(role)} className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 dark:bg-gradient-to-tr dark:from-blue-600 dark:to-indigo-500 border border-primary/20 dark:border-transparent text-primary dark:text-white shadow-200 transition-colors">
             <Icons.Trello className="h-5 w-5" />
           </div>
@@ -93,7 +93,7 @@ export default function Sidebar() {
             )}
             <div className="min-w-0 text-right">
               <p className="text-sm font-bold text-foreground truncate">{user.username}</p>
-              <p className="text-[10px] text-muted-foreground font-semibold truncate">{role === 'admin' ? 'قائد فريق' : 'عضو فريق'}</p>
+              <p className="text-[10px] text-muted-foreground font-semibold truncate">{getRoleLabel(user.role)}</p>
             </div>
           </div>
         ) : (

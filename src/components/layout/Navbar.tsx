@@ -9,10 +9,11 @@ import { getAvatarFallback } from '@/lib/utils';
 import { Bell, LogOut, Menu, ChevronDown, User } from 'lucide-react';
 import Link from 'next/link';
 import ThemeToggle from '@/components/shared/ThemeToggle';
+import { getPortalLabel, getRoleLabel, isManager, normalizeRole } from '@/lib/auth/permissions';
 
 interface NavbarProps {
   onMenuClick: () => void;
-  role: 'admin' | 'user';
+  role: 'admin' | 'user' | 'super_admin' | 'team_leader';
 }
 
 export default function Navbar({ onMenuClick, role }: NavbarProps) {
@@ -27,7 +28,9 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
     setMounted(true);
   }, []);
 
-  const profileHref = role === 'admin' ? '/admin/profile' : '/dashboard/profile';
+  const effectiveRole = normalizeRole(user?.role || role);
+  const managerAccess = isManager(effectiveRole);
+  const profileHref = managerAccess ? '/admin/profile' : '/dashboard/profile';
 
   const handleProfileToggle = () => {
     setActiveDropdown(prev => prev === 'profile' ? null : 'profile');
@@ -49,7 +52,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
         <div className="flex items-center gap-3">
           <div className="hidden lg:block">
             <span className="text-xs font-bold text-primary bg-primary/10 px-3.5 py-1.5 rounded-full shadow-100">
-              {role === 'admin' ? 'بوابة قائد الفريق' : 'مساحة العمل'}
+              {getPortalLabel(effectiveRole)}
             </span>
           </div>
           <button
@@ -84,7 +87,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
                 )}
                 <div className="hidden text-right md:block">
                   <p className="text-sm font-bold text-foreground leading-none">{user.username}</p>
-                  <p className="text-[10px] text-muted-foreground font-semibold mt-0.5">{user.role === 'admin' ? 'قائد فريق' : 'عضو فريق'}</p>
+                  <p className="text-[10px] text-muted-foreground font-semibold mt-0.5">{getRoleLabel(user.role)}</p>
                 </div>
                 <ChevronDown className={`hidden h-3.5 w-3.5 text-muted-foreground md:block transition-transform duration-200 ${activeDropdown === 'profile' ? 'rotate-180 text-primary' : ''}`} />
               </button>
@@ -102,7 +105,7 @@ export default function Navbar({ onMenuClick, role }: NavbarProps) {
 
           {/* Notification Bell */}
           <Link
-            href={role === 'admin' ? '/admin/notifications' : '/dashboard/notifications'}
+            href={managerAccess ? '/admin/notifications' : '/dashboard/notifications'}
             className="relative rounded-xl p-2 text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-all"
           >
             <Bell className="h-5 w-5" />

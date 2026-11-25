@@ -6,6 +6,10 @@ import UserTable from '@/components/users/UserTable';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import { useUsers } from '@/lib/hooks/useUsers';
+import { useTeams } from '@/lib/hooks/useTeams';
+import { useAuthStore } from '@/lib/store/authStore';
+import { canChangeUserRoles, isTeamLeader } from '@/lib/auth/permissions';
+import { User } from '@/lib/types';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -15,8 +19,11 @@ const pageVariants = {
 };
 
 export default function AdminUsersPage() {
+  const { user: currentUser } = useAuthStore();
   const { users, isLoading, updateUser, deleteUser } = useUsers();
+  const { teams } = useTeams();
   const [mounted, setMounted] = useState(false);
+  const [teamFilter, setTeamFilter] = useState<string>('all');
 
   useEffect(() => {
     setMounted(true);
@@ -24,6 +31,26 @@ export default function AdminUsersPage() {
   
   // Selected user for deletion confirmation dialog
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+
+  const allowRoleChanges = canChangeUserRoles(currentUser?.role);
+  const filteredUsers = users.filter((u) => {
+    if (teamFilter === 'all') return true;
+    return u.teamId === teamFilter || u.team === teamFilter;
+  });
+
+  const handleToggleRole = async (target: User) => {
+    const nextRole = isTeamLeader(target.role) ? 'user' : 'team_leader';
+    try {
+      await updateUser({ id: target._id, data: { role: nextRole } });
+      toast.success(
+        nextRole === 'team_leader'
+          ? `تمت ترقية ${target.username} إلى قائد فريق.`
+          : `تم تحويل ${target.username} إلى عضو فريق.`
+      );
+    } catch (err: any) {
+      toast.error(err?.message || 'فشل تعديل صلاحية المستخدم.');
+    }
+  };
 
   const handleApprove = async (id: string) => {
     try {
@@ -71,13 +98,35 @@ export default function AdminUsersPage() {
       dir="rtl"
     >
       <PageHeader
-        title="إدارة حسابات المستخدمين"
-        description="التحقق من التسجيلات المعلقة، تعديل صلاحيات القبول، أو حذف سجلات المستخدمين غير النشطين."
+        title={allowRoleChanges ? 'إدارة جميع المستخدمين' : 'إدارة أعضاء فريقي'}
+        description={
+          allowRoleChanges
+            ? 'استعرض المستخدمين عبر جميع الفِرق، تحكم في اعتماد الحسابات أو ترقية قادة الفِرق.'
+            : 'التحقق من حسابات أعضاء فريقك المعلقة واعتماد انضمامهم للفريق.'
+        }
+        action={
+          allowRoleChanges && teams.length > 0 ? (
+            <select
+              value={teamFilter}
+              onChange={(e) => setTeamFilter(e.target.value)}
+              className="px-3.5 py-2 rounded-xl bg-card dark:bg-[#101828] border border-border/70 dark:border-transparent text-xs font-bold text-foreground cursor-pointer"
+            >
+              <option value="all">كل الفِرق ({users.length})</option>
+              {teams.map((t) => (
+                <option key={t._id} value={t._id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          ) : null
+        }
       />
 
       <div className="animate-fade-in">
         <UserTable
-          users={users}
+          users={filteredUsers}
+          canChangeRoles={allowRoleChanges}
+          onToggleRole={handleToggleRole}
           onApprove={handleApprove}
           onReject={handleReject}
           onDelete={(id) => setDeleteTargetId(id)}

@@ -6,8 +6,18 @@ export interface AuthResponse {
   token: string;
 }
 
+export interface RegisterPayload extends Partial<User> {
+  password?: string;
+  newTeam?: {
+    name: string;
+    departmentId: string;
+    departmentName?: string;
+    description?: string;
+  };
+}
+
 export const authApi = {
-  register: (userData: Partial<User> & { password?: string }) => {
+  register: (userData: RegisterPayload) => {
     return apiFetch<AuthResponse>('/api/auth/register', {
       method: 'POST',
       bodyData: userData,

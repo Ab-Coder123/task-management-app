@@ -1,6 +1,20 @@
 // User Types
-export type UserRole = 'admin' | 'user';
+export type UserRole = 'super_admin' | 'team_leader' | 'user' | 'admin';
+export type CanonicalRole = 'super_admin' | 'team_leader' | 'user';
 export type UserStatus = 'pending' | 'approved' | 'rejected';
+
+export interface Team {
+  _id: string;
+  name: string;
+  slug: string;
+  departmentId: string;
+  departmentName: string;
+  description?: string;
+  leaderId?: string | User | null;
+  isDefault?: boolean;
+  memberCount?: number;
+  createdAt?: string;
+}
 
 export interface User {
   _id: string; // MongoDB standard ID used by the backend
@@ -8,6 +22,8 @@ export interface User {
   email: string;
   role: UserRole;
   status: UserStatus;
+  departmentId?: string;
+  teamId?: string | null;
   team?: string;
   jobTitle?: string;
   createdAt: string;
@@ -61,6 +77,8 @@ export interface RawTask {
   createdAt?: string;
   completedAt?: string;
   isPrivate?: boolean;
+  teamId?: string | null;
+  departmentId?: string;
   createdBy?: string | User;
   assigneeProgress?: AssigneeProgress[];
   attachments?: TaskAttachment[];
@@ -79,6 +97,8 @@ export interface Task {
   createdAt: string;
   completedAt?: string;
   isPrivate?: boolean;
+  teamId?: string | null;
+  departmentId?: string;
   createdBy?: string | User;
   assigneeProgress?: AssigneeProgress[];
   privateChecklist?: ChecklistItem[];

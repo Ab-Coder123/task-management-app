@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { Home, Shield, CheckSquare } from 'lucide-react';
+import { isManager, normalizeRole } from '@/lib/auth/permissions';
+import { Home, Shield, CheckSquare, Layers } from 'lucide-react';
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -17,11 +18,11 @@ export default function BottomNav() {
 
   if (!mounted) return null;
 
-  const role = user?.role || 'user';
+  const role = normalizeRole(user?.role);
 
-  // Dynamically switch bottom navigation links based on user role to prevent unauthorized access errors on mobile
-  const navItems = role === 'admin' ? [
+  const navItems = isManager(role) ? [
     { label: 'الرئيسية', href: '/admin/dashboard', icon: Home },
+    { label: 'الفِرق', href: '/admin/teams', icon: Layers },
     { label: 'المهام', href: '/admin/tasks', icon: CheckSquare },
     { label: 'المستخدمين', href: '/admin/users', icon: Shield },
   ] : [

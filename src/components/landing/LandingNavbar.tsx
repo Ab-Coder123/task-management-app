@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store/authStore';
+import { getHomeRoute } from '@/lib/auth/permissions';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import {
   ArrowLeft,
@@ -37,9 +38,7 @@ export default function LandingNavbar() {
     ? '/login'
     : !user.isVerified
     ? '/waiting-approval'
-    : user.role === 'admin'
-    ? '/admin/dashboard'
-    : '/dashboard';
+    : getHomeRoute(user.role);
 
   return (
     <header

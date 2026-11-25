@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useComments } from '@/lib/hooks/useComments';
 import { getAvatarFallback, formatDate } from '@/lib/utils';
+import { getRoleLabel, isManager } from '@/lib/auth/permissions';
 import { Send, Trash2, BadgeCheck, MessageSquareText, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -141,7 +142,7 @@ export default function TaskCommentSection({
                 const role = comment.authorRole || userObj?.role || 'user';
                 const avatar = userObj?.avatar;
                 const isOwn = Boolean(userId && authorId && authorId.toString() === userId.toString());
-                const isLeader = role === 'admin';
+                const isLeader = isManager(role);
                 const canDelete = isAdmin || isOwn;
 
                 return (
@@ -186,7 +187,7 @@ export default function TaskCommentSection({
                           {isLeader && (
                             <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/15 px-2 py-0.5 text-[10px] font-bold text-blue-600 dark:text-blue-300">
                               <BadgeCheck className="h-3 w-3" />
-                              <span>قائد الفريق</span>
+                              <span>{getRoleLabel(role)}</span>
                             </span>
                           )}
                           {isOwn && !isLeader && (

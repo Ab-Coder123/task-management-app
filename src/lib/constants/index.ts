@@ -29,6 +29,7 @@ export const USER_STATUSES = [
 
 export const ADMIN_NAV_ITEMS = [
   { label: 'لوحة التحكم', href: '/admin/dashboard', icon: 'LayoutDashboard' },
+  { label: 'إدارة الفِرق', href: '/admin/teams', icon: 'Layers' },
   { label: 'إدارة المستخدمين', href: '/admin/users', icon: 'Users' },
   { label: 'إدارة المهام', href: '/admin/tasks', icon: 'CheckSquare' },
   { label: 'المهام المكتملة', href: '/admin/tasks/completed', icon: 'FolderCheck' },

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Task, User } from '@/lib/types';
 import { TASK_PRIORITIES, TASK_STATUSES, TASK_TYPES } from '@/lib/constants';
+import { isManager } from '@/lib/auth/permissions';
 import { useRouter } from 'next/navigation';
 import { Check, BadgeCheck, ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -236,7 +237,7 @@ export default function TaskForm({
                           <div className="flex flex-col grow select-none text-right">
                             <span className="font-bold text-foreground flex items-center gap-1.5 justify-start">
                               {user.username}
-                              {user.role === 'admin' && (
+                              {isManager(user.role) && (
                                 <BadgeCheck className="h-4 w-4 text-blue-500 fill-blue-500/10 shrink-0" />
                               )}
                             </span>

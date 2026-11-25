@@ -15,6 +15,7 @@ import {
 import { useTasks } from '@/lib/hooks/useTasks';
 import { useUsers } from '@/lib/hooks/useUsers';
 import { useAuthStore } from '@/lib/store/authStore';
+import { isManager } from '@/lib/auth/permissions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { getAvatarFallback } from '@/lib/utils';
 import { TaskStatus, User } from '@/lib/types';
@@ -50,7 +51,7 @@ export default function UserDashboardPage() {
     const isAssigned = Array.isArray(t.assignedTo)
       ? t.assignedTo.some(id => (typeof id === 'string' ? id === user?._id : id?._id === user?._id))
       : t.assignedTo === user?._id;
-    return isAssigned || !t.assignedTo || t.assignedTo.length === 0 || user?.role === 'admin';
+    return isAssigned || !t.assignedTo || t.assignedTo.length === 0 || isManager(user?.role);
   });
 
   // Calculate statistics metrics

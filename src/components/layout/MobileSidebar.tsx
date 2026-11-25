@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { ADMIN_NAV_ITEMS, USER_NAV_ITEMS } from '@/lib/constants';
+import { getHomeRoute, getNavItemsForRole, normalizeRole } from '@/lib/auth/permissions';
 import * as Icons from 'lucide-react';
 import { LogOut, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -18,8 +18,8 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
-  const role = user?.role || 'user';
-  const navItems = role === 'admin' ? ADMIN_NAV_ITEMS : USER_NAV_ITEMS;
+  const role = normalizeRole(user?.role);
+  const navItems = getNavItemsForRole(role);
 
   return (
     <AnimatePresence>
@@ -45,7 +45,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             <div>
               {/* Header with Close Button */}
               <div className="flex items-center justify-between pb-6 border-b border-border/40 mb-6">
-                <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
+                <Link href={getHomeRoute(role)} onClick={onClose} className="flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 dark:bg-gradient-to-tr dark:from-primary dark:to-violet-500 border border-primary/20 dark:border-transparent text-primary dark:text-white shadow-200 transition-colors">
                     <Icons.Trello className="h-5 w-5" />
                   </div>

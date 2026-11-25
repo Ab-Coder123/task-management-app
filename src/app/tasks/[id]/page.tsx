@@ -8,6 +8,7 @@ import AttachmentSection from '@/components/attachments/AttachmentSection';
 import { useTasks } from '@/lib/hooks/useTasks';
 import { useUsers } from '@/lib/hooks/useUsers';
 import { useAuthStore } from '@/lib/store/authStore';
+import { isManager } from '@/lib/auth/permissions';
 import { getPriorityColor, getStatusColor, getTypeLabel, formatDate, getAvatarFallback } from '@/lib/utils';
 import { Calendar, User as UserIcon, Clock, CheckCircle2, ChevronRight, Tag, List, Check, X, FileText, Sparkles, MessageSquare, Lock } from 'lucide-react';
 import { User, TaskStatus } from '@/lib/types';
@@ -77,13 +78,15 @@ export default function TaskDetailsPage() {
 
   const checklistItems = currentUserProgress?.checklist || task.privateChecklist || [];
 
-  const effectiveStatus: TaskStatus = currentUser?.role === 'admin'
+  const managerAccess = isManager(currentUser?.role);
+
+  const effectiveStatus: TaskStatus = managerAccess
     ? task.status
     : ((currentUserProgress?.status || (task as any).personalStatus || task.status) as TaskStatus);
 
   const isCompleted = effectiveStatus === 'completed';
   
-  const showChecklist = currentUser?.role !== 'admin';
+  const showChecklist = !managerAccess;
 
   const handleStatusChange = async (nextStatus: TaskStatus) => {
     if (nextStatus === effectiveStatus || isUpdatingStatus) return;
@@ -92,7 +95,7 @@ export default function TaskDetailsPage() {
       await updateTaskStatus({
         id: task._id,
         status: nextStatus,
-        isAdmin: currentUser?.role === 'admin',
+        isAdmin: managerAccess,
       });
       toast.dismiss(loadingToast);
       toast.success(`تم تحديث حالة المهمة إلى "${getStatusArabicLabel(nextStatus)}" بنجاح!`);
@@ -161,7 +164,7 @@ export default function TaskDetailsPage() {
       {/* Top Navigation & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-4 rounded-2xl border border-border/60 shadow-100">
         <Link
-          href={currentUser?.role === 'admin' ? '/admin/tasks' : '/dashboard'}
+          href={managerAccess ? '/admin/tasks' : '/dashboard'}
           className="inline-flex items-center gap-1.5 text-xs font-extrabold text-muted-foreground hover:text-primary transition-colors bg-muted/40 hover:bg-primary/10 px-4 py-2 rounded-xl w-fit"
         >
           <ChevronRight className="h-4 w-4" />
@@ -336,8 +339,8 @@ export default function TaskDetailsPage() {
               <AttachmentSection
                 taskId={task._id}
                 initialAttachments={task.attachments}
-                canUpload={currentUser?.role === 'admin'}
-                canDelete={currentUser?.role === 'admin'}
+                canUpload={managerAccess}
+                canDelete={managerAccess}
               />
             </div>
           )}
@@ -359,7 +362,7 @@ export default function TaskDetailsPage() {
                 userId={currentUser?._id || ''}
                 username={currentUser?.username || ''}
                 taskTitle={task.title}
-                isAdmin={currentUser?.role === 'admin'}
+                isAdmin={managerAccess}
               />
             </div>
           )}

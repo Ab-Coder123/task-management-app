@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useTasks } from '@/lib/hooks/useTasks';
 import { useAuthStore } from '@/lib/store/authStore';
+import { isManager } from '@/lib/auth/permissions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { TaskStatus, Task } from '@/lib/types';
 import { toast } from 'sonner';
@@ -99,7 +100,7 @@ export default function PersonalTasksPage() {
       await completeTask({ 
         id, 
         username: user?.username || 'User',
-        isAdmin: user?.role === 'admin'
+        isAdmin: isManager(user?.role)
       });
       toast.success('تم إكمال المهمة الخاصة بنجاح!');
     } catch (err) {
